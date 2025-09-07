@@ -1,0 +1,7 @@
+# menu "SGP40 Configuration"
+#     help
+#       This option enables support for the SGP40 sensor, which is a digital gas sensor
+#       used for air quality monitoring.
+
+        
+# endmenu

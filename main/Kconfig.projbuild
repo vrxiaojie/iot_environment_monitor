@@ -1,0 +1,254 @@
+menu "IoT Env Monitor Configuration"
+    choice LCD_BUFFER_MODE
+        prompt "RGB LCD Buffer Mode"
+        default USE_SINGLE_FB
+        help
+            Select the LCD buffer mode.
+
+        config USE_SINGLE_FB
+            bool "Use single frame buffer"
+            help
+                Allocate one frame buffer in the driver.
+                Allocate one draw buffer in LVGL.
+
+        config USE_DOUBLE_FB
+            bool "Use double frame buffer"
+            help
+                Allocate two frame buffers in the driver.
+                The frame buffers also work as ping-pong draw buffers in LVGL.
+
+        config USE_BOUNCE_BUFFER
+            bool "Use bounce buffer"
+            help
+                Allocate one frame buffer in the driver.
+                Allocate two bounce buffers in the driver.
+                Allocate one draw buffer in LVGL.
+    endchoice
+
+    choice LCD_DATA_LINES
+        prompt "RGB LCD Data Lines"
+        default LCD_DATA_LINES_16
+        help
+            Select the number of data lines of the RGB LCD.
+
+        config LCD_DATA_LINES_16
+            bool "16 data lines"
+
+        config LCD_DATA_LINES_24
+            bool "24 data lines"
+    endchoice
+
+    config LCD_DATA_LINES
+        int
+        default 16 if LCD_DATA_LINES_16
+        default 24 if LCD_DATA_LINES_24
+
+    menu "LCD panel GPIO assignment"
+        config LCD_VSYNC_GPIO
+            int "VSYNC GPIO"
+            default 7
+            help
+                GPIO pin number for VSYNC signal.
+        config LCD_HSYNC_GPIO
+            int "HSYNC GPIO"
+            default 15
+            help
+                GPIO pin number for HSYNC signal.
+        config LCD_DE_GPIO
+            int "DE GPIO"
+            default 6
+            help
+                GPIO pin number for DE signal.
+        config LCD_PCLK_GPIO
+            int "PCLK GPIO"
+            default 16
+            help
+                GPIO pin number for PCLK signal.
+        config LCD_DATA0_GPIO
+            int "DATA0 GPIO"
+            default 9
+            help
+                GPIO pin number for data bus[0] (B0 for RGB565).
+        config LCD_DATA1_GPIO
+            int "DATA1 GPIO"
+            default 3
+            help
+                GPIO pin number for data bus[1] (B1 for RGB565).
+        config LCD_DATA2_GPIO
+            int "DATA2 GPIO"
+            default 8
+            help
+                GPIO pin number for data bus[2] (B2 for RGB565).
+        config LCD_DATA3_GPIO
+            int "DATA3 GPIO"
+            default 18
+            help
+                GPIO pin number for data bus[3] (B3 for RGB565).
+        config LCD_DATA4_GPIO
+            int "DATA4 GPIO"
+            default 17
+            help
+                GPIO pin number for data bus[4] (B4 for RGB565).
+        config LCD_DATA5_GPIO
+            int "DATA5 GPIO"
+            default 21
+            help
+                GPIO pin number for data bus[5] (G0 for RGB565).
+        config LCD_DATA6_GPIO
+            int "DATA6 GPIO"
+            default 14
+            help
+                GPIO pin number for data bus[6] (G1 for RGB565).
+        config LCD_DATA7_GPIO
+            int "DATA7 GPIO"
+            default 13
+            help
+                GPIO pin number for data bus[7] (G2 for RGB565).
+        config LCD_DATA8_GPIO
+            int "DATA8 GPIO"
+            default 12
+            help
+                GPIO pin number for data bus[8] (G3 for RGB565).
+        config LCD_DATA9_GPIO
+            int "DATA9 GPIO"
+            default 11
+            help
+                GPIO pin number for data bus[9] (G4 for RGB565).
+        config LCD_DATA10_GPIO
+            int "DATA10 GPIO"
+            default 10
+            help
+                GPIO pin number for data bus[10] (G5 for RGB565).
+        config LCD_DATA11_GPIO
+            int "DATA11 GPIO"
+            default 39
+            help
+                GPIO pin number for data bus[11] (R0 for RGB565).
+        config LCD_DATA12_GPIO
+            int "DATA12 GPIO"
+            default 38
+            help
+                GPIO pin number for data bus[12] (R1 for RGB565).
+        config LCD_DATA13_GPIO
+            int "DATA13 GPIO"
+            default 45
+            help
+                GPIO pin number for data bus[13] (R2 for RGB565).
+        config LCD_DATA14_GPIO
+            int "DATA14 GPIO"
+            default 48
+            help
+                GPIO pin number for data bus[14] (R3 for RGB565).
+        config LCD_DATA15_GPIO
+            int "DATA15 GPIO"
+            default 47
+            help
+                GPIO pin number for data bus[15] (R4 for RGB565).
+        config LCD_DATA16_GPIO
+            int "DATA16 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[16].
+        config LCD_DATA17_GPIO
+            int "DATA17 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[17].
+        config LCD_DATA18_GPIO
+            int "DATA18 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[18].
+        config LCD_DATA19_GPIO
+            int "DATA19 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[19].
+        config LCD_DATA20_GPIO
+            int "DATA20 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[20].
+        config LCD_DATA21_GPIO
+            int "DATA21 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[21].
+        config LCD_DATA22_GPIO
+            int "DATA22 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[22].
+        config LCD_DATA23_GPIO
+            int "DATA23 GPIO"
+            depends on LCD_DATA_LINES > 16
+            help
+                GPIO pin number for data bus[23].
+    endmenu
+
+    menu "LCD backlight Config"
+        config LCD_BACKLIGHT_GPIO
+            int "Backlight GPIO"
+            default 42
+            help
+                GPIO pin number for LCD backlight control.
+
+        config LCD_BACKLIGHT_FREQUENCY
+            int "Backlight PWM Frequency (Hz)"
+            default 2000
+            range 1000 2000
+            help
+                Set the backlight PWM frequency in Hz.
+        endmenu
+
+    menu "I2C Config"
+        config I2C_MASTER_SCL
+            int "SCL GPIO Num"
+            range 0 48
+            default 1
+            help
+                GPIO number for I2C Master clock line.
+
+        config I2C_MASTER_SDA
+            int "SDA GPIO Num"
+            range 0 48
+            default 2
+            help
+                GPIO number for I2C Master data line.
+
+        config I2C_MASTER_FREQUENCY
+            int "Master Frequency"
+            default 400000
+            help
+                I2C Speed of Master device.
+    endmenu
+
+    menu "GT911 GPIO Config"
+        config GT911_INT_GPIO
+            int "GT911 INT GPIO"
+            default  41
+            help
+                GPIO pin number for GT911 INT signal.
+
+        config GT911_RST_GPIO
+            int "GT911 RST GPIO"
+            default 40
+            help
+                GPIO pin number for GT911 RST signal.
+    endmenu
+
+    menu "Battery ADC Configuration"
+    config BAT_ADC_GPIO
+        int "Battery ADC GPIO Pin"
+        range 0 48
+        default 4
+        help
+          Specify the GPIO pin number connected to the battery ADC.
+
+    config VOLTAGE_OFFSET
+        int "Voltage Offset (mV)"
+        default 0
+        help
+          Set an offset value in millivolts to calibrate the battery voltage readings.
+    endmenu
+endmenu
