@@ -13,17 +13,54 @@
 #include "events_init.h"
 #include "widgets_init.h"
 #include "custom.h"
+// color hex value
+#define DARK_GREEN (0x1a7f14)
+#define BRIGHT_GREEN (0x26c961)
+#define DARK_YELLOW (0xFFC000)
+#define BRIGHT_YELLOW (0xefff3d)
+#define DARK_PURPLE (0xA42C9E)
+#define BRIGHT_PURPLE (0xf53dff)
+#define GRAY (0x5b5b5b)
+
 lv_timer_t *update_data_timer;
+
+static void update_voc_display()
+{
+    char t[12] = {0};
 #ifndef LV_USE_GUIDER_SIMULATOR
-extern int32_t voc_index;
+    extern int32_t voc_index;
+    if (voc_index >= 0)
+        sprintf(t, "%li", voc_index);
+    else
+        sprintf(t, "----");
+    lv_label_set_text(guider_ui.main_screen_voc_value, t);
 #endif
+    // VOC 0~100 设置背景颜色
+    if (voc_index >= 0 && voc_index <= 100)
+    {
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_container, lv_color_hex(DARK_GREEN), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_bar, lv_color_hex(BRIGHT_GREEN), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    }
+    else if (voc_index >= 101 && voc_index <= 300)
+    {
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_container, lv_color_hex(DARK_YELLOW), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_bar, lv_color_hex(BRIGHT_YELLOW), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    }
+    else if (voc_index >= 301)
+    {
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_container, lv_color_hex(DARK_PURPLE), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_bar, lv_color_hex(BRIGHT_PURPLE), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    }
+    else
+    {
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_container, lv_color_hex(GRAY), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(guider_ui.main_screen_voc_bar, lv_color_hex(GRAY), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    }
+}
+
 void update_data_cb(lv_timer_t *timer)
 {
-    char t[5];
-#ifndef LV_USE_GUIDER_SIMULATOR
-    sprintf(t, "%ld", voc_index);
-#endif
-    lv_label_set_text(guider_ui.main_screen_voc_value, t);
+    update_voc_display();
 }
 
 void setup_scr_main_screen(lv_ui *ui)
@@ -48,7 +85,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->main_screen_temp_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_temp_container, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->main_screen_temp_container, 154, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_temp_container, lv_color_hex(0x1a7f14), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_temp_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_temp_container, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->main_screen_temp_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui->main_screen_temp_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -60,7 +97,7 @@ void setup_scr_main_screen(lv_ui *ui)
     ui->main_screen_temp_value = lv_label_create(ui->main_screen_temp_container);
     lv_obj_set_pos(ui->main_screen_temp_value, 15, 34);
     lv_obj_set_size(ui->main_screen_temp_value, 120, 40);
-    lv_label_set_text(ui->main_screen_temp_value, "22.0");
+    lv_label_set_text(ui->main_screen_temp_value, "----");
     lv_label_set_long_mode(ui->main_screen_temp_value, LV_LABEL_LONG_WRAP);
 
     // Write style for main_screen_temp_value, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -120,7 +157,7 @@ void setup_scr_main_screen(lv_ui *ui)
 
     // Write style for main_screen_temp_bar, Part: LV_PART_INDICATOR, State: LV_STATE_DEFAULT.
     lv_obj_set_style_bg_opa(ui->main_screen_temp_bar, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_temp_bar, lv_color_hex(0x2ac926), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_temp_bar, lv_color_hex(0x5b5b5b), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_temp_bar, LV_GRAD_DIR_NONE, LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_temp_bar, 10, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
@@ -134,7 +171,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->main_screen_co2_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_co2_container, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->main_screen_co2_container, 154, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_co2_container, lv_color_hex(0x1a7f14), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_co2_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_co2_container, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->main_screen_co2_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui->main_screen_co2_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -146,7 +183,7 @@ void setup_scr_main_screen(lv_ui *ui)
     ui->main_screen_co2_value = lv_label_create(ui->main_screen_co2_container);
     lv_obj_set_pos(ui->main_screen_co2_value, 15, 34);
     lv_obj_set_size(ui->main_screen_co2_value, 120, 40);
-    lv_label_set_text(ui->main_screen_co2_value, "220");
+    lv_label_set_text(ui->main_screen_co2_value, "----");
     lv_label_set_long_mode(ui->main_screen_co2_value, LV_LABEL_LONG_WRAP);
 
     // Write style for main_screen_co2_value, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -198,15 +235,15 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_bar_set_value(ui->main_screen_co2_bar, 100, LV_ANIM_OFF);
 
     // Write style for main_screen_co2_bar, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->main_screen_co2_bar, 167, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_co2_bar, lv_color_hex(0x26c961), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->main_screen_co2_bar, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_co2_bar, lv_color_hex(0x5b5b5b), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_co2_bar, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_co2_bar, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->main_screen_co2_bar, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Write style for main_screen_co2_bar, Part: LV_PART_INDICATOR, State: LV_STATE_DEFAULT.
     lv_obj_set_style_bg_opa(ui->main_screen_co2_bar, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_co2_bar, lv_color_hex(0x2ac926), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_co2_bar, lv_color_hex(0x5b5b5b), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_co2_bar, LV_GRAD_DIR_NONE, LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_co2_bar, 10, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
@@ -219,8 +256,8 @@ void setup_scr_main_screen(lv_ui *ui)
     // Write style for main_screen_humid_container, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_border_width(ui->main_screen_humid_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_humid_container, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui->main_screen_humid_container, 189, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_humid_container, lv_color_hex(0x0f4187), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->main_screen_humid_container, 154, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_humid_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_humid_container, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->main_screen_humid_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui->main_screen_humid_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -232,7 +269,7 @@ void setup_scr_main_screen(lv_ui *ui)
     ui->main_screen_humid_value = lv_label_create(ui->main_screen_humid_container);
     lv_obj_set_pos(ui->main_screen_humid_value, 15, 34);
     lv_obj_set_size(ui->main_screen_humid_value, 120, 40);
-    lv_label_set_text(ui->main_screen_humid_value, "100.0");
+    lv_label_set_text(ui->main_screen_humid_value, "----");
     lv_label_set_long_mode(ui->main_screen_humid_value, LV_LABEL_LONG_WRAP);
 
     // Write style for main_screen_humid_value, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -284,13 +321,15 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_bar_set_value(ui->main_screen_humid_bar, 100, LV_ANIM_OFF);
 
     // Write style for main_screen_humid_bar, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->main_screen_humid_bar, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->main_screen_humid_bar, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_humid_bar, lv_color_hex(0x5b5b5b), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->main_screen_humid_bar, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_humid_bar, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->main_screen_humid_bar, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Write style for main_screen_humid_bar, Part: LV_PART_INDICATOR, State: LV_STATE_DEFAULT.
     lv_obj_set_style_bg_opa(ui->main_screen_humid_bar, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_humid_bar, lv_color_hex(0x0CDCE7), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_humid_bar, lv_color_hex(0x5b5b5b), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_humid_bar, LV_GRAD_DIR_NONE, LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_humid_bar, 10, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
@@ -304,7 +343,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->main_screen_voc_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_voc_container, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->main_screen_voc_container, 154, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_voc_container, lv_color_hex(0x1a7f14), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_voc_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_voc_container, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->main_screen_voc_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui->main_screen_voc_container, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -316,7 +355,7 @@ void setup_scr_main_screen(lv_ui *ui)
     ui->main_screen_voc_value = lv_label_create(ui->main_screen_voc_container);
     lv_obj_set_pos(ui->main_screen_voc_value, 15, 34);
     lv_obj_set_size(ui->main_screen_voc_value, 120, 40);
-    lv_label_set_text(ui->main_screen_voc_value, "5");
+    lv_label_set_text(ui->main_screen_voc_value, "----");
     lv_label_set_long_mode(ui->main_screen_voc_value, LV_LABEL_LONG_WRAP);
 
     // Write style for main_screen_voc_value, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -368,15 +407,15 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_bar_set_value(ui->main_screen_voc_bar, 100, LV_ANIM_OFF);
 
     // Write style for main_screen_voc_bar, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->main_screen_voc_bar, 167, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_voc_bar, lv_color_hex(0x26c961), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->main_screen_voc_bar, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_voc_bar, lv_color_hex(0x2ac926), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_voc_bar, LV_GRAD_DIR_NONE, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_voc_bar, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->main_screen_voc_bar, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     // Write style for main_screen_voc_bar, Part: LV_PART_INDICATOR, State: LV_STATE_DEFAULT.
     lv_obj_set_style_bg_opa(ui->main_screen_voc_bar, 255, LV_PART_INDICATOR | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->main_screen_voc_bar, lv_color_hex(0x2ac926), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->main_screen_voc_bar, lv_color_hex(0x5b5b5b), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_voc_bar, LV_GRAD_DIR_NONE, LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_voc_bar, 10, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
