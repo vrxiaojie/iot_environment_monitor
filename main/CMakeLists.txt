@@ -17,4 +17,4 @@ idf_component_register( SRCS
                        "stcc4" 
                        "sgp4x" 
                        "bat_adc"
-                       INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/")
+                       INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/")

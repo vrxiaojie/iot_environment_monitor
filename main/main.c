@@ -32,6 +32,8 @@
 #include "lvgl.h"
 // LCD
 #include "backlight.h"
+
+#include "RTOS_tasks.h"
 static const char *TAG = "example";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +89,8 @@ static const char *TAG = "example";
 #define ENABLE_TOUCH_GT911 1
 #define I2C_MASTER_NUM I2C_NUM_0
 #if ENABLE_TOUCH_GT911
+
+i2c_master_bus_handle_t bus_handle;
 
 lv_ui guider_ui;
 static void lvgl_touch_cb(lv_indev_t *indev, lv_indev_data_t *data)
@@ -304,7 +308,7 @@ void app_main(void)
     // 初始化GT911触摸
 #if ENABLE_TOUCH_GT911
     // 初始化I2C
-    i2c_master_bus_handle_t bus_handle;
+
     ESP_ERROR_CHECK(i2c_master_init(&bus_handle));
     ESP_LOGI(TAG, "I2C initialized successfully");
 
@@ -362,4 +366,5 @@ void app_main(void)
     lv_indev_set_read_cb(indev, lvgl_touch_cb);
     ESP_LOGI(TAG, "Touch panel initialized successfully");
 #endif
+    xTaskCreate(sgp4x_task, "sgp4x_task", 16 * 1024, NULL, 5, NULL);
 }

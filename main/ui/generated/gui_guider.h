@@ -19,13 +19,6 @@ extern "C" {
 typedef struct
 {
   
-	lv_obj_t *setting_screen;
-	bool setting_screen_del;
-	lv_obj_t *setting_screen_wifi_icon_container;
-	lv_obj_t *setting_screen_wifi_icon;
-	lv_obj_t *setting_screen_backlight_container;
-	lv_obj_t *setting_screen_backlight_icon;
-	lv_obj_t *setting_screen_backlight_slider;
 	lv_obj_t *main_screen;
 	bool main_screen_del;
 	lv_obj_t *main_screen_temp_container;
@@ -48,6 +41,13 @@ typedef struct
 	lv_obj_t *main_screen_time_hour;
 	lv_obj_t *main_screen_time_minute;
 	lv_obj_t *main_screen_time_month_day;
+	lv_obj_t *setting_screen;
+	bool setting_screen_del;
+	lv_obj_t *setting_screen_wifi_icon_container;
+	lv_obj_t *setting_screen_wifi_icon;
+	lv_obj_t *setting_screen_backlight_container;
+	lv_obj_t *setting_screen_backlight_icon;
+	lv_obj_t *setting_screen_backlight_slider;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -75,8 +75,8 @@ void init_keyboard(lv_ui *ui);
 extern lv_ui guider_ui;
 
 
-void setup_scr_setting_screen(lv_ui *ui);
 void setup_scr_main_screen(lv_ui *ui);
+void setup_scr_setting_screen(lv_ui *ui);
 LV_IMAGE_DECLARE(_WIFI_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_backlight_RGB565A8_32x32);
 

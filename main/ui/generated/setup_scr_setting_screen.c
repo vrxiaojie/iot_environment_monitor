@@ -62,7 +62,7 @@ void setup_scr_setting_screen(lv_ui *ui)
 
     //Write codes setting_screen_backlight_container
     ui->setting_screen_backlight_container = lv_obj_create(ui->setting_screen);
-    lv_obj_set_pos(ui->setting_screen_backlight_container, 404, 29);
+    lv_obj_set_pos(ui->setting_screen_backlight_container, 404, 28);
     lv_obj_set_size(ui->setting_screen_backlight_container, 70, 220);
     lv_obj_set_scrollbar_mode(ui->setting_screen_backlight_container, LV_SCROLLBAR_MODE_OFF);
 

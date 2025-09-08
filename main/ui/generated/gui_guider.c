@@ -72,8 +72,8 @@ void ui_animation(void * var, uint32_t duration, int32_t delay, int32_t start_va
 void init_scr_del_flag(lv_ui *ui)
 {
 
-    ui->setting_screen_del = true;
     ui->main_screen_del = true;
+    ui->setting_screen_del = true;
 }
 
 void setup_bottom_layer(void)
@@ -86,8 +86,8 @@ void setup_ui(lv_ui *ui)
     setup_bottom_layer();
     init_scr_del_flag(ui);
     init_keyboard(ui);
-    setup_scr_setting_screen(ui);
-    lv_screen_load(ui->setting_screen);
+    setup_scr_main_screen(ui);
+    lv_screen_load(ui->main_screen);
 }
 
 void video_play(lv_ui *ui)
