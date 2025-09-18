@@ -34,6 +34,8 @@
 #include "backlight.h"
 
 #include "RTOS_tasks.h"
+
+#include "wifi.h"
 static const char *TAG = "example";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,9 +251,8 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
     ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
 
-    // 初始化完毕 开启背光 设置亮度(默认50%)
-    lcd_backlight_set_duty(50);
-
+    // 初始化完毕 开启背光 设置亮度(默认20%)
+    lcd_backlight_set_duty(20);
     ESP_LOGI(TAG, "Initialize LVGL library");
     lv_init();
     // create a lvgl display
@@ -299,7 +300,8 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, LVGL_TICK_PERIOD_MS * 1000));
 
     ESP_LOGI(TAG, "Create LVGL task");
-    xTaskCreate(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE, NULL, LVGL_TASK_PRIORITY, NULL);
+    xTaskCreatePinnedToCore(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE,
+                            NULL, LVGL_TASK_PRIORITY, NULL, 1);
 
     _lock_acquire(&lvgl_api_lock);
     events_init(&guider_ui);
@@ -320,7 +322,6 @@ void app_main(void)
     esp_lcd_touch_io_gt911_config_t tp_gt911_config = {
         .dev_addr = io_config.dev_addr,
     };
-
     // 配置触摸参数
     esp_lcd_touch_config_t tp_cfg = {
         .x_max = LCD_H_RES,
@@ -355,7 +356,6 @@ void app_main(void)
     {
         ESP_LOGI(TAG, "GT911 initialized successfully");
     }
-
     // 初始化LVGL输入设备 参考示例 spi_lcd_touch
     ESP_LOGI(TAG, "Initialize input device for LVGL");
     static lv_indev_t *indev;
