@@ -368,4 +368,6 @@ void app_main(void)
 #endif
     xTaskCreate(sgp4x_task, "sgp4x_task", 16 * 1024, NULL, 5, NULL);
     xTaskCreate(stcc4_task, "stcc4_task", 8 * 1024, NULL, 5, NULL);
+    // WiFi相关的初始化
+    wifi_init();
 }

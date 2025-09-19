@@ -30,7 +30,7 @@ void setup_scr_setting_screen(lv_ui *ui)
 
     //Write codes setting_screen_wifi_icon_container
     ui->setting_screen_wifi_icon_container = lv_obj_create(ui->setting_screen);
-    lv_obj_set_pos(ui->setting_screen_wifi_icon_container, 60, 106);
+    lv_obj_set_pos(ui->setting_screen_wifi_icon_container, 62, 53);
     lv_obj_set_size(ui->setting_screen_wifi_icon_container, 64, 64);
     lv_obj_set_scrollbar_mode(ui->setting_screen_wifi_icon_container, LV_SCROLLBAR_MODE_OFF);
 
@@ -114,6 +114,70 @@ void setup_scr_setting_screen(lv_ui *ui)
     //Write style for setting_screen_backlight_slider, Part: LV_PART_KNOB, State: LV_STATE_DEFAULT.
     lv_obj_set_style_bg_opa(ui->setting_screen_backlight_slider, 0, LV_PART_KNOB|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->setting_screen_backlight_slider, 8, LV_PART_KNOB|LV_STATE_DEFAULT);
+
+    //Write codes setting_screen_bluetooth_container
+    ui->setting_screen_bluetooth_container = lv_obj_create(ui->setting_screen);
+    lv_obj_set_pos(ui->setting_screen_bluetooth_container, 184, 53);
+    lv_obj_set_size(ui->setting_screen_bluetooth_container, 64, 64);
+    lv_obj_set_scrollbar_mode(ui->setting_screen_bluetooth_container, LV_SCROLLBAR_MODE_OFF);
+
+    //Write style for setting_screen_bluetooth_container, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->setting_screen_bluetooth_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->setting_screen_bluetooth_container, 48, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->setting_screen_bluetooth_container, 128, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->setting_screen_bluetooth_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->setting_screen_bluetooth_container, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->setting_screen_bluetooth_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->setting_screen_bluetooth_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->setting_screen_bluetooth_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->setting_screen_bluetooth_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->setting_screen_bluetooth_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes setting_screen_bluetooth_icon
+    ui->setting_screen_bluetooth_icon = lv_image_create(ui->setting_screen_bluetooth_container);
+    lv_obj_set_pos(ui->setting_screen_bluetooth_icon, 8, 8);
+    lv_obj_set_size(ui->setting_screen_bluetooth_icon, 48, 48);
+    lv_obj_add_flag(ui->setting_screen_bluetooth_icon, LV_OBJ_FLAG_CLICKABLE);
+    lv_image_set_src(ui->setting_screen_bluetooth_icon, &_bluetooth_RGB565A8_48x48);
+    lv_image_set_pivot(ui->setting_screen_bluetooth_icon, 50,50);
+    lv_image_set_rotation(ui->setting_screen_bluetooth_icon, 0);
+
+    //Write style for setting_screen_bluetooth_icon, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_image_recolor_opa(ui->setting_screen_bluetooth_icon, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_image_recolor(ui->setting_screen_bluetooth_icon, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_image_opa(ui->setting_screen_bluetooth_icon, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes setting_screen_power_save_container
+    ui->setting_screen_power_save_container = lv_obj_create(ui->setting_screen);
+    lv_obj_set_pos(ui->setting_screen_power_save_container, 62, 159);
+    lv_obj_set_size(ui->setting_screen_power_save_container, 64, 64);
+    lv_obj_set_scrollbar_mode(ui->setting_screen_power_save_container, LV_SCROLLBAR_MODE_OFF);
+
+    //Write style for setting_screen_power_save_container, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->setting_screen_power_save_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->setting_screen_power_save_container, 48, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->setting_screen_power_save_container, 128, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->setting_screen_power_save_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->setting_screen_power_save_container, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->setting_screen_power_save_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->setting_screen_power_save_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->setting_screen_power_save_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->setting_screen_power_save_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->setting_screen_power_save_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes setting_screen_power_save_icon
+    ui->setting_screen_power_save_icon = lv_image_create(ui->setting_screen_power_save_container);
+    lv_obj_set_pos(ui->setting_screen_power_save_icon, 9, 8);
+    lv_obj_set_size(ui->setting_screen_power_save_icon, 48, 48);
+    lv_obj_add_flag(ui->setting_screen_power_save_icon, LV_OBJ_FLAG_CLICKABLE);
+    lv_image_set_src(ui->setting_screen_power_save_icon, &_power_save_mode_RGB565A8_48x48);
+    lv_image_set_pivot(ui->setting_screen_power_save_icon, 50,50);
+    lv_image_set_rotation(ui->setting_screen_power_save_icon, 0);
+
+    //Write style for setting_screen_power_save_icon, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_image_recolor_opa(ui->setting_screen_power_save_icon, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_image_recolor(ui->setting_screen_power_save_icon, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_image_opa(ui->setting_screen_power_save_icon, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //The custom code of setting_screen.
 

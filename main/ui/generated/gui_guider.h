@@ -48,6 +48,21 @@ typedef struct
 	lv_obj_t *setting_screen_backlight_container;
 	lv_obj_t *setting_screen_backlight_icon;
 	lv_obj_t *setting_screen_backlight_slider;
+	lv_obj_t *setting_screen_bluetooth_container;
+	lv_obj_t *setting_screen_bluetooth_icon;
+	lv_obj_t *setting_screen_power_save_container;
+	lv_obj_t *setting_screen_power_save_icon;
+	lv_obj_t *wifi_setting_screen;
+	bool wifi_setting_screen_del;
+	lv_obj_t *wifi_setting_screen_wifi_container;
+	lv_obj_t *wifi_setting_screen_label_wifi;
+	lv_obj_t *wifi_setting_screen_wifi_switch;
+	lv_obj_t *wifi_setting_screen_wifi_scan_list;
+	lv_obj_t *wifi_connect_screen;
+	bool wifi_connect_screen_del;
+	lv_obj_t *wifi_connect_screen_wifi_container;
+	lv_obj_t *wifi_connect_screen_label_1;
+	lv_obj_t *wifi_connect_screen_wifi_scan_list;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -77,14 +92,19 @@ extern lv_ui guider_ui;
 
 void setup_scr_main_screen(lv_ui *ui);
 void setup_scr_setting_screen(lv_ui *ui);
+void setup_scr_wifi_setting_screen(lv_ui *ui);
+void setup_scr_wifi_connect_screen(lv_ui *ui);
 LV_IMAGE_DECLARE(_WIFI_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_backlight_RGB565A8_32x32);
+LV_IMAGE_DECLARE(_bluetooth_RGB565A8_48x48);
+LV_IMAGE_DECLARE(_power_save_mode_RGB565A8_48x48);
 
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_36)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
 LV_FONT_DECLARE(lv_font_xiaobiaosong_16)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_24)
+LV_FONT_DECLARE(lv_font_montserratMedium_12)
 
 
 #ifdef __cplusplus
