@@ -11,6 +11,8 @@ TaskHandle_t wifi_scan_task_handle = NULL;
 
 wifi_ap_record_t ap_info[16];
 
+esp_netif_t *sta_netif = NULL;
+
 static void print_auth_mode(int authmode)
 {
     switch (authmode)
@@ -132,7 +134,7 @@ static void print_cipher_type(int pairwise_cipher, int group_cipher)
 }
 
 void __attribute__((weak)) wifi_event_callback(void *arg, esp_event_base_t event_base,
-                                        int32_t event_id, void *event_data)
+                                               int32_t event_id, void *event_data)
 {
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_SCAN_DONE))
     {
@@ -166,15 +168,54 @@ void __attribute__((weak)) wifi_event_callback(void *arg, esp_event_base_t event
             ESP_LOGE(TAG, "Scan failed");
         }
     }
+    if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_CONNECTED))
+    {
+        ESP_LOGI(TAG, "WiFi connected");
+    }
+    if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
+    {
+        ESP_LOGI(TAG, "WiFi disconnected");
+    }
+}
+
+void __attribute__((weak)) wifi_connect_task(void *args)
+{
+    user_wifi_cfg *cfg = (user_wifi_cfg *)args;
+
+    wifi_config_t wifi_config = {
+        .sta = {
+            .ssid = "",
+            .password = "",
+        }};
+    if (cfg)
+    {
+        strlcpy((char *)wifi_config.sta.ssid, (const char *)cfg->ssid, sizeof(wifi_config.sta.ssid));
+        strlcpy((char *)wifi_config.sta.password, (const char *)cfg->password, sizeof(wifi_config.sta.password));
+    }
+
+    ESP_LOGI(TAG, "connecting... ssid: %s, password: %s", wifi_config.sta.ssid, wifi_config.sta.password);
+    if (sta_netif == NULL)
+    {
+        sta_netif = esp_netif_create_default_wifi_sta();
+        assert(sta_netif);
+    }
+
+    // wifi连接相关事件绑定
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &wifi_event_callback, NULL, NULL);
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
+    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
+    ESP_ERROR_CHECK(esp_wifi_connect());
+    vTaskDelete(NULL);
 }
 
 static void wifi_scan_task(void *args)
 {
-    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
-    assert(sta_netif);
+    if (sta_netif == NULL)
+    {
+        sta_netif = esp_netif_create_default_wifi_sta();
+        assert(sta_netif);
+    }
 
-    // wifi扫描结束后的回调函数绑定
-    esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_callback, NULL, NULL);
     while (1)
     {
         // 使用任务通知接收
@@ -216,6 +257,15 @@ void wifi_scan()
     }
 }
 
+void wifi_connect(user_wifi_cfg *cfg)
+{
+    BaseType_t xReturned = xTaskCreate(wifi_connect_task, "wifi_connect_task", 8 * 1024, (void *)cfg, 6, NULL);
+    if (xReturned != pdPASS)
+    {
+        ESP_LOGE(TAG, "Failed to create wifi_connect_task");
+    }
+}
+
 void wifi_init()
 {
     // 初始化wifi前需要初始化NVS
@@ -227,9 +277,17 @@ void wifi_init()
     }
     ESP_ERROR_CHECK(ret);
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+
+    ESP_ERROR_CHECK(esp_netif_init()); // 初始化TCP/IP栈
+    // 创建wifi扫描任务
     BaseType_t xReturned = xTaskCreate(wifi_scan_task, "wifi_scan_task", 8 * 1024, NULL, 15, &wifi_scan_task_handle);
-    if(xReturned != pdPASS)
+    if (xReturned != pdPASS)
     {
         ESP_LOGE(TAG, "Failed to create wifi_scan_task");
     }
+    // wifi连接相关事件绑定
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &wifi_event_callback, NULL, NULL);
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
+    // wifi扫描结束后的回调函数绑定
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &wifi_event_callback, NULL, NULL);
 }

@@ -186,6 +186,7 @@ static void lvgl_port_task(void *arg)
     }
 }
 
+esp_lcd_panel_handle_t panel_handle = NULL;
 void app_main(void)
 {
     // 初始化背光
@@ -193,7 +194,6 @@ void app_main(void)
     lcd_backlight_set_duty(0);
 
     ESP_LOGI(TAG, "Install RGB LCD panel driver");
-    esp_lcd_panel_handle_t panel_handle = NULL;
     esp_lcd_rgb_panel_config_t panel_config = {
         .data_width = DATA_BUS_WIDTH,
         .dma_burst_size = 64,
@@ -366,8 +366,8 @@ void app_main(void)
     lv_indev_set_read_cb(indev, lvgl_touch_cb);
     ESP_LOGI(TAG, "Touch panel initialized successfully");
 #endif
-    xTaskCreate(sgp4x_task, "sgp4x_task", 16 * 1024, NULL, 5, NULL);
-    xTaskCreate(stcc4_task, "stcc4_task", 8 * 1024, NULL, 5, NULL);
+    xTaskCreate(sgp4x_task, "sgp4x_task", 4 * 1024, NULL, 5, NULL);
+    xTaskCreate(stcc4_task, "stcc4_task", 4 * 1024, NULL, 5, NULL);
     // WiFi相关的初始化
     wifi_init();
 }

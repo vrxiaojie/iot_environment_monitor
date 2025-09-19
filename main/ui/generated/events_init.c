@@ -221,6 +221,7 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
     {
         lv_obj_t * status_obj = lv_event_get_target(e);
         int status = lv_obj_has_state(status_obj, LV_STATE_CHECKED) ? true : false;
+        lv_obj_remove_flag(guider_ui.wifi_setting_screen_wifi_scan_spinner, LV_OBJ_FLAG_HIDDEN);
 
         switch (status) {
         case (true):
@@ -246,7 +247,9 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
             {
                 lv_obj_clean(guider_ui.wifi_setting_screen_wifi_scan_list);
             }
+
 #endif
+            lv_obj_add_flag(guider_ui.wifi_setting_screen_wifi_scan_spinner, LV_OBJ_FLAG_HIDDEN);
             break;
         }
         default:
@@ -263,6 +266,47 @@ void events_init_wifi_setting_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->wifi_setting_screen, wifi_setting_screen_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->wifi_setting_screen_wifi_switch, wifi_setting_screen_wifi_switch_event_handler, LV_EVENT_ALL, ui);
+}
+
+static void wifi_connect_screen_conn_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        user_wifi_cfg *cfg = (user_wifi_cfg *)malloc(sizeof(user_wifi_cfg));
+        lv_memcpy(cfg->ssid, lv_label_get_text(guider_ui.wifi_connect_screen_ssid), 32);
+        lv_memcpy(cfg->password, lv_textarea_get_text(guider_ui.wifi_connect_screen_password_input), 64);
+        wifi_connect(cfg);
+        ui_load_scr_animation(&guider_ui, &guider_ui.wifi_setting_screen, guider_ui.wifi_setting_screen_del, &guider_ui.wifi_connect_screen_del, setup_scr_wifi_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+#endif
+
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void wifi_connect_screen_cancel_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.wifi_setting_screen, guider_ui.wifi_setting_screen_del, &guider_ui.wifi_connect_screen_del, setup_scr_wifi_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void events_init_wifi_connect_screen (lv_ui *ui)
+{
+    lv_obj_add_event_cb(ui->wifi_connect_screen_conn_btn, wifi_connect_screen_conn_btn_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->wifi_connect_screen_cancel_btn, wifi_connect_screen_cancel_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
 

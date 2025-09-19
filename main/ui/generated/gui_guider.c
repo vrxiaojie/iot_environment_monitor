@@ -88,8 +88,8 @@ void setup_ui(lv_ui *ui)
     setup_bottom_layer();
     init_scr_del_flag(ui);
     init_keyboard(ui);
-    setup_scr_wifi_setting_screen(ui);
-    lv_screen_load(ui->wifi_setting_screen);
+    setup_scr_wifi_connect_screen(ui);
+    lv_screen_load(ui->wifi_connect_screen);
 }
 
 void video_play(lv_ui *ui)
@@ -99,5 +99,8 @@ void video_play(lv_ui *ui)
 
 void init_keyboard(lv_ui *ui)
 {
-
+    ui->g_kb_top_layer = lv_keyboard_create(lv_layer_top());
+    lv_obj_add_event_cb(ui->g_kb_top_layer, kb_event_cb, LV_EVENT_ALL, NULL);
+    lv_obj_add_flag(ui->g_kb_top_layer, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_style_text_font(ui->g_kb_top_layer, &lv_font_SourceHanSerifSC_Regular_18, LV_PART_MAIN|LV_STATE_DEFAULT);
 }

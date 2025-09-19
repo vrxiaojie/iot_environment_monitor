@@ -57,12 +57,19 @@ typedef struct
 	lv_obj_t *wifi_setting_screen_wifi_container;
 	lv_obj_t *wifi_setting_screen_label_wifi;
 	lv_obj_t *wifi_setting_screen_wifi_switch;
+	lv_obj_t *wifi_setting_screen_wifi_scan_spinner;
 	lv_obj_t *wifi_setting_screen_wifi_scan_list;
 	lv_obj_t *wifi_connect_screen;
 	bool wifi_connect_screen_del;
 	lv_obj_t *wifi_connect_screen_wifi_container;
-	lv_obj_t *wifi_connect_screen_label_1;
-	lv_obj_t *wifi_connect_screen_wifi_scan_list;
+	lv_obj_t *wifi_connect_screen_ssid;
+	lv_obj_t *wifi_connect_screen_password_input;
+	lv_obj_t *wifi_connect_screen_cont_1;
+	lv_obj_t *wifi_connect_screen_conn_btn;
+	lv_obj_t *wifi_connect_screen_conn_btn_label;
+	lv_obj_t *wifi_connect_screen_cancel_btn;
+	lv_obj_t *wifi_connect_screen_cancel_btn_label;
+	lv_obj_t *g_kb_top_layer;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -105,6 +112,7 @@ LV_FONT_DECLARE(lv_font_xiaobiaosong_16)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_24)
 LV_FONT_DECLARE(lv_font_montserratMedium_12)
+LV_FONT_DECLARE(lv_font_SourceHanSerifSC_Regular_18)
 
 
 #ifdef __cplusplus

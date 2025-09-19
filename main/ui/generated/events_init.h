@@ -21,6 +21,7 @@ void events_init(lv_ui *ui);
 void events_init_main_screen(lv_ui *ui);
 void events_init_setting_screen(lv_ui *ui);
 void events_init_wifi_setting_screen(lv_ui *ui);
+void events_init_wifi_connect_screen(lv_ui *ui);
 
 #ifdef __cplusplus
 }
