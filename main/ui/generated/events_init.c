@@ -26,6 +26,19 @@ uint8_t backlight;
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "wifi.h"
 #endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+// 单实例网络信息消息框指针
+static lv_obj_t *network_info_msgbox = NULL;
+static lv_obj_t *network_info_msgbox_label = NULL;
+
+static void network_info_msgbox_event_cb(lv_event_t *e)
+{
+    if (lv_event_get_code(e) == LV_EVENT_DELETE) {
+        network_info_msgbox = NULL;
+        network_info_msgbox_label = NULL;
+    }
+}
+#endif
 
 static void main_screen_event_handler (lv_event_t *e)
 {
@@ -274,13 +287,22 @@ static void wifi_setting_screen_network_info_btn_event_handler (lv_event_t *e)
         wifi_get_ip_info_str(&wifi_ip_info);
         snprintf(t, 64, "IP: %s\nMask: %s\nGW: %s\n",
                  wifi_ip_info.ip, wifi_ip_info.netmask, wifi_ip_info.gw);
-        lv_obj_t *msgbox = lv_msgbox_create(guider_ui.wifi_setting_screen);
-        lv_obj_set_pos(msgbox, 95, 96);
-        lv_obj_set_size(msgbox, 280, 150);
-        lv_msgbox_add_title(msgbox, "Network Info");
-        lv_msgbox_add_text(msgbox, t);
-        lv_obj_align_to(msgbox, guider_ui.wifi_setting_screen, LV_ALIGN_TOP_LEFT, 95, 96);
-        lv_msgbox_add_close_button(msgbox);
+        // 若已经存在，则更新内容并置顶，不再重复创建
+        if (network_info_msgbox) {
+            if (network_info_msgbox_label) {
+                lv_label_set_text(network_info_msgbox_label, t);
+            }
+            lv_obj_move_foreground(network_info_msgbox);
+            break;
+        }
+        network_info_msgbox = lv_msgbox_create(guider_ui.wifi_setting_screen);
+        lv_obj_set_pos(network_info_msgbox, 95, 96);
+        lv_obj_set_size(network_info_msgbox, 280, 150);
+        lv_msgbox_add_title(network_info_msgbox, "Network Info");
+        network_info_msgbox_label = lv_msgbox_add_text(network_info_msgbox, t);
+        lv_obj_align_to(network_info_msgbox, guider_ui.wifi_setting_screen, LV_ALIGN_TOP_LEFT, 95, 96);
+        lv_msgbox_add_close_button(network_info_msgbox);
+        lv_obj_add_event_cb(network_info_msgbox, network_info_msgbox_event_cb, LV_EVENT_DELETE, NULL);
 #endif
         break;
     }
