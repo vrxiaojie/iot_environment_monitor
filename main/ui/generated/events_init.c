@@ -194,13 +194,13 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
         case LV_DIR_LEFT:
         {
             lv_indev_wait_release(lv_indev_active());
-            ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 300, 0, false, true);
+            ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
             break;
         }
         case LV_DIR_RIGHT:
         {
             lv_indev_wait_release(lv_indev_active());
-            ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 300, 0, false, true);
+            ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
             break;
         }
         default:
@@ -262,10 +262,38 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
     }
 }
 
+static void wifi_setting_screen_network_info_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        char t[64];
+        wifi_ip_info_t wifi_ip_info;
+        wifi_get_ip_info_str(&wifi_ip_info);
+        snprintf(t, 64, "IP: %s\nMask: %s\nGW: %s\n",
+                 wifi_ip_info.ip, wifi_ip_info.netmask, wifi_ip_info.gw);
+        lv_obj_t *msgbox = lv_msgbox_create(guider_ui.wifi_setting_screen);
+        lv_obj_set_pos(msgbox, 95, 96);
+        lv_obj_set_size(msgbox, 280, 150);
+        lv_msgbox_add_title(msgbox, "Network Info");
+        lv_msgbox_add_text(msgbox, t);
+        lv_obj_align_to(msgbox, guider_ui.wifi_setting_screen, LV_ALIGN_TOP_LEFT, 95, 96);
+        lv_msgbox_add_close_button(msgbox);
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void events_init_wifi_setting_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->wifi_setting_screen, wifi_setting_screen_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->wifi_setting_screen_wifi_switch, wifi_setting_screen_wifi_switch_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->wifi_setting_screen_network_info_btn, wifi_setting_screen_network_info_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
 static void wifi_connect_screen_conn_btn_event_handler (lv_event_t *e)
@@ -279,7 +307,7 @@ static void wifi_connect_screen_conn_btn_event_handler (lv_event_t *e)
         lv_memcpy(cfg->ssid, lv_label_get_text(guider_ui.wifi_connect_screen_ssid), 32);
         lv_memcpy(cfg->password, lv_textarea_get_text(guider_ui.wifi_connect_screen_password_input), 64);
         wifi_connect(cfg);
-        ui_load_scr_animation(&guider_ui, &guider_ui.wifi_setting_screen, guider_ui.wifi_setting_screen_del, &guider_ui.wifi_connect_screen_del, setup_scr_wifi_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+        ui_load_scr_animation(&guider_ui, &guider_ui.wifi_setting_screen, guider_ui.wifi_setting_screen_del, &guider_ui.wifi_connect_screen_del, setup_scr_wifi_setting_screen, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 200, 0, false, true);
 #endif
 
         break;

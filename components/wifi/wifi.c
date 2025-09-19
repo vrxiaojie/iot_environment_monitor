@@ -13,6 +13,8 @@ wifi_ap_record_t ap_info[16];
 
 esp_netif_t *sta_netif = NULL;
 
+uint8_t wifi_sta_status = WIFI_DISCONNECTED;
+
 static void print_auth_mode(int authmode)
 {
     switch (authmode)
@@ -290,4 +292,17 @@ void wifi_init()
     esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
     // wifi扫描结束后的回调函数绑定
     esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &wifi_event_callback, NULL, NULL);
+}
+
+void wifi_get_ip_info_str(wifi_ip_info_t* wifi_ip_info)
+{
+    if (sta_netif != NULL)
+    {
+        esp_netif_ip_info_t *netif_ip_info = malloc(sizeof(esp_netif_ip_info_t));
+        esp_netif_get_ip_info(sta_netif, netif_ip_info);
+        sprintf(wifi_ip_info->ip, IPSTR, IP2STR(&netif_ip_info->ip));
+        sprintf(wifi_ip_info->netmask, IPSTR, IP2STR(&netif_ip_info->netmask));
+        sprintf(wifi_ip_info->gw, IPSTR, IP2STR(&netif_ip_info->gw));
+        free(netif_ip_info);
+    }
 }

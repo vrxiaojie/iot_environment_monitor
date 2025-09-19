@@ -21,9 +21,7 @@
 #include "esp_lcd_panel_rgb.h"
 
 #define TAG "lvgl_wifi_setup"
-
 extern esp_lcd_panel_handle_t panel_handle;
-
 // SSID选择回调函数
 static void ssid_select_cb(lv_event_t *e)
 {
@@ -69,9 +67,15 @@ static void add_wifi_item_to_list(const char *ssid, int8_t rssi, wifi_auth_mode_
 
 void wifi_add_list_task(void *args)
 {
-    uint16_t number = 16; // 最多获取16个WIFI
+    uint16_t number = 16;
+
     // 清空之前的列表
     clear_wifi_list();
+
+    /* 获取wifi扫描结果 */
+    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&number));
+    number = number > 16 ? 16 : number; // 限制最大数量为16
+    ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
 
     // 将扫描到的WiFi添加到列表中
     for (int i = 0; i < number; i++)
@@ -79,8 +83,14 @@ void wifi_add_list_task(void *args)
         ESP_LOGI(TAG, "SSID \t\t%s", ap_info[i].ssid);
         ESP_LOGI(TAG, "RSSI \t\t%d", ap_info[i].rssi);
 
-        // 添加到UI列表
         add_wifi_item_to_list((char *)ap_info[i].ssid, ap_info[i].rssi, ap_info[i].authmode);
+
+        // 主动让出CPU，避免长时间占用导致看门狗触发
+        if ((i & 1) == 0) {
+            vTaskDelay(1);
+        } else {
+            taskYIELD();
+        }
     }
     lv_obj_add_flag(guider_ui.wifi_setting_screen_wifi_scan_spinner, LV_OBJ_FLAG_HIDDEN); // 隐藏加载动画
     ESP_LOGI(TAG, "WiFi scan results updated in UI");
@@ -92,17 +102,11 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
 {
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_SCAN_DONE))
     {
-        uint16_t number = 16; // 最多获取16个WIFI
-        uint16_t ap_count = 0;
         wifi_event_sta_scan_done_t *scan_done = (wifi_event_sta_scan_done_t *)event_data;
         if (scan_done->status == 0)
         {
             memset(ap_info, 0, sizeof(ap_info));
-            /* 获取wifi扫描结果 */
-            ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
-            ESP_ERROR_CHECK(esp_wifi_scan_get_ap_num(&ap_count));
-            ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
-            xTaskCreate(wifi_add_list_task, "wifi_add_list_task", 16 * 1024, NULL, 3, NULL);
+            xTaskCreatePinnedToCore(wifi_add_list_task, "wifi_add_list_task", 16 * 1024, NULL, 3, NULL, 1);
         }
         else
         {
@@ -111,11 +115,13 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
     }
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_CONNECTED))
     {
+        wifi_sta_status = WIFI_CONNECTED;
         ESP_LOGI(TAG, "WiFi connected");
         esp_lcd_rgb_panel_restart(panel_handle);
     }
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
     {
+        wifi_sta_status = WIFI_DISCONNECTED;
         ESP_LOGI(TAG, "WiFi disconnected");
         esp_lcd_rgb_panel_restart(panel_handle);
     }
@@ -223,6 +229,52 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
     lv_obj_set_style_arc_opa(ui->wifi_setting_screen_wifi_scan_spinner, 123, LV_PART_INDICATOR|LV_STATE_DEFAULT);
     lv_obj_set_style_arc_color(ui->wifi_setting_screen_wifi_scan_spinner, lv_color_hex(0xffffff), LV_PART_INDICATOR|LV_STATE_DEFAULT);
     lv_obj_set_style_arc_rounded(ui->wifi_setting_screen_wifi_scan_spinner, true, LV_PART_INDICATOR|LV_STATE_DEFAULT);
+
+    //Write codes wifi_setting_screen_network_info_btn
+    ui->wifi_setting_screen_network_info_btn = lv_button_create(ui->wifi_setting_screen_wifi_container);
+    lv_obj_set_pos(ui->wifi_setting_screen_network_info_btn, 210, 5);
+    lv_obj_set_size(ui->wifi_setting_screen_network_info_btn, 80, 30);
+    ui->wifi_setting_screen_network_info_btn_label = lv_label_create(ui->wifi_setting_screen_network_info_btn);
+    lv_label_set_text(ui->wifi_setting_screen_network_info_btn_label, "网络信息");
+    lv_label_set_long_mode(ui->wifi_setting_screen_network_info_btn_label, LV_LABEL_LONG_WRAP);
+    lv_obj_align(ui->wifi_setting_screen_network_info_btn_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_pad_all(ui->wifi_setting_screen_network_info_btn, 0, LV_STATE_DEFAULT);
+    lv_obj_set_width(ui->wifi_setting_screen_network_info_btn_label, LV_PCT(100));
+
+    //Write style for wifi_setting_screen_network_info_btn, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->wifi_setting_screen_network_info_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->wifi_setting_screen_network_info_btn, lv_color_hex(0x0f4187), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->wifi_setting_screen_network_info_btn, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->wifi_setting_screen_network_info_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->wifi_setting_screen_network_info_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->wifi_setting_screen_network_info_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->wifi_setting_screen_network_info_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_setting_screen_network_info_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->wifi_setting_screen_network_info_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->wifi_setting_screen_network_info_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes wifi_setting_screen_connect_status_label
+    ui->wifi_setting_screen_connect_status_label = lv_label_create(ui->wifi_setting_screen_wifi_container);
+    lv_obj_set_pos(ui->wifi_setting_screen_connect_status_label, 110, 12);
+    lv_obj_set_size(ui->wifi_setting_screen_connect_status_label, 89, 22);
+    lv_label_set_text(ui->wifi_setting_screen_connect_status_label, "未连接");
+    lv_label_set_long_mode(ui->wifi_setting_screen_connect_status_label, LV_LABEL_LONG_WRAP);
+
+    //Write style for wifi_setting_screen_connect_status_label, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->wifi_setting_screen_connect_status_label, lv_color_hex(0xff7300), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_setting_screen_connect_status_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->wifi_setting_screen_connect_status_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->wifi_setting_screen_connect_status_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write codes wifi_setting_screen_wifi_scan_list
     ui->wifi_setting_screen_wifi_scan_list = lv_list_create(ui->wifi_setting_screen);
