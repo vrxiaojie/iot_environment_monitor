@@ -1,4 +1,4 @@
-file(GLOB RTOS_TASK_SRCS "RTOS_tasks/*.c")
+file(GLOB RTOS_TASK_SRCS "main.c" "RTOS_tasks/*.c")
 file(GLOB UI_SRCS_CUSTOM "ui/custom/*.c")
 file(GLOB UI_SRCS_GEN "ui/generated/*.c")
 file(GLOB UI_SRCS_IMAGE "ui/generated/images/*.c")
@@ -17,4 +17,5 @@ idf_component_register( SRCS
                        "stcc4" 
                        "sgp4x" 
                        "bat_adc"
+                       "wifi"
                        INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/")
