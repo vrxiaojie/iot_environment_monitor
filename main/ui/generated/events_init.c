@@ -297,11 +297,13 @@ static void wifi_setting_screen_network_info_btn_event_handler (lv_event_t *e)
     case LV_EVENT_CLICKED:
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
-        char t[64];
+        char t[96];
         wifi_ip_info_t wifi_ip_info;
+        wifi_config_t wifi_config;
+        esp_wifi_get_config(ESP_IF_WIFI_STA, &wifi_config);
         wifi_get_ip_info_str(&wifi_ip_info);
-        snprintf(t, 64, "IP: %s\nMask: %s\nGW: %s\n",
-                 wifi_ip_info.ip, wifi_ip_info.netmask, wifi_ip_info.gw);
+        snprintf(t, 96, "%s\nIP: %s\nMask: %s\nGW: %s\n",
+                 wifi_config.sta.ssid, wifi_ip_info.ip, wifi_ip_info.netmask, wifi_ip_info.gw);
         // 若已经存在，则更新内容并置顶，不再重复创建
         if (network_info_msgbox) {
             if (network_info_msgbox_label) {
