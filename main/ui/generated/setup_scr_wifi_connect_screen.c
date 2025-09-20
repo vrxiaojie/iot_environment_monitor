@@ -48,11 +48,10 @@ void wifi_connect_task(void *args)
         sta_netif = esp_netif_create_default_wifi_sta();
         assert(sta_netif);
     }
-
+    esp_lcd_rgb_panel_set_pclk(panel_handle, 5 * 1000 * 1000);  // 连接wifi前临时降低刷新率防止屏幕偏移
+    vTaskDelay(pdMS_TO_TICKS(20)); // 延时20ms 等待屏幕刷完一帧
     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_connect());
-    vTaskDelay(pdMS_TO_TICKS(100));
-    esp_lcd_rgb_panel_restart(panel_handle); // 延时重置LCD，解决显示偏移问题
     vTaskDelete(NULL);
 }
 #endif
