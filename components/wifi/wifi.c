@@ -240,7 +240,13 @@ void wifi_start()
 
 void wifi_stop()
 {
+    wifi_sta_status = WIFI_STOPPED;
     ESP_ERROR_CHECK(esp_wifi_stop());
+}
+
+void wifi_disconnect(void)
+{
+    ESP_ERROR_CHECK(esp_wifi_disconnect());
 }
 
 void wifi_scan()
@@ -264,6 +270,25 @@ void wifi_connect(user_wifi_cfg *cfg)
     {
         ESP_LOGE(TAG, "Failed to create wifi_connect_task");
     }
+}
+
+bool wifi_connect_to_saved_ap(void)
+{
+    // 连接到上次连接的wifi
+    wifi_config_t wifi_config = {};
+    ESP_ERROR_CHECK(esp_wifi_get_config(WIFI_IF_STA, &wifi_config));
+    if (strlen((const char *)wifi_config.sta.ssid) == 0)
+    {
+        ESP_LOGW(TAG, "No saved WiFi configuration found");
+        return false;
+    }
+    ESP_LOGI(TAG, "Connecting to saved WiFi: %s", wifi_config.sta.ssid);
+    BaseType_t xReturned = xTaskCreate(wifi_connect_task, "wifi_connect_task", 8 * 1024, (void *)&wifi_config.sta, 6, NULL);
+    if (xReturned != pdPASS)
+    {
+        ESP_LOGE(TAG, "Failed to create wifi_connect_task");
+    }
+    return true;
 }
 
 void wifi_init()
