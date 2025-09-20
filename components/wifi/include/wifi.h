@@ -22,6 +22,7 @@ enum WIFISTATUS{
     WIFI_CONNECTED,
     WIFI_FAILED,
     WIFI_SCANNING,
+    WIFI_STOPPED,
 };
 
 extern wifi_ap_record_t ap_info[16];
@@ -33,4 +34,6 @@ void wifi_start(void);
 void wifi_stop(void);
 void wifi_scan(void);
 void wifi_connect(user_wifi_cfg *cfg);
+void wifi_disconnect(void);
 void wifi_get_ip_info_str(wifi_ip_info_t* wifi_ip_info);
+bool wifi_connect_to_saved_ap(void);

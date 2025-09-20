@@ -13,7 +13,7 @@
 #include "events_init.h"
 #include "widgets_init.h"
 #include "custom.h"
-#ifndef LV_USE_GUIDER_SIMULATOR // wifi连接页面专用自定义代码
+#ifndef LV_USE_GUIDER_SIMULATOR
 #include "esp_event.h"
 #include "wifi.h"
 #include "esp_err.h"

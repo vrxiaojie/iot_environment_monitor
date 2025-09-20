@@ -81,11 +81,24 @@ static void wifi_add_list_task(void *args)
     number = number > 16 ? 16 : number; // 限制最大数量为16
     ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
 
+    // 获取上一次连接的WIFI名
+    char last_connected_ssid[32] = {0};
+    wifi_config_t wifi_config = {};
+    ESP_ERROR_CHECK(esp_wifi_get_config(WIFI_IF_STA, &wifi_config));
+    strlcpy(last_connected_ssid, (const char *)wifi_config.sta.ssid, sizeof(last_connected_ssid));
+    bool last_ssid_found = false;
+
     // 将扫描到的WiFi添加到列表中
     for (int i = 0; i < number; i++)
     {
         ESP_LOGI(TAG, "SSID \t\t%s", ap_info[i].ssid);
         ESP_LOGI(TAG, "RSSI \t\t%d", ap_info[i].rssi);
+
+        // 如果列表中有上一次连接的WIFI，则在扫描完成后尝试连接
+        if (strcmp((const char *)ap_info[i].ssid, last_connected_ssid) == 0)
+        {
+            last_ssid_found = true;
+        }
 
         add_wifi_item_to_list((char *)ap_info[i].ssid, ap_info[i].rssi, ap_info[i].authmode);
 
@@ -99,6 +112,11 @@ static void wifi_add_list_task(void *args)
     _lock_acquire(&lvgl_api_lock);
     lv_obj_add_flag(guider_ui.wifi_setting_screen_wifi_scan_spinner, LV_OBJ_FLAG_HIDDEN); // 隐藏加载动画
     _lock_release(&lvgl_api_lock);
+    // 如果找到了上次连接的WIFI，则尝试连接
+    if (last_ssid_found)
+    {
+        wifi_connect_to_saved_ap();
+    }
     ESP_LOGI(TAG, "WiFi scan results updated in UI");
     vTaskDelete(NULL);
 }
@@ -111,13 +129,13 @@ static void wifi_status_change_task(void *args)
     {
         if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY))
         {
-            if (wifi_sta_status == WIFI_CONNECTED)
+            if (wifi_sta_status == WIFI_CONNECTED && guider_ui.wifi_setting_screen_connect_status_label)
             {
                 _lock_acquire(&lvgl_api_lock);
                 lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0x26c961), LV_PART_MAIN);
                 _lock_release(&lvgl_api_lock);
             }
-            else if (wifi_sta_status == WIFI_DISCONNECTED)
+            else if (wifi_sta_status == WIFI_DISCONNECTED && guider_ui.wifi_setting_screen_connect_status_label)
             {
                 _lock_acquire(&lvgl_api_lock);
                 lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
@@ -130,6 +148,7 @@ static void wifi_status_change_task(void *args)
 void wifi_event_callback(void *arg, esp_event_base_t event_base,
                          int32_t event_id, void *event_data)
 {
+    static uint8_t retry_cnt = 0;
     BaseType_t yiled = pdFALSE;
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_SCAN_DONE))
     {
@@ -146,26 +165,45 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
     }
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_CONNECTED))
     {
+        retry_cnt = 0;
         wifi_sta_status = WIFI_CONNECTED;
         ESP_LOGI(TAG, "WiFi connected");
         if(wifi_status_change_task_handle == NULL) {
             xTaskCreatePinnedToCore(wifi_status_change_task, "wifi_status_change_task", 2 * 1024, NULL, 3, &wifi_status_change_task_handle, 1);
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
-        }    
-        else{
+        }
+        else {
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
         }
         esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
     }
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
     {
+        // 重连尝试1次
+        if (retry_cnt < 1 && wifi_sta_status != WIFI_STOPPED)
+        {
+            retry_cnt++;
+            esp_lcd_rgb_panel_set_pclk(panel_handle, 5 * 1000 * 1000); // 连接wifi前临时降低刷新率防止屏幕偏移
+            vTaskDelay(pdMS_TO_TICKS(20));                             // 延时20ms 等待屏幕刷完一帧
+            ESP_ERROR_CHECK(esp_wifi_connect());
+        }
+        else if (wifi_sta_status == WIFI_STOPPED) // WIFI功能已关闭
+        {
+            retry_cnt = 0;
+        }
+        else
+        {
+            retry_cnt = 0;
+            ESP_LOGI(TAG, "WiFi reconnect failed after 2 attempts");
+        }
+
         wifi_sta_status = WIFI_DISCONNECTED;
         ESP_LOGI(TAG, "WiFi disconnected");
         if(wifi_status_change_task_handle == NULL) {
             xTaskCreatePinnedToCore(wifi_status_change_task, "wifi_status_change_task", 2 * 1024, NULL, 3, &wifi_status_change_task_handle, 1);
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
         }
-        else{
+        else {
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
         }
         esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);

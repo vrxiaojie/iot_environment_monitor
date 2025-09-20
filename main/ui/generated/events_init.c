@@ -19,6 +19,11 @@ uint8_t wifi_status = 0;
 uint8_t bluetooth_status = 0;
 uint8_t powerSaveMode_status = 0;
 #ifndef LV_USE_GUIDER_SIMULATOR
+#include "esp_lcd_panel_rgb.h"
+
+extern esp_lcd_panel_handle_t panel_handle;
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
 #include "backlight.h"
 
 uint8_t backlight;
@@ -140,6 +145,7 @@ static void setting_screen_wifi_icon_event_handler (lv_event_t *e)
             wifi_status = 1;
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_start();
+            wifi_connect_to_saved_ap();
 #endif
         } else if (wifi_status == 1) {
             lv_obj_set_style_image_recolor(guider_ui.setting_screen_wifi_icon, lv_color_hex(0xffffff), LV_PART_MAIN);
@@ -149,6 +155,7 @@ static void setting_screen_wifi_icon_event_handler (lv_event_t *e)
 
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_stop();
+            esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
 #endif
         }
         break;
@@ -193,6 +200,14 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
     switch (code) {
     case LV_EVENT_SCREEN_LOADED:
     {
+        if (wifi_sta_status == WIFI_CONNECTED)
+        {
+            lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0x26c961), LV_PART_MAIN);
+        }
+        else if (wifi_sta_status == WIFI_DISCONNECTED )
+        {
+            lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
+        }
         if (wifi_status == 0) {
             lv_obj_clear_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
         } else if (wifi_status == 1) {
@@ -260,7 +275,7 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
             {
                 lv_obj_clean(guider_ui.wifi_setting_screen_wifi_scan_list);
             }
-
+            esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
 #endif
             lv_obj_add_flag(guider_ui.wifi_setting_screen_wifi_scan_spinner, LV_OBJ_FLAG_HIDDEN);
             break;
