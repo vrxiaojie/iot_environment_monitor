@@ -203,14 +203,12 @@ void __attribute__((weak)) wifi_connect_task(void *args)
     }
 
     // wifi连接相关事件绑定
-    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &wifi_event_callback, NULL, NULL);
-    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_connect());
     vTaskDelete(NULL);
 }
 
-static void wifi_scan_task(void *args)
+void __attribute__((weak)) wifi_scan_task(void *args)
 {
     if (sta_netif == NULL)
     {
@@ -223,7 +221,7 @@ static void wifi_scan_task(void *args)
         // 使用任务通知接收
         if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == 1)
         {
-            vTaskDelay(pdMS_TO_TICKS(200)); // 延时1秒，等待wifi启动完成
+            vTaskDelay(pdMS_TO_TICKS(50)); 
             // 开始扫描
             ESP_ERROR_CHECK(esp_wifi_scan_start(NULL, false)); // false: 异步扫描，扫描完成后会触发 WIFI_EVENT_SCAN_DONE 事件
             ESP_LOGI(TAG, "Started wifi scan");
@@ -294,7 +292,7 @@ void wifi_init()
     esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &wifi_event_callback, NULL, NULL);
 }
 
-void wifi_get_ip_info_str(wifi_ip_info_t* wifi_ip_info)
+void wifi_get_ip_info_str(wifi_ip_info_t *wifi_ip_info)
 {
     if (sta_netif != NULL)
     {

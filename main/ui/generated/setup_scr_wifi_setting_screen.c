@@ -22,6 +22,7 @@
 
 #define TAG "lvgl_wifi_setup"
 extern esp_lcd_panel_handle_t panel_handle;
+extern _lock_t lvgl_api_lock; // LVGL API锁
 // SSID选择回调函数
 static void ssid_select_cb(lv_event_t *e)
 {
@@ -40,7 +41,9 @@ static void clear_wifi_list(void)
 {
     if (guider_ui.wifi_setting_screen_wifi_scan_list)
     {
+        _lock_acquire(&lvgl_api_lock);
         lv_obj_clean(guider_ui.wifi_setting_screen_wifi_scan_list);
+        _lock_release(&lvgl_api_lock);
         ESP_LOGI(TAG, "WiFi list cleared");
     }
 }
@@ -51,6 +54,7 @@ static void add_wifi_item_to_list(const char *ssid, int8_t rssi, wifi_auth_mode_
     // 创建WiFi项文本，包含SSID和信号强度
     char wifi_item_text[64];
     snprintf(wifi_item_text, sizeof(wifi_item_text), "%s (%ddBm)", ssid, rssi);
+    _lock_acquire(&lvgl_api_lock);
     // 添加按钮到列表
     lv_obj_t *btn = lv_list_add_button(guider_ui.wifi_setting_screen_wifi_scan_list, LV_SYMBOL_WIFI, wifi_item_text);
     // 设置按钮文本样式
@@ -61,11 +65,11 @@ static void add_wifi_item_to_list(const char *ssid, int8_t rssi, wifi_auth_mode_
     lv_obj_set_style_radius(btn, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
     // 为按钮添加点击事件
     lv_obj_add_event_cb(btn, ssid_select_cb, LV_EVENT_ALL, (void *)ssid);
-
+    _lock_release(&lvgl_api_lock);
     ESP_LOGI(TAG, "Added WiFi item: %s", wifi_item_text);
 }
 
-void wifi_add_list_task(void *args)
+static void wifi_add_list_task(void *args)
 {
     uint16_t number = 16;
 
@@ -92,14 +96,43 @@ void wifi_add_list_task(void *args)
             taskYIELD();
         }
     }
+    _lock_acquire(&lvgl_api_lock);
     lv_obj_add_flag(guider_ui.wifi_setting_screen_wifi_scan_spinner, LV_OBJ_FLAG_HIDDEN); // 隐藏加载动画
+    _lock_release(&lvgl_api_lock);
     ESP_LOGI(TAG, "WiFi scan results updated in UI");
     vTaskDelete(NULL);
+}
+
+// 连接成功后更新状态标签的任务
+TaskHandle_t wifi_status_change_task_handle = NULL;
+static void wifi_status_change_task(void *args)
+{
+    while (1)
+    {
+        if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY))
+        {
+            if (wifi_sta_status == WIFI_CONNECTED)
+            {
+                _lock_acquire(&lvgl_api_lock);
+                lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0x26c961), LV_PART_MAIN);
+                _lock_release(&lvgl_api_lock);
+            }
+            else if (wifi_sta_status == WIFI_DISCONNECTED)
+            {
+                _lock_acquire(&lvgl_api_lock);
+                lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
+                _lock_release(&lvgl_api_lock);
+            }
+            vTaskDelay(pdMS_TO_TICKS(200));
+            esp_lcd_rgb_panel_restart(panel_handle);
+        }
+    }
 }
 
 void wifi_event_callback(void *arg, esp_event_base_t event_base,
                          int32_t event_id, void *event_data)
 {
+    BaseType_t yiled = pdFALSE;
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_SCAN_DONE))
     {
         wifi_event_sta_scan_done_t *scan_done = (wifi_event_sta_scan_done_t *)event_data;
@@ -117,13 +150,25 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
     {
         wifi_sta_status = WIFI_CONNECTED;
         ESP_LOGI(TAG, "WiFi connected");
-        esp_lcd_rgb_panel_restart(panel_handle);
+        if(wifi_status_change_task_handle == NULL) {
+            xTaskCreatePinnedToCore(wifi_status_change_task, "wifi_status_change_task", 2 * 1024, NULL, 3, &wifi_status_change_task_handle, 1);
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+        }    
+        else{
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+        }
     }
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
     {
         wifi_sta_status = WIFI_DISCONNECTED;
         ESP_LOGI(TAG, "WiFi disconnected");
-        esp_lcd_rgb_panel_restart(panel_handle);
+        if(wifi_status_change_task_handle == NULL) {
+            xTaskCreatePinnedToCore(wifi_status_change_task, "wifi_status_change_task", 2 * 1024, NULL, 3, &wifi_status_change_task_handle, 1);
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+        }
+        else{
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+        }
     }
 }
 #endif
@@ -255,15 +300,15 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
 
     //Write codes wifi_setting_screen_connect_status_label
     ui->wifi_setting_screen_connect_status_label = lv_label_create(ui->wifi_setting_screen_wifi_container);
-    lv_obj_set_pos(ui->wifi_setting_screen_connect_status_label, 110, 12);
+    lv_obj_set_pos(ui->wifi_setting_screen_connect_status_label, 109, 12);
     lv_obj_set_size(ui->wifi_setting_screen_connect_status_label, 89, 22);
-    lv_label_set_text(ui->wifi_setting_screen_connect_status_label, "未连接");
+    lv_label_set_text(ui->wifi_setting_screen_connect_status_label, "" LV_SYMBOL_WIFI " ");
     lv_label_set_long_mode(ui->wifi_setting_screen_connect_status_label, LV_LABEL_LONG_WRAP);
 
     //Write style for wifi_setting_screen_connect_status_label, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_border_width(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(ui->wifi_setting_screen_connect_status_label, lv_color_hex(0xff7300), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui->wifi_setting_screen_connect_status_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_setting_screen_connect_status_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);

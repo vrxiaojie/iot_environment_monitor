@@ -146,7 +146,7 @@ static esp_err_t i2c_master_init(i2c_master_bus_handle_t *bus_handle)
 #define LVGL_TASK_MIN_DELAY_MS 1000 / CONFIG_FREERTOS_HZ
 
 // LVGL library is not thread-safe, this example will call LVGL APIs from different tasks, so use a mutex to protect it
-static _lock_t lvgl_api_lock;
+_lock_t lvgl_api_lock;
 
 extern void lvgl_demo_ui(lv_display_t *disp);
 
