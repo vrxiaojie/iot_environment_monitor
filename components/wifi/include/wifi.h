@@ -37,3 +37,4 @@ void wifi_connect(user_wifi_cfg *cfg);
 void wifi_disconnect(void);
 void wifi_get_ip_info_str(wifi_ip_info_t* wifi_ip_info);
 bool wifi_connect_to_saved_ap(void);
+bool is_wifi_connected(void);

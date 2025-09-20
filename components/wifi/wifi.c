@@ -329,3 +329,12 @@ void wifi_get_ip_info_str(wifi_ip_info_t *wifi_ip_info)
         free(netif_ip_info);
     }
 }
+
+bool is_wifi_connected(void)
+{
+    if (sta_netif == NULL)
+    {
+        return false;
+    }
+    return esp_netif_is_netif_up(sta_netif);
+}
