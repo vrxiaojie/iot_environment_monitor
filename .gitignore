@@ -1,0 +1,10 @@
+.vscode/
+.devcontainer/
+.clangd
+dependencies.lock
+managed_components/
+build/
+main/ui/generated/MicroPython
+main/ui/generated/images/mergeBinFile.bin
+main/ui/generated/images/images_md5.json
+sdkconfig.old
