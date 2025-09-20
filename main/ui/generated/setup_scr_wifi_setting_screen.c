@@ -123,8 +123,6 @@ static void wifi_status_change_task(void *args)
                 lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
                 _lock_release(&lvgl_api_lock);
             }
-            vTaskDelay(pdMS_TO_TICKS(200));
-            esp_lcd_rgb_panel_restart(panel_handle);
         }
     }
 }
@@ -157,6 +155,7 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         else{
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
         }
+        esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
     }
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
     {

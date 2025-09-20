@@ -139,7 +139,7 @@ static esp_err_t i2c_master_init(i2c_master_bus_handle_t *bus_handle)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define LVGL_DRAW_BUF_LINES 50 // number of display lines in each draw buffer
-#define LVGL_TICK_PERIOD_MS 2
+#define LVGL_TICK_PERIOD_MS 1
 #define LVGL_TASK_STACK_SIZE (16 * 1024)
 #define LVGL_TASK_PRIORITY 2
 #define LVGL_TASK_MAX_DELAY_MS 500
@@ -270,7 +270,7 @@ void app_main(void)
     ESP_LOGI(TAG, "Use frame buffers as LVGL draw buffers");
     ESP_ERROR_CHECK(esp_lcd_rgb_panel_get_frame_buffer(panel_handle, 2, &buf1, &buf2));
     // set LVGL draw buffers and direct mode
-    lv_display_set_buffers(display, buf1, buf2, LCD_H_RES * LCD_V_RES * PIXEL_SIZE, LV_DISPLAY_RENDER_MODE_DIRECT);
+    lv_display_set_buffers(display, buf1, buf2, LCD_H_RES * LCD_V_RES * PIXEL_SIZE, LV_DISPLAY_RENDER_MODE_FULL);
 #else
     ESP_LOGI(TAG, "Allocate LVGL draw buffers");
     //  it's recommended to allocate the draw buffer from internal memory, for better performance
