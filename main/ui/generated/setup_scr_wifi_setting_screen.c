@@ -168,6 +168,7 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         else{
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
         }
+        esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
     }
 }
 #endif
