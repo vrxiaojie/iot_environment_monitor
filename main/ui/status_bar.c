@@ -35,15 +35,15 @@ void status_bar_create()
     lv_obj_align(battery_icon, LV_ALIGN_RIGHT_MID, -5, 0);
     battery_level_label = lv_label_create(status_bar);
     lv_obj_set_style_text_color(battery_level_label, lv_color_hex(0xffffff), 0);
-    lv_label_set_text(battery_level_label, "100%%");
+    lv_label_set_text(battery_level_label, "---%");
     lv_obj_set_align(battery_level_label, LV_TEXT_ALIGN_RIGHT);
     lv_obj_align_to(battery_level_label, battery_icon, LV_ALIGN_OUT_LEFT_MID, -5, 0);
 
     // WIFI图标
     wifi_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(wifi_icon, lv_color_hex(0xffffff), 0);
-    lv_label_set_text(wifi_icon, LV_SYMBOL_WIFI);
-    lv_obj_align_to(wifi_icon, battery_level_label, LV_ALIGN_OUT_LEFT_MID, -5, 0);
+    lv_label_set_text(wifi_icon, "  ");
+    lv_obj_align_to(wifi_icon, battery_level_label, LV_ALIGN_OUT_LEFT_MID, -20, 0);
     _lock_release(&lvgl_api_lock);
 }
 
@@ -74,27 +74,28 @@ void status_bar_set_wifi_state(bool connected)
     }
 }
 
-void status_bar_set_battery_level(int level)
+void status_bar_set_battery_level(float level)
 {
     if (battery_icon && battery_level_label)
     {
+        char buf[8];
+        int level_int = (int)level;
+        snprintf(buf, sizeof(buf), "%d%%", level_int);
         _lock_acquire(&lvgl_api_lock);
-        char buf[4];
-        snprintf(buf, sizeof(buf), "%d%%", level);
         lv_label_set_text(battery_level_label, buf);
-        if (level > 90)
+        if (level_int > 90)
         {
             lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_FULL);
         }
-        else if (level > 60)
+        else if (level_int > 60)
         {
             lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_3);
         }
-        else if (level > 40)
+        else if (level_int > 40)
         {
             lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_2);
         }
-        else if (level > 10)
+        else if (level_int > 10)
         {
             lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_1);
         }
