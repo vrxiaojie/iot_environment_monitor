@@ -236,19 +236,4 @@ menu "IoT Env Monitor Configuration"
             help
                 GPIO pin number for GT911 RST signal.
     endmenu
-
-    menu "Battery ADC Configuration"
-    config BAT_ADC_GPIO
-        int "Battery ADC GPIO Pin"
-        range 0 48
-        default 4
-        help
-          Specify the GPIO pin number connected to the battery ADC.
-
-    config VOLTAGE_OFFSET
-        int "Voltage Offset (mV)"
-        default 0
-        help
-          Set an offset value in millivolts to calibrate the battery voltage readings.
-    endmenu
 endmenu

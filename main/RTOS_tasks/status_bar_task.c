@@ -14,6 +14,7 @@ void status_bar_update_task(void *pvParameter)
     struct tm timeinfo;
     time_t now;
 
+    status_bar_create();
     while (1)
     {
         // Update time
