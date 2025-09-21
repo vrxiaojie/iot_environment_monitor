@@ -240,7 +240,6 @@ void wifi_start()
 
 void wifi_stop()
 {
-    wifi_sta_status = WIFI_STOPPED;
     ESP_ERROR_CHECK(esp_wifi_stop());
 }
 
@@ -265,6 +264,11 @@ void wifi_scan()
 
 void wifi_connect(user_wifi_cfg *cfg)
 {
+    if(is_wifi_connected())
+    {
+        ESP_ERROR_CHECK(esp_wifi_disconnect());
+    }
+    
     BaseType_t xReturned = xTaskCreate(wifi_connect_task, "wifi_connect_task", 8 * 1024, (void *)cfg, 6, NULL);
     if (xReturned != pdPASS)
     {
@@ -274,6 +278,10 @@ void wifi_connect(user_wifi_cfg *cfg)
 
 bool wifi_connect_to_saved_ap(void)
 {
+    if(is_wifi_connected())
+    {
+        ESP_ERROR_CHECK(esp_wifi_disconnect());
+    }
     // 连接到上次连接的wifi
     wifi_config_t wifi_config = {};
     ESP_ERROR_CHECK(esp_wifi_get_config(WIFI_IF_STA, &wifi_config));

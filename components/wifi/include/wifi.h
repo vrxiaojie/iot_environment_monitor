@@ -22,7 +22,6 @@ enum WIFISTATUS{
     WIFI_CONNECTED,
     WIFI_FAILED,
     WIFI_SCANNING,
-    WIFI_STOPPED,
 };
 
 extern wifi_ap_record_t ap_info[16];
