@@ -10,7 +10,7 @@ void status_bar_update_task(void *pvParameter)
 {
     (void)pvParameter;
 
-    char time_buffer[6];
+    char time_buffer[24];
     struct tm timeinfo;
     time_t now;
 
@@ -19,7 +19,7 @@ void status_bar_update_task(void *pvParameter)
         // Update time
         time(&now);
         localtime_r(&now, &timeinfo);
-        strftime(time_buffer, sizeof(time_buffer), "%H:%M", &timeinfo);
+        strftime(time_buffer, sizeof(time_buffer), "%Y-%m-%d  %H:%M", &timeinfo);
         status_bar_set_time(time_buffer);
 
         // Update WiFi status
