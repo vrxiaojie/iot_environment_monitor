@@ -36,6 +36,10 @@
 #include "RTOS_tasks.h"
 
 #include "wifi.h"
+
+#include "status_bar.h"
+
+#include "ntp.h"
 static const char *TAG = "example";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,4 +374,7 @@ void app_main(void)
     xTaskCreate(stcc4_task, "stcc4_task", 4 * 1024, NULL, 5, NULL);
     // WiFi相关的初始化
     wifi_init();
+    status_bar_create();
+    xTaskCreate(status_bar_update_task, "status_bar_task", 2048, NULL, 5, NULL);
+    xTaskCreate(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, NULL);
 }
