@@ -1,3 +1,4 @@
 #pragma once
 
-void func(void);
+void bat_adc_init();
+void bat_adc_get_battery_level(float *bat_voltage);

@@ -376,4 +376,5 @@ void app_main(void)
     wifi_init();
     xTaskCreate(status_bar_update_task, "status_bar_task", 2048, NULL, 5, NULL);
     xTaskCreate(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, NULL);
+    xTaskCreate(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, NULL);
 }
