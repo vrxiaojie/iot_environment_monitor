@@ -145,6 +145,7 @@ static void wifi_status_change_task(void *args)
     }
 }
 
+extern TaskHandle_t update_wifi_icon_task;
 void wifi_event_callback(void *arg, esp_event_base_t event_base,
                          int32_t event_id, void *event_data)
 {
@@ -179,6 +180,7 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         }
         esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
         esp_lcd_rgb_panel_restart(panel_handle);
+        xTaskNotifyGive(update_wifi_icon_task);
     }
 
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
@@ -229,6 +231,7 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         {
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
         }
+        xTaskNotifyGive(update_wifi_icon_task);
     }
 }
 #endif

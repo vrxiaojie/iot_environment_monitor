@@ -651,13 +651,6 @@ CONFIG_I2C_MASTER_FREQUENCY=400000
 CONFIG_GT911_INT_GPIO=41
 CONFIG_GT911_RST_GPIO=40
 # end of GT911 GPIO Config
-
-#
-# Battery ADC Configuration
-#
-CONFIG_BAT_ADC_GPIO=4
-CONFIG_VOLTAGE_OFFSET=0
-# end of Battery ADC Configuration
 # end of IoT Env Monitor Configuration
 
 #
