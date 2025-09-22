@@ -286,16 +286,16 @@ esp_err_t aw32001_read_sys_status(aw32001_sys_status_t *sys_status)
     sys_status->therm_stat = (reg_val & 0x01) ? true : false;           // BIT0：热调节状态
 
     // 打印系统状态
-    ESP_LOGI(TAG, "System Status:");
-    ESP_LOGI(TAG, "  Watchdog Fault: %s", sys_status->watchdog_fault ? "Yes" : "No");
-    ESP_LOGI(TAG, "  Charge Status: %s",
-             (sys_status->chg_stat == AW32001_CHG_STAT_NOT_CHARGING) ? "Not Charging" : (sys_status->chg_stat == AW32001_CHG_STAT_PRE_CHARGE) ? "Pre Charge"
-                                                                                    : (sys_status->chg_stat == AW32001_CHG_STAT_FAST_CHARGE)  ? "Fast Charge"
-                                                                                    : (sys_status->chg_stat == AW32001_CHG_STAT_CHARGE_DONE)  ? "Charge Done"
-                                                                                                                                              : "Unknown");
-    ESP_LOGI(TAG, "  PPM Status: %s", sys_status->ppm_stat ? "IN PPM" : "No PPM");
-    ESP_LOGI(TAG, "  Power Good: %s", sys_status->pg_stat ? "Yes" : "No");
-    ESP_LOGI(TAG, "  Thermal Regulation: %s", sys_status->therm_stat ? "Yes" : "No");
+    // ESP_LOGI(TAG, "System Status:");
+    // ESP_LOGI(TAG, "  Watchdog Fault: %s", sys_status->watchdog_fault ? "Yes" : "No");
+    // ESP_LOGI(TAG, "  Charge Status: %s",
+    //          (sys_status->chg_stat == AW32001_CHG_STAT_NOT_CHARGING) ? "Not Charging" : (sys_status->chg_stat == AW32001_CHG_STAT_PRE_CHARGE) ? "Pre Charge"
+    //                                                                                 : (sys_status->chg_stat == AW32001_CHG_STAT_FAST_CHARGE)  ? "Fast Charge"
+    //                                                                                 : (sys_status->chg_stat == AW32001_CHG_STAT_CHARGE_DONE)  ? "Charge Done"
+    //                                                                                                                                           : "Unknown");
+    // ESP_LOGI(TAG, "  PPM Status: %s", sys_status->ppm_stat ? "IN PPM" : "No PPM");
+    // ESP_LOGI(TAG, "  Power Good: %s", sys_status->pg_stat ? "Yes" : "No");
+    // ESP_LOGI(TAG, "  Thermal Regulation: %s", sys_status->therm_stat ? "Yes" : "No");
 
     return ESP_OK;
 }
@@ -456,12 +456,12 @@ esp_err_t aw32001_set_vsys_reg(float sys_reg_voltage)
 }
 
 TaskHandle_t aw32001_interrupt_task_handle = NULL;
-static void aw32001_isr_handler(void *arg)
+void __attribute__((weak)) aw32001_isr_handler(void *arg)
 {
     xTaskNotifyGive(aw32001_interrupt_task_handle);
 }
 
-static void aw32001_interrupt_task(void *arg)
+void __attribute__((weak)) aw32001_interrupt_task(void *arg)
 {
     aw32001_sys_status_t sys_status;
     while (1)
