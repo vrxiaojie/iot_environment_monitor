@@ -62,6 +62,8 @@ typedef struct
 	lv_obj_t *wifi_setting_screen_network_info_btn_label;
 	lv_obj_t *wifi_setting_screen_connect_status_label;
 	lv_obj_t *wifi_setting_screen_wifi_scan_list;
+	lv_obj_t *wifi_setting_screen_return_btn;
+	lv_obj_t *wifi_setting_screen_return_btn_label;
 	lv_obj_t *wifi_connect_screen;
 	bool wifi_connect_screen_del;
 	lv_obj_t *wifi_connect_screen_wifi_container;
