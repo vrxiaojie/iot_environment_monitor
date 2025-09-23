@@ -62,6 +62,7 @@ esp_err_t aw32001_read_reg(uint8_t reg_addr, uint8_t *reg_val);
 esp_err_t aw32001_write_reg(uint8_t reg_addr, uint8_t reg_val);
 esp_err_t aw32001_disable_watchdog();
 esp_err_t aw32001_set_chg_current(uint16_t chg_current);
+esp_err_t aw32001_get_chg_current(uint16_t *chg_current);
 esp_err_t aw32001_set_chg_voltage(float chg_voltage);
 esp_err_t aw32001_set_dischg_current(uint16_t dischg_current);
 esp_err_t aw32001_enable_charge();

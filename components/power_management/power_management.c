@@ -8,7 +8,6 @@
 static i2c_master_dev_handle_t dev_handle = NULL;
 aw32001_sys_status_t pwr_sys_status = {};
 
-extern void aw32001_interrupt_init(void);
 esp_err_t aw32001_init(i2c_master_bus_handle_t bus_handle)
 {
     // 创建I2C设备句柄
@@ -19,7 +18,6 @@ esp_err_t aw32001_init(i2c_master_bus_handle_t bus_handle)
     };
 
     ESP_ERROR_CHECK(i2c_master_bus_add_device(bus_handle, &dev_config, &dev_handle));
-    aw32001_interrupt_init();
     ESP_LOGI(TAG, "AW32001 init successfully");
     return ESP_OK;
 }
@@ -144,6 +142,31 @@ esp_err_t aw32001_set_chg_current(uint16_t chg_current)
     }
 
     ESP_LOGI(TAG, "Set charge current to %d mA, REG02H = 0x%02X", chg_current, reg_val);
+    return ESP_OK;
+}
+
+esp_err_t aw32001_get_chg_current(uint16_t *chg_current)
+{
+    if (chg_current == NULL)
+    {
+        ESP_LOGE(TAG, "Invalid input parameter");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    uint8_t reg_val;
+
+    // 读取REG02H（充电电流控制寄存器）
+    esp_err_t err = aw32001_read_reg(AW32001_REG_02H, &reg_val);
+    if (err != ESP_OK)
+    {
+        return err;
+    }
+
+    // 提取ICHG[5:0]并计算充电电流
+    uint8_t ichg_code = reg_val & 0x3F;           // 0x3F = 00111111
+    *chg_current = (uint16_t)(ichg_code * 8 + 8); // 电流范围8~512mA，步长8mA
+
+    ESP_LOGI(TAG, "Get charge current: %d mA from REG02H = 0x%02X", *chg_current, reg_val);
     return ESP_OK;
 }
 

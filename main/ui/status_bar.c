@@ -33,13 +33,13 @@ void status_bar_create()
     charge_status_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(charge_status_icon, lv_color_hex(0x10f703), 0);
     lv_label_set_text(charge_status_icon, " ");
-    lv_obj_align(charge_status_icon, LV_ALIGN_RIGHT_MID, -10, 0);
+    lv_obj_align(charge_status_icon, LV_ALIGN_RIGHT_MID, 5, 0);
 
     // 电池电量
     battery_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(battery_icon, lv_color_hex(0xffffff), 0);
     lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_FULL);
-    lv_obj_align_to(battery_icon, charge_status_icon, LV_ALIGN_OUT_LEFT_MID, -5, 0);
+    lv_obj_align_to(battery_icon, charge_status_icon, LV_ALIGN_OUT_LEFT_MID, -10, 0);
     battery_level_label = lv_label_create(status_bar);
     lv_obj_set_style_text_color(battery_level_label, lv_color_hex(0xffffff), 0);
     lv_label_set_text(battery_level_label, "---%");

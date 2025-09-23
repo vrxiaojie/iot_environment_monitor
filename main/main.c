@@ -374,9 +374,9 @@ void app_main(void)
 #endif
     // 初始化电源管理芯片
     aw32001_init(bus_handle);
-    aw32001_interrupt_init();
     aw32001_disable_watchdog();
     aw32001_enable_charge();
+    aw32001_interrupt_init();
 
     xTaskCreate(sgp4x_task, "sgp4x_task", 4 * 1024, NULL, 5, NULL);
     xTaskCreate(stcc4_task, "stcc4_task", 4 * 1024, NULL, 5, NULL);

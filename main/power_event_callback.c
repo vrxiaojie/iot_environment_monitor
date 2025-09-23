@@ -16,7 +16,6 @@ void aw32001_isr_handler(void *arg)
 void aw32001_interrupt_task(void *arg)
 {
     aw32001_read_sys_status(&pwr_sys_status);
-    ESP_LOGW(TAG, "aw32001_interrupt_task created");
     while (1)
     {
         // 等待中断事件发生
@@ -24,7 +23,6 @@ void aw32001_interrupt_task(void *arg)
         aw32001_read_sys_status(&pwr_sys_status);
         switch (pwr_sys_status.chg_stat)
         {
-        // TODO: 通知状态栏充电状态更新任务、电源管理页面label更新任务
         case AW32001_CHG_STAT_NOT_CHARGING:
             ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = NOT CHARGING");
             break;
@@ -69,5 +67,10 @@ void aw32001_interrupt_init()
     gpio_config(&io_conf);
     gpio_install_isr_service(0);
     gpio_isr_handler_add(GPIO_NUM_5, aw32001_isr_handler, NULL);
+    if (aw32001_interrupt_task_handle != NULL)
+    {
+        ESP_LOGW(TAG, "AW32001 interrupt task already created");
+        return;
+    }
     xTaskCreate(aw32001_interrupt_task, "aw32001_interrupt_task", 8 * 1024, NULL, 6, &aw32001_interrupt_task_handle);
 }

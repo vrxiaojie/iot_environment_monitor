@@ -46,6 +46,9 @@ static void network_info_msgbox_event_cb(lv_event_t *e)
 #endif
 void create_update_power_setting_screen_task();
 void delete_update_power_setting_screen_task();
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "power_management.h"
+#endif
 
 static void main_screen_event_handler (lv_event_t *e)
 {
@@ -397,6 +400,16 @@ static void power_setting_screen_event_handler (lv_event_t *e)
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
         create_update_power_setting_screen_task();
+        uint16_t chg_current = 0;
+        aw32001_get_chg_current(&chg_current);
+        if (chg_current > 128)
+        {
+            lv_obj_add_state(guider_ui.power_setting_screen_fast_charge_sw, LV_STATE_CHECKED);
+        }
+        else
+        {
+            lv_obj_remove_state(guider_ui.power_setting_screen_fast_charge_sw, LV_STATE_CHECKED);
+        }
 #endif
         break;
     }
@@ -405,6 +418,40 @@ static void power_setting_screen_event_handler (lv_event_t *e)
 #ifndef LV_USE_GUIDER_SIMULATOR
         delete_update_power_setting_screen_task();
 #endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void power_setting_screen_fast_charge_sw_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_VALUE_CHANGED:
+    {
+        lv_obj_t * status_obj = lv_event_get_target(e);
+        int status = lv_obj_has_state(status_obj, LV_STATE_CHECKED) ? true : false;
+
+        switch (status) {
+        case (true):
+        {
+#ifndef LV_USE_GUIDER_SIMULATOR
+            aw32001_set_chg_current(512);
+#endif
+            break;
+        }
+        case (false):
+        {
+#ifndef LV_USE_GUIDER_SIMULATOR
+            aw32001_set_chg_current(128); //128mA
+#endif
+            break;
+        }
+        default:
+            break;
+        }
         break;
     }
     default:
@@ -448,6 +495,7 @@ static void power_setting_screen_return_btn_event_handler (lv_event_t *e)
 void events_init_power_setting_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->power_setting_screen, power_setting_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->power_setting_screen_fast_charge_sw, power_setting_screen_fast_charge_sw_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->power_setting_screen_charge_thresh_slider, power_setting_screen_charge_thresh_slider_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->power_setting_screen_return_btn, power_setting_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
 }
