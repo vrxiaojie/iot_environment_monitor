@@ -55,6 +55,8 @@ typedef struct
     bool ntc_fault_low;  // NTC低温故障（1：故障，0：正常）
 } aw32001_fault_status_t;
 
+extern aw32001_sys_status_t pwr_sys_status;
+
 esp_err_t aw32001_init(i2c_master_bus_handle_t bus_handle);
 esp_err_t aw32001_read_reg(uint8_t reg_addr, uint8_t *reg_val);
 esp_err_t aw32001_write_reg(uint8_t reg_addr, uint8_t reg_val);

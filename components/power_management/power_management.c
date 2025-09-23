@@ -6,7 +6,9 @@
 
 #define TAG "AW32001"
 static i2c_master_dev_handle_t dev_handle = NULL;
+aw32001_sys_status_t pwr_sys_status = {};
 
+void aw32001_interrupt_init();
 esp_err_t aw32001_init(i2c_master_bus_handle_t bus_handle)
 {
     // 创建I2C设备句柄
@@ -455,24 +457,23 @@ esp_err_t aw32001_set_vsys_reg(float sys_reg_voltage)
     return ESP_OK;
 }
 
-TaskHandle_t aw32001_interrupt_task_handle = NULL;
+__attribute__((weak)) TaskHandle_t aw32001_interrupt_task_handle = NULL;
 void __attribute__((weak)) aw32001_isr_handler(void *arg)
 {
-    xTaskNotifyGive(aw32001_interrupt_task_handle);
+    
 }
 
 void __attribute__((weak)) aw32001_interrupt_task(void *arg)
 {
-    aw32001_sys_status_t sys_status;
     while (1)
     {
         // 等待中断事件发生
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-        
-        if (aw32001_read_sys_status(&sys_status) == ESP_OK)
+
+        if (aw32001_read_sys_status(&pwr_sys_status) == ESP_OK)
         {
             // 处理系统状态，例如打印或更新状态变量
-            ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = %d", sys_status.chg_stat);
+            ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = %d", pwr_sys_status.chg_stat);
         }
     }
 }
@@ -481,8 +482,8 @@ void aw32001_interrupt_init()
 {
     gpio_config_t io_conf = {};
     io_conf.intr_type = GPIO_INTR_NEGEDGE; // 下降沿产生中断
-    io_conf.mode = GPIO_MODE_INPUT;        // set as input mode
-    io_conf.pull_up_en = 0;                // enable pull-up mode
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pull_up_en = 0;
     io_conf.pin_bit_mask = 1ULL << 5;
     gpio_config(&io_conf);
     gpio_install_isr_service(0);

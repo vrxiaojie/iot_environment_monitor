@@ -24,15 +24,13 @@ extern _lock_t lvgl_api_lock;
 TaskHandle_t update_power_setting_screen_task_handle = NULL;
 static void update_power_setting_screen_task(void *args)
 {
-    aw32001_sys_status_t sys_status;
     char power_status[16], charge_status[16];
     while (1)
     {
         if (guider_ui.power_setting_screen_charge_status_label != NULL)
         {
             // 获取当前电源状态
-            aw32001_read_sys_status(&sys_status);
-            switch (sys_status.chg_stat)
+            switch (pwr_sys_status.chg_stat)
             {
             case AW32001_CHG_STAT_NOT_CHARGING:
                 snprintf(charge_status, sizeof(charge_status), "未在充电");
@@ -53,7 +51,7 @@ static void update_power_setting_screen_task(void *args)
         }
         if (guider_ui.power_setting_screen_power_status_label != NULL)
         {
-            if (sys_status.pg_stat)
+            if (pwr_sys_status.pg_stat)
             {
                 snprintf(power_status, sizeof(power_status), "USB供电");
             }
