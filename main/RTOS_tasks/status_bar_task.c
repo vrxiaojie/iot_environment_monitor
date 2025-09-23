@@ -6,8 +6,10 @@
 #include "wifi.h"
 #include "bat_adc.h"
 #include "esp_log.h"
+#include "power_management.h"
 
 extern float bat_level;
+
 TaskHandle_t update_battery_task = NULL;
 static void status_bar_update_battery_task(void *args)
 {
@@ -17,6 +19,7 @@ static void status_bar_update_battery_task(void *args)
         if (ulTaskNotifyTake(pdTRUE, portMAX_DELAY) == 1)
         {
             status_bar_set_battery_level(bat_level);
+            status_bar_set_charge_state(pwr_sys_status.pg_stat);
         }
     }
 }
