@@ -62,6 +62,8 @@ typedef struct
 	lv_obj_t *wifi_setting_screen_network_info_btn_label;
 	lv_obj_t *wifi_setting_screen_connect_status_label;
 	lv_obj_t *wifi_setting_screen_wifi_scan_list;
+	lv_obj_t *wifi_setting_screen_return_btn;
+	lv_obj_t *wifi_setting_screen_return_btn_label;
 	lv_obj_t *wifi_connect_screen;
 	bool wifi_connect_screen_del;
 	lv_obj_t *wifi_connect_screen_wifi_container;
@@ -129,13 +131,11 @@ LV_IMAGE_DECLARE(_backlight_RGB565A8_32x32);
 LV_IMAGE_DECLARE(_bluetooth_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_power_save_mode_RGB565A8_48x48);
 
-LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_36)
+LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
 LV_FONT_DECLARE(lv_font_xiaobiaosong_16)
-LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_24)
 LV_FONT_DECLARE(lv_font_montserratMedium_12)
-LV_FONT_DECLARE(lv_font_SourceHanSerifSC_Regular_18)
 
 
 #ifdef __cplusplus
