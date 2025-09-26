@@ -13,7 +13,7 @@
 #include "events_init.h"
 #include "widgets_init.h"
 #include "custom.h"
-// color hex value
+#ifndef LV_USE_GUIDER_SIMULATOR
 #define DARK_GREEN (0x1a7f14)
 #define GREEN (0x10f703)
 #define BRIGHT_GREEN (0x26c961)
@@ -37,10 +37,9 @@ lv_timer_t *update_data_timer;
 static void update_voc_display() {
     static int32_t voc_idx;
     char t[12] = {0};
-#ifndef LV_USE_GUIDER_SIMULATOR
+
     extern int32_t voc_index;
     voc_idx = voc_index;
-#endif
 
     if(voc_idx >= 0)
         sprintf(t,"%ld",voc_idx);
@@ -67,9 +66,7 @@ static void update_voc_display() {
 
 }
 
-#ifndef LV_USE_GUIDER_SIMULATOR
 #include "stcc4.h"
-#endif
 
 static void update_co2_temp_humid_display() {
     static int16_t co2 = 0;
@@ -77,12 +74,10 @@ static void update_co2_temp_humid_display() {
     static uint16_t humid = 100;
     char t[12];
 
-#ifndef LV_USE_GUIDER_SIMULATOR
     extern STCC4_t stcc4;
     co2 = stcc4.co2Concentration;
     temp = stcc4.temperature * 10;
     humid = stcc4.relativeHumidity * 10;
-#endif
 
     // 处理co2数值
     if(co2 >= 0 && co2 <= 30000)
@@ -188,11 +183,28 @@ static void update_co2_temp_humid_display() {
     }
 }
 
-void update_data_cb(lv_timer_t * timer) {
-    update_voc_display();
-    update_co2_temp_humid_display();
+#include "esp_sntp.h"
+#include <time.h>
+static void update_time_display() {
+    struct tm timeinfo;
+    char minute_buf[4], hour_buf[4], month_day_buf[8];
+    time_t now;
+    time(&now);
+    localtime_r(&now, &timeinfo);
+    strftime(hour_buf, sizeof(hour_buf), "%H", &timeinfo);
+    strftime(minute_buf, sizeof(minute_buf), "%M", &timeinfo);
+    strftime(month_day_buf, sizeof(month_day_buf), "%m/%d", &timeinfo);
+    lv_label_set_text(guider_ui.main_screen_time_hour, hour_buf);
+    lv_label_set_text(guider_ui.main_screen_time_minute, minute_buf);
+    lv_label_set_text(guider_ui.main_screen_time_month_day, month_day_buf);
 }
 
+static void update_data_cb(lv_timer_t * timer) {
+    update_voc_display();
+    update_co2_temp_humid_display();
+    update_time_display();
+}
+#endif
 
 
 void setup_scr_main_screen(lv_ui *ui)
@@ -639,7 +651,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_shadow_width(ui->main_screen_time_month_day, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //The custom code of main_screen.
-    update_data_timer = lv_timer_create(update_data_cb, 500, 0);
+    update_data_timer = lv_timer_create(update_data_cb, 1000, 0);
 
     //Update current screen layout.
     lv_obj_update_layout(ui->main_screen);
