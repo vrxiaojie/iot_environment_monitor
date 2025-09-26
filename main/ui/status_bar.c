@@ -9,6 +9,7 @@ static lv_obj_t *time_label;
 static lv_obj_t *wifi_icon;
 static lv_obj_t *battery_icon;
 static lv_obj_t *battery_level_label;
+static lv_obj_t *charge_status_icon;
 extern _lock_t lvgl_api_lock;
 void status_bar_create()
 {
@@ -28,11 +29,17 @@ void status_bar_create()
     lv_label_set_text(time_label, "00:00");
     lv_obj_align(time_label, LV_ALIGN_LEFT_MID, 5, 0);
 
+    // 充电状态
+    charge_status_icon = lv_label_create(status_bar);
+    lv_obj_set_style_text_color(charge_status_icon, lv_color_hex(0x10f703), 0);
+    lv_label_set_text(charge_status_icon, " ");
+    lv_obj_align(charge_status_icon, LV_ALIGN_RIGHT_MID, 5, 0);
+
     // 电池电量
     battery_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(battery_icon, lv_color_hex(0xffffff), 0);
     lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_FULL);
-    lv_obj_align(battery_icon, LV_ALIGN_RIGHT_MID, -5, 0);
+    lv_obj_align_to(battery_icon, charge_status_icon, LV_ALIGN_OUT_LEFT_MID, -10, 0);
     battery_level_label = lv_label_create(status_bar);
     lv_obj_set_style_text_color(battery_level_label, lv_color_hex(0xffffff), 0);
     lv_label_set_text(battery_level_label, "---%");
@@ -102,6 +109,23 @@ void status_bar_set_battery_level(float level)
         else
         {
             lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_EMPTY);
+        }
+        _lock_release(&lvgl_api_lock);
+    }
+}
+
+void status_bar_set_charge_state(bool charging)
+{
+    if (charge_status_icon)
+    {
+        _lock_acquire(&lvgl_api_lock);
+        if (charging)
+        {
+            lv_label_set_text(charge_status_icon, LV_SYMBOL_CHARGE);
+        }
+        else
+        {
+            lv_label_set_text(charge_status_icon, " ");
         }
         _lock_release(&lvgl_api_lock);
     }

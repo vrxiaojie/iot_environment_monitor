@@ -20,4 +20,5 @@ idf_component_register( SRCS
                        "sgp4x" 
                        "bat_adc"
                        "wifi"
+                       "power_management"
                        INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/" "./ui")

@@ -135,51 +135,6 @@ static void print_cipher_type(int pairwise_cipher, int group_cipher)
     }
 }
 
-void __attribute__((weak)) wifi_event_callback(void *arg, esp_event_base_t event_base,
-                                               int32_t event_id, void *event_data)
-{
-    if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_SCAN_DONE))
-    {
-        uint16_t ap_count = 0;
-        wifi_event_sta_scan_done_t *scan_done = (wifi_event_sta_scan_done_t *)event_data;
-
-        ESP_LOGI(TAG, "wifi scan done, status:%lu, number:%u", scan_done->status, scan_done->number);
-        // 0: success, 1: failure
-        if (scan_done->status == 0)
-        {
-            uint16_t number = 16; // 最多获取16个WIFI
-
-            memset(ap_info, 0, sizeof(ap_info));
-            /* 获取wifi扫描结果 */
-            ESP_ERROR_CHECK(esp_wifi_scan_get_ap_records(&number, ap_info));
-            ESP_LOGI(TAG, "Total APs scanned = %u, actual AP number ap_info holds = %u", ap_count, number);
-            for (int i = 0; i < number; i++)
-            {
-                ESP_LOGI(TAG, "SSID \t\t%s", ap_info[i].ssid);
-                ESP_LOGI(TAG, "RSSI \t\t%d", ap_info[i].rssi);
-                print_auth_mode(ap_info[i].authmode);
-                if (ap_info[i].authmode != WIFI_AUTH_WEP)
-                {
-                    print_cipher_type(ap_info[i].pairwise_cipher, ap_info[i].group_cipher);
-                }
-                ESP_LOGI(TAG, "Channel \t\t%d", ap_info[i].primary);
-            }
-        }
-        else
-        {
-            ESP_LOGE(TAG, "Scan failed");
-        }
-    }
-    if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_CONNECTED))
-    {
-        ESP_LOGI(TAG, "WiFi connected");
-    }
-    if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
-    {
-        ESP_LOGI(TAG, "WiFi disconnected");
-    }
-}
-
 void __attribute__((weak)) wifi_connect_task(void *args)
 {
     user_wifi_cfg *cfg = (user_wifi_cfg *)args;
@@ -318,11 +273,6 @@ void wifi_init()
     {
         ESP_LOGE(TAG, "Failed to create wifi_scan_task");
     }
-    // wifi连接相关事件绑定
-    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &wifi_event_callback, NULL, NULL);
-    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
-    // wifi扫描结束后的回调函数绑定
-    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &wifi_event_callback, NULL, NULL);
 }
 
 void wifi_get_ip_info_str(wifi_ip_info_t *wifi_ip_info)

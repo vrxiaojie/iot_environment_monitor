@@ -359,6 +359,34 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
     lv_style_set_transform_width(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, 0);
     lv_style_set_bg_opa(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, 0);
 
+    //Write codes wifi_setting_screen_return_btn
+    ui->wifi_setting_screen_return_btn = lv_button_create(ui->wifi_setting_screen);
+    lv_obj_set_pos(ui->wifi_setting_screen_return_btn, 8, 48);
+    lv_obj_set_size(ui->wifi_setting_screen_return_btn, 24, 24);
+    ui->wifi_setting_screen_return_btn_label = lv_label_create(ui->wifi_setting_screen_return_btn);
+    lv_label_set_text(ui->wifi_setting_screen_return_btn_label, "<-");
+    lv_label_set_long_mode(ui->wifi_setting_screen_return_btn_label, LV_LABEL_LONG_WRAP);
+    lv_obj_align(ui->wifi_setting_screen_return_btn_label, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_style_pad_all(ui->wifi_setting_screen_return_btn, 0, LV_STATE_DEFAULT);
+    lv_obj_set_width(ui->wifi_setting_screen_return_btn_label, LV_PCT(100));
+
+    //Write style for wifi_setting_screen_return_btn, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->wifi_setting_screen_return_btn, 102, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->wifi_setting_screen_return_btn, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->wifi_setting_screen_return_btn, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->wifi_setting_screen_return_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->wifi_setting_screen_return_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->wifi_setting_screen_return_btn, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_color(ui->wifi_setting_screen_return_btn, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_opa(ui->wifi_setting_screen_return_btn, 182, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_spread(ui->wifi_setting_screen_return_btn, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_offset_x(ui->wifi_setting_screen_return_btn, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_offset_y(ui->wifi_setting_screen_return_btn, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->wifi_setting_screen_return_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_setting_screen_return_btn, &lv_font_montserratMedium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->wifi_setting_screen_return_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->wifi_setting_screen_return_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+
     //The custom code of wifi_setting_screen.
 
 

@@ -62,6 +62,8 @@ typedef struct
 	lv_obj_t *wifi_setting_screen_network_info_btn_label;
 	lv_obj_t *wifi_setting_screen_connect_status_label;
 	lv_obj_t *wifi_setting_screen_wifi_scan_list;
+	lv_obj_t *wifi_setting_screen_return_btn;
+	lv_obj_t *wifi_setting_screen_return_btn_label;
 	lv_obj_t *wifi_connect_screen;
 	bool wifi_connect_screen_del;
 	lv_obj_t *wifi_connect_screen_wifi_container;
@@ -72,6 +74,25 @@ typedef struct
 	lv_obj_t *wifi_connect_screen_conn_btn_label;
 	lv_obj_t *wifi_connect_screen_cancel_btn;
 	lv_obj_t *wifi_connect_screen_cancel_btn_label;
+	lv_obj_t *power_setting_screen;
+	bool power_setting_screen_del;
+	lv_obj_t *power_setting_screen_cont_1;
+	lv_obj_t *power_setting_screen_label_3;
+	lv_obj_t *power_setting_screen_pwr_save_mode_label;
+	lv_obj_t *power_setting_screen_pwr_save_mode_sw;
+	lv_obj_t *power_setting_screen_fast_charge_sw;
+	lv_obj_t *power_setting_screen_fast_charge_label;
+	lv_obj_t *power_setting_screen_charge_thresh_label;
+	lv_obj_t *power_setting_screen_charge_thresh_slider;
+	lv_obj_t *power_setting_screen_charge_thresh_percent_label;
+	lv_obj_t *power_setting_screen_label_1;
+	lv_obj_t *power_setting_screen_charge_status_label;
+	lv_obj_t *power_setting_screen_label_5;
+	lv_obj_t *power_setting_screen_power_status_label;
+	lv_obj_t *power_setting_screen_save_btn;
+	lv_obj_t *power_setting_screen_save_btn_label;
+	lv_obj_t *power_setting_screen_return_btn;
+	lv_obj_t *power_setting_screen_return_btn_label;
 	lv_obj_t *g_kb_top_layer;
 }lv_ui;
 
@@ -104,18 +125,17 @@ void setup_scr_main_screen(lv_ui *ui);
 void setup_scr_setting_screen(lv_ui *ui);
 void setup_scr_wifi_setting_screen(lv_ui *ui);
 void setup_scr_wifi_connect_screen(lv_ui *ui);
+void setup_scr_power_setting_screen(lv_ui *ui);
 LV_IMAGE_DECLARE(_WIFI_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_backlight_RGB565A8_32x32);
 LV_IMAGE_DECLARE(_bluetooth_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_power_save_mode_RGB565A8_48x48);
 
-LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_36)
+LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
 LV_FONT_DECLARE(lv_font_xiaobiaosong_16)
-LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_24)
 LV_FONT_DECLARE(lv_font_montserratMedium_12)
-LV_FONT_DECLARE(lv_font_SourceHanSerifSC_Regular_18)
 
 
 #ifdef __cplusplus

@@ -44,6 +44,11 @@ static void network_info_msgbox_event_cb(lv_event_t *e)
     }
 }
 #endif
+void create_update_power_setting_screen_task();
+void delete_update_power_setting_screen_task();
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "power_management.h"
+#endif
 
 static void main_screen_event_handler (lv_event_t *e)
 {
@@ -92,7 +97,7 @@ static void setting_screen_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
-    case LV_EVENT_SCREEN_LOADED:
+    case LV_EVENT_SCREEN_LOAD_START:
     {
         // 在这里对slider的值做调整
 #ifndef LV_USE_GUIDER_SIMULATOR
@@ -187,11 +192,26 @@ static void setting_screen_backlight_slider_event_handler (lv_event_t *e)
     }
 }
 
+static void setting_screen_power_save_icon_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_LONG_PRESSED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.power_setting_screen, guider_ui.power_setting_screen_del, &guider_ui.setting_screen_del, setup_scr_power_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void events_init_setting_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->setting_screen, setting_screen_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->setting_screen_wifi_icon, setting_screen_wifi_icon_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->setting_screen_backlight_slider, setting_screen_backlight_slider_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->setting_screen_power_save_icon, setting_screen_power_save_icon_event_handler, LV_EVENT_ALL, ui);
 }
 
 static void wifi_setting_screen_event_handler (lv_event_t *e)
@@ -200,6 +220,7 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
     switch (code) {
     case LV_EVENT_SCREEN_LOADED:
     {
+#ifndef LV_USE_GUIDER_SIMULATOR
         if (wifi_sta_status == WIFI_CONNECTED)
         {
             lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0x26c961), LV_PART_MAIN);
@@ -208,31 +229,11 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
         {
             lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
         }
+#endif
         if (wifi_status == 0) {
             lv_obj_clear_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
         } else if (wifi_status == 1) {
             lv_obj_add_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
-        }
-        break;
-    }
-    case LV_EVENT_GESTURE:
-    {
-        lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_active());
-        switch(dir) {
-        case LV_DIR_LEFT:
-        {
-            lv_indev_wait_release(lv_indev_active());
-            ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
-            break;
-        }
-        case LV_DIR_RIGHT:
-        {
-            lv_indev_wait_release(lv_indev_active());
-            ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
-            break;
-        }
-        default:
-            break;
         }
         break;
     }
@@ -328,11 +329,26 @@ static void wifi_setting_screen_network_info_btn_event_handler (lv_event_t *e)
     }
 }
 
+static void wifi_setting_screen_return_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void events_init_wifi_setting_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->wifi_setting_screen, wifi_setting_screen_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->wifi_setting_screen_wifi_switch, wifi_setting_screen_wifi_switch_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->wifi_setting_screen_network_info_btn, wifi_setting_screen_network_info_btn_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->wifi_setting_screen_return_btn, wifi_setting_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
 static void wifi_connect_screen_conn_btn_event_handler (lv_event_t *e)
@@ -374,6 +390,114 @@ void events_init_wifi_connect_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->wifi_connect_screen_conn_btn, wifi_connect_screen_conn_btn_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->wifi_connect_screen_cancel_btn, wifi_connect_screen_cancel_btn_event_handler, LV_EVENT_ALL, ui);
+}
+
+static void power_setting_screen_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SCREEN_LOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        create_update_power_setting_screen_task();
+        uint16_t chg_current = 0;
+        aw32001_get_chg_current(&chg_current);
+        if (chg_current > 128)
+        {
+            lv_obj_add_state(guider_ui.power_setting_screen_fast_charge_sw, LV_STATE_CHECKED);
+        }
+        else
+        {
+            lv_obj_remove_state(guider_ui.power_setting_screen_fast_charge_sw, LV_STATE_CHECKED);
+        }
+#endif
+        break;
+    }
+    case LV_EVENT_SCREEN_UNLOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        delete_update_power_setting_screen_task();
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void power_setting_screen_fast_charge_sw_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_VALUE_CHANGED:
+    {
+        lv_obj_t * status_obj = lv_event_get_target(e);
+        int status = lv_obj_has_state(status_obj, LV_STATE_CHECKED) ? true : false;
+
+        switch (status) {
+        case (true):
+        {
+#ifndef LV_USE_GUIDER_SIMULATOR
+            aw32001_set_chg_current(512);
+#endif
+            break;
+        }
+        case (false):
+        {
+#ifndef LV_USE_GUIDER_SIMULATOR
+            aw32001_set_chg_current(128); //128mA
+#endif
+            break;
+        }
+        default:
+            break;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void power_setting_screen_charge_thresh_slider_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_VALUE_CHANGED:
+    {
+
+        lv_obj_t * slider = lv_event_get_target(e);
+        int32_t percecnt = lv_slider_get_value(slider);
+        char t[5];
+        snprintf(t, sizeof(t), "%ld%%", percecnt);
+        lv_label_set_text(guider_ui.power_setting_screen_charge_thresh_percent_label, t);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void power_setting_screen_return_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.power_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void events_init_power_setting_screen (lv_ui *ui)
+{
+    lv_obj_add_event_cb(ui->power_setting_screen, power_setting_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->power_setting_screen_fast_charge_sw, power_setting_screen_fast_charge_sw_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->power_setting_screen_charge_thresh_slider, power_setting_screen_charge_thresh_slider_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->power_setting_screen_return_btn, power_setting_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
 

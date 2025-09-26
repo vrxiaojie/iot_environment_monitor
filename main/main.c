@@ -40,6 +40,8 @@
 #include "status_bar.h"
 
 #include "ntp.h"
+
+#include "power_management.h"
 static const char *TAG = "example";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -370,10 +372,17 @@ void app_main(void)
     lv_indev_set_read_cb(indev, lvgl_touch_cb);
     ESP_LOGI(TAG, "Touch panel initialized successfully");
 #endif
+    // 初始化电源管理芯片
+    aw32001_init(bus_handle);
+    aw32001_disable_watchdog();
+    aw32001_enable_charge();
+    aw32001_interrupt_init();
+
     xTaskCreate(sgp4x_task, "sgp4x_task", 4 * 1024, NULL, 5, NULL);
     xTaskCreate(stcc4_task, "stcc4_task", 4 * 1024, NULL, 5, NULL);
     // WiFi相关的初始化
     wifi_init();
+    wifi_event_init();
     xTaskCreate(status_bar_init_task, "status_bar_task", 2048, NULL, 5, NULL);
     xTaskCreate(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, NULL);
     xTaskCreate(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, NULL);

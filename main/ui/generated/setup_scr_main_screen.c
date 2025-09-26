@@ -236,7 +236,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->main_screen_temp_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_temp_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->main_screen_temp_value, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->main_screen_temp_value, &lv_font_JetBrainsMono_Medium_36, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->main_screen_temp_value, &lv_font_JetBrainsMono_Medium_40, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->main_screen_temp_value, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->main_screen_temp_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->main_screen_temp_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -322,7 +322,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->main_screen_co2_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_co2_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->main_screen_co2_value, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->main_screen_co2_value, &lv_font_JetBrainsMono_Medium_36, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->main_screen_co2_value, &lv_font_JetBrainsMono_Medium_40, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->main_screen_co2_value, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->main_screen_co2_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->main_screen_co2_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -408,7 +408,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->main_screen_humid_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_humid_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->main_screen_humid_value, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->main_screen_humid_value, &lv_font_JetBrainsMono_Medium_36, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->main_screen_humid_value, &lv_font_JetBrainsMono_Medium_40, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->main_screen_humid_value, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->main_screen_humid_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->main_screen_humid_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -494,7 +494,7 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->main_screen_voc_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->main_screen_voc_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->main_screen_voc_value, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->main_screen_voc_value, &lv_font_JetBrainsMono_Medium_36, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->main_screen_voc_value, &lv_font_JetBrainsMono_Medium_40, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->main_screen_voc_value, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->main_screen_voc_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->main_screen_voc_value, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
