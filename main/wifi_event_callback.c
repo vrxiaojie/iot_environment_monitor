@@ -3,14 +3,13 @@
 #include "esp_event.h"
 #include "esp_log.h"
 #include "esp_err.h"
-#include "esp_lcd_panel_rgb.h"
 #include "wifi.h"
+#include "rgb_lcd.h"
 
 #define TAG "wifi_event_cb"
 
 extern TaskHandle_t update_wifi_icon_task_handle;
 extern TaskHandle_t wifi_status_change_task_handle;
-extern esp_lcd_panel_handle_t panel_handle;
 
 void wifi_add_list_task(void *args);
 void wifi_status_change_task(void *args);
