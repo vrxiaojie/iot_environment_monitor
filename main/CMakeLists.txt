@@ -21,4 +21,5 @@ idf_component_register( SRCS
                        "bat_adc"
                        "wifi"
                        "power_management"
+                       "rgb_lcd"
                        INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/" "./ui")
