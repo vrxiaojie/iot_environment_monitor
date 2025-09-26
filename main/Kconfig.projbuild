@@ -196,7 +196,6 @@ menu "IoT Env Monitor Configuration"
         config LCD_BACKLIGHT_FREQUENCY
             int "Backlight PWM Frequency (Hz)"
             default 2000
-            range 1000 2000
             help
                 Set the backlight PWM frequency in Hz.
         endmenu
