@@ -103,3 +103,12 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         xTaskNotifyGive(update_wifi_icon_task_handle);
     }
 }
+
+void wifi_event_init()
+{
+    // 绑定wifi连接相关事件的回调函数
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &wifi_event_callback, NULL, NULL);
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
+    // 绑定wifi扫描结束后的回调函数
+    esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &wifi_event_callback, NULL, NULL);
+}
