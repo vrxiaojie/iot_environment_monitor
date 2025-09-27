@@ -22,4 +22,5 @@ idf_component_register( SRCS
                        "wifi"
                        "power_management"
                        "rgb_lcd"
+                       "nvs_helper"
                        INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/" "./ui")

@@ -20,6 +20,7 @@
 #include "status_bar.h"
 #include "ntp.h"
 #include "power_management.h"
+#include "nvs_helper.h"
 
 #include "RTOS_tasks.h"
 #include "lvgl_setup.h"
@@ -53,6 +54,8 @@ void app_main(void)
     ESP_LOGI(TAG, "I2C initialized successfully");
     // 初始化RGB LCD
     rgb_lcd_init();
+    // 初始化NVS
+    nvs_init();
 
     // 初始化完毕 开启背光 设置亮度(默认20%)
     lcd_backlight_set_duty(20);
