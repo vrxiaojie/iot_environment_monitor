@@ -24,16 +24,16 @@ void aw32001_interrupt_task(void *arg)
         switch (pwr_sys_status.chg_stat)
         {
         case AW32001_CHG_STAT_NOT_CHARGING:
-            ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = NOT CHARGING");
+            // ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = NOT CHARGING");
             break;
         case AW32001_CHG_STAT_PRE_CHARGE:
-            ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = PRE CHARGE");
+            // ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = PRE CHARGE");
             break;
         case AW32001_CHG_STAT_FAST_CHARGE:
-            ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = FAST CHARGE");
+            // ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = FAST CHARGE");
             break;
         case AW32001_CHG_STAT_CHARGE_DONE:
-            ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = CHARGE DONE");
+            // ESP_LOGW(TAG, "AW32001 Interrupt: Charge Status = CHARGE DONE");
             break;
         }
         switch (pwr_sys_status.pg_stat)
@@ -44,14 +44,14 @@ void aw32001_interrupt_task(void *arg)
                 xTaskNotifyGive(update_battery_task);
             }
 
-            ESP_LOGW(TAG, "AW32001 Interrupt: Power Source = USB POWER");
+            // ESP_LOGW(TAG, "AW32001 Interrupt: Power Source = USB POWER");
             break;
         case false:
             if (update_battery_task)
             {
                 xTaskNotifyGive(update_battery_task);
             }
-            ESP_LOGW(TAG, "AW32001 Interrupt: Power Source = BATTERY POWER");
+            // ESP_LOGW(TAG, "AW32001 Interrupt: Power Source = BATTERY POWER");
             break;
         }
     }
