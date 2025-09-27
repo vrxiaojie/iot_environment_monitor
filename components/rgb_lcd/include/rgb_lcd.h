@@ -4,6 +4,8 @@
 #include "esp_log.h"
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_rgb.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 // 根据屏幕厂商的datasheet来设定以下参数
 // 最高刷新率 = 10000000/(1+43+8+480)/(10+12+4+272)=63Hz
@@ -52,6 +54,7 @@
 #define DATA_BUS_WIDTH 16
 
 extern esp_lcd_panel_handle_t panel_handle;
+extern TaskHandle_t rgb_lcd_restart_panel_task_handle;
 
 void rgb_lcd_init(void);
 

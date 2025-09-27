@@ -46,8 +46,7 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         {
             vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
         }
-        esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
-        esp_lcd_rgb_panel_restart(panel_handle);
+        xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
         xTaskNotifyGive(update_wifi_icon_task_handle);
     }
 
@@ -60,15 +59,13 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         {
             ESP_LOGW(TAG, "WiFi disconnected due to wrong password or auth expire. Reason: %d", disconnected->reason);
             retry_cnt = 0;
-            esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
-            esp_lcd_rgb_panel_restart(panel_handle);
+            xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
         }
         else if (disconnected->reason == WIFI_REASON_ASSOC_LEAVE) // 手动断开连接(用于切换wifi)
         {
             ESP_LOGI(TAG, "WiFi stopped or connecting to new WiFi");
             retry_cnt = 0;
-            esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
-            esp_lcd_rgb_panel_restart(panel_handle);
+            xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
         }
         else  // 其他断开连接的情况均尝试重连
         {
@@ -85,8 +82,7 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
             {
                 retry_cnt = 0;
                 ESP_LOGI(TAG, "WiFi reconnect failed after 1 attempt");
-                esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
-                esp_lcd_rgb_panel_restart(panel_handle);
+                xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
             }
         }
 

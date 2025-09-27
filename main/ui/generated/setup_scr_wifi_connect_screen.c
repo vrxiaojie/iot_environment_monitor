@@ -49,7 +49,7 @@ void wifi_connect_task(void *args)
         assert(sta_netif);
     }
     esp_lcd_rgb_panel_set_pclk(panel_handle, 5 * 1000 * 1000);  // 连接wifi前临时降低刷新率防止屏幕偏移
-    vTaskDelay(pdMS_TO_TICKS(20)); // 延时20ms 等待屏幕刷完一帧
+    vTaskDelay(pdMS_TO_TICKS(50)); // 延时50ms 等待屏幕刷完一帧
     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_connect());
     vTaskDelete(NULL);
