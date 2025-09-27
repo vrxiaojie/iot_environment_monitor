@@ -56,6 +56,7 @@ void app_main(void)
     rgb_lcd_init();
     // 初始化NVS
     nvs_init();
+    nvs_read_power_settings();
 
     // 初始化完毕 开启背光 设置亮度(默认20%)
     lcd_backlight_set_duty(20);
@@ -67,7 +68,6 @@ void app_main(void)
     // 初始化电源管理芯片
     aw32001_init(bus_handle);
     aw32001_disable_watchdog();
-    aw32001_enable_charge();
     aw32001_interrupt_init();
 
     xTaskCreate(sgp4x_task, "sgp4x_task", 4 * 1024, NULL, 5, NULL);
@@ -77,5 +77,5 @@ void app_main(void)
     wifi_event_init();
     xTaskCreate(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, NULL);
     xTaskCreate(status_bar_init_task, "status_bar_task", 2 * 1024, NULL, 5, NULL);
-    xTaskCreate(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, NULL);
+    xTaskCreate(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, &bat_adc_task_handle);
 }
