@@ -3,6 +3,7 @@
 #include "events_init.h"
 #include "custom.h"
 #include "lvgl.h"
+#include "esp_log.h"
 #include <stdio.h>
 
 static lv_obj_t *time_label;
@@ -49,7 +50,7 @@ void status_bar_create()
     // WIFI图标
     wifi_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(wifi_icon, lv_color_hex(0xffffff), 0);
-    lv_label_set_text(wifi_icon, "  ");
+    lv_label_set_text(wifi_icon, " ");
     lv_obj_align_to(wifi_icon, battery_level_label, LV_ALIGN_OUT_LEFT_MID, -20, 0);
     _lock_release(&lvgl_api_lock);
 }
@@ -68,6 +69,7 @@ void status_bar_set_wifi_state(bool connected)
 {
     if (wifi_icon)
     {
+        ESP_LOGW("STATUS_BAR_WIFI", "Set WiFi icon: %s", connected ? "Connected" : "Disconnected");
         _lock_acquire(&lvgl_api_lock);
         if (connected)
         {

@@ -195,6 +195,10 @@ void wifi_start()
 
 void wifi_stop()
 {
+    if (is_wifi_connected())
+    {
+        ESP_ERROR_CHECK(esp_wifi_disconnect());
+    }
     ESP_ERROR_CHECK(esp_wifi_stop());
 }
 

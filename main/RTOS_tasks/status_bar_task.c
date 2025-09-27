@@ -73,8 +73,8 @@ static void status_bar_update_wifi_icon_task(void *args)
 void status_bar_init_task(void *pvParameter)
 {
     status_bar_create();
-    xTaskCreate(status_bar_update_battery_task, "update_battery_task", 2 * 1024, NULL, 6, &update_battery_task);
+    xTaskCreate(status_bar_update_battery_task, "update_battery_task", 4 * 1024, NULL, 6, &update_battery_task);
     xTaskCreate(status_bar_update_time_task, "update_time_task", 4 * 1024, NULL, 6, NULL);
-    xTaskCreate(status_bar_update_wifi_icon_task, "update_wifi_icon_task", 2 * 1024, NULL, 6, &update_wifi_icon_task_handle);
+    xTaskCreate(status_bar_update_wifi_icon_task, "update_wifi_icon_task", 4 * 1024, NULL, 6, &update_wifi_icon_task_handle);
     vTaskDelete(NULL);
 }
