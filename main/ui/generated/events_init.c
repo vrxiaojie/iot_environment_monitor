@@ -643,6 +643,8 @@ static void data_chart_screen_btn_1min_event_handler (lv_event_t *e)
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_time_frame = TIME_FRAME_1MIN;
         xTaskNotifyGive(update_chart_task_handle);
+        set_x_tick_count();
+        update_chart_x_scale_text();
 #endif
         lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1h, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
         lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1h, 107, LV_PART_MAIN);
@@ -666,6 +668,8 @@ static void data_chart_screen_btn_1h_event_handler (lv_event_t *e)
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_time_frame = TIME_FRAME_1HOUR;
         xTaskNotifyGive(update_chart_task_handle);
+        set_x_tick_count();
+        update_chart_x_scale_text();
 #endif
         lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1min, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
         lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1min, 107, LV_PART_MAIN);
@@ -689,6 +693,8 @@ static void data_chart_screen_btn_24h_event_handler (lv_event_t *e)
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_time_frame = TIME_FRAME_1DAY;
         xTaskNotifyGive(update_chart_task_handle);
+        set_x_tick_count();
+        update_chart_x_scale_text();
 #endif
         lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1h, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
         lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1h, 107, LV_PART_MAIN);

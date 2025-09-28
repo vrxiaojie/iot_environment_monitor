@@ -47,3 +47,5 @@ void update_chart_task(void *arg);
 void get_data_task(void *arg);
 void create_chart();
 void delete_chart();
+void update_chart_x_scale_text();
+void set_x_tick_count();

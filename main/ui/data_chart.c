@@ -16,6 +16,7 @@ static const char *y_scale[] = {str0, str1, str2, NULL}; // Y轴刻度
 lv_obj_t *chart;
 lv_chart_series_t *ser1;
 lv_obj_t *scale_left;
+lv_obj_t *scale_bottom;
 
 static int32_t get_max_value(int32_t *array, uint8_t size)
 {
@@ -41,6 +42,50 @@ static int32_t get_min_value(int32_t *array, uint8_t size)
         }
     }
     return min;
+}
+
+void update_chart_x_scale_text()
+{
+    switch (current_time_frame)
+    {
+    case TIME_FRAME_1MIN:
+        static const char *time_arr_1min[] = {"55s", "45s", "35s", "25s", "15s", "5s", NULL};
+        lv_scale_set_total_tick_count(scale_bottom, 12);
+        lv_scale_set_major_tick_every(scale_bottom, 2);
+        lv_scale_set_text_src(scale_bottom, time_arr_1min);
+        break;
+    case TIME_FRAME_1HOUR:
+        static const char *time_arr_1hour[] = {"55m", "45m", "35m", "25m", "15m", "5m", NULL};
+        lv_scale_set_total_tick_count(scale_bottom, 12);
+        lv_scale_set_major_tick_every(scale_bottom, 2);
+        lv_scale_set_text_src(scale_bottom, time_arr_1hour);
+        break;
+    case TIME_FRAME_1DAY:
+        static const char *time_arr_1day[] = {"23h", "19h", "15h", "11h", "7h", "3h", NULL};
+        lv_scale_set_total_tick_count(scale_bottom, 24);
+        lv_scale_set_major_tick_every(scale_bottom, 4);
+        lv_scale_set_text_src(scale_bottom, time_arr_1day);
+        break;
+    }
+}
+
+void set_x_tick_count()
+{
+    switch (current_time_frame)
+    {
+    case TIME_FRAME_1MIN:
+        lv_chart_set_point_count(chart, 12);
+        lv_scale_set_total_tick_count(scale_bottom, 12);
+        break;
+    case TIME_FRAME_1HOUR:
+        lv_chart_set_point_count(chart, 12);
+        lv_scale_set_total_tick_count(scale_bottom, 12);
+        break;
+    case TIME_FRAME_1DAY:
+        lv_chart_set_point_count(chart, 24);
+        lv_scale_set_total_tick_count(scale_bottom, 24);
+        break;
+    }
 }
 
 void update_chart_task(void *arg)
@@ -187,7 +232,7 @@ void get_data_task(void *arg)
             chart_data.voc.oneMinute[i] = chart_data.voc.oneMinute[i + 1];
         }
         // 每间隔5分钟，一小时的数据前移
-        if (cnt % 12 == 0)
+        if (cnt % 60 == 0)
         {
             chart_data.co2.oneHour[12] = chart_data.co2.oneMinute[12];
             chart_data.temperature.oneHour[12] = chart_data.temperature.oneMinute[12];
@@ -239,33 +284,18 @@ void create_chart()
     lv_obj_set_flex_grow(chart, 1);
     lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
     lv_chart_set_div_line_count(chart, 3, 5);
-    lv_chart_set_point_count(chart, 12);                           // 绘制点数
+    lv_chart_set_point_count(chart, 12);                        // 绘制点数
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100); // 范围
     ser1 = lv_chart_add_series(chart, lv_color_hex(0x000000), LV_CHART_AXIS_PRIMARY_Y);
 
     // 设置X轴刻度
-    lv_obj_t *scale_bottom = lv_scale_create(wrapper);
+    scale_bottom = lv_scale_create(wrapper);
     lv_scale_set_mode(scale_bottom, LV_SCALE_MODE_HORIZONTAL_BOTTOM);
     lv_obj_set_size(scale_bottom, lv_pct(100), lv_pct(15));
     lv_scale_set_total_tick_count(scale_bottom, 12);
     lv_scale_set_major_tick_every(scale_bottom, 2); // 隔一个放一个刻度
     lv_obj_set_style_pad_hor(scale_bottom, lv_chart_get_first_point_center_offset(chart), 0);
-
-    switch (current_time_frame)
-    {
-    case TIME_FRAME_1MIN:
-        static const char *time_arr_1min[] = {"55s", "45s", "35s", "25s", "15s", "5s", NULL};
-        lv_scale_set_text_src(scale_bottom, time_arr_1min);
-        break;
-    case TIME_FRAME_1HOUR:
-        static const char *time_arr_1hour[] = {"55m", "45m", "35m", "25m", "15m", "5m", NULL};
-        lv_scale_set_text_src(scale_bottom, time_arr_1hour);
-        break;
-    case TIME_FRAME_1DAY:
-        static const char *time_arr_1day[] = {"23h", "19h", "15h", "11h", "7h", "3h", NULL};
-        lv_scale_set_text_src(scale_bottom, time_arr_1day);
-        break;
-    }
+    update_chart_x_scale_text();
 
     // 设置Y轴刻度
     scale_left = lv_scale_create(main_cont);
@@ -276,6 +306,8 @@ void create_chart()
     lv_scale_set_major_tick_every(scale_left, 1);
     lv_scale_set_text_src(scale_left, y_scale);
     xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
+    // TODO: 数据显示页的大标题
+    // TODO: 改图表样式
 }
 
 void delete_chart()
