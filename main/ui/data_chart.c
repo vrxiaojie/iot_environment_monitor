@@ -1,0 +1,199 @@
+#include "data_chart.h"
+
+extern STCC4_t stcc4;
+extern int32_t voc_index;
+chart_data_t chart_data = {0};
+extern _lock_t lvgl_api_lock;
+time_frame_t current_time_frame = TIME_FRAME_1MIN;
+chart_type_t current_chart_type = CHART_TYPE_TEMPERATURE;
+
+TaskHandle_t update_chart_task_handle = NULL;
+TaskHandle_t get_data_task_handle = NULL;
+
+static char str0[12], str1[12], str2[12];
+static const char *y_scale[] = {str0, str1, str2, NULL}; // Y轴刻度
+
+lv_obj_t *chart;
+lv_chart_series_t *ser1;
+lv_obj_t *scale_left;
+
+void update_chart_task(void *arg)
+{
+
+    while (1)
+    {
+        _lock_acquire(&lvgl_api_lock);
+        // 根据 current_chart_type 和 current_time_frame 选择对应的数据数组
+        switch (current_chart_type)
+        {
+        case CHART_TYPE_CO2:
+            switch (current_time_frame)
+            {
+            case TIME_FRAME_1MIN:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneMinute);
+                break;
+            case TIME_FRAME_1HOUR:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneHour);
+                break;
+            case TIME_FRAME_1DAY:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneDay);
+                break;
+            }
+            break;
+        case CHART_TYPE_TEMPERATURE:
+            switch (current_time_frame)
+            {
+            case TIME_FRAME_1MIN:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneMinute);
+                break;
+            case TIME_FRAME_1HOUR:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneHour);
+                break;
+            case TIME_FRAME_1DAY:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneDay);
+                break;
+            }
+            break;
+        case CHART_TYPE_HUMIDITY:
+            switch (current_time_frame)
+            {
+            case TIME_FRAME_1MIN:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneMinute);
+                break;
+            case TIME_FRAME_1HOUR:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneHour);
+                break;
+            case TIME_FRAME_1DAY:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneDay);
+                break;
+            }
+            break;
+        case CHART_TYPE_VOC:
+            switch (current_time_frame)
+            {
+            case TIME_FRAME_1MIN:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneMinute);
+                break;
+            case TIME_FRAME_1HOUR:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneHour);
+                break;
+            case TIME_FRAME_1DAY:
+                lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneDay);
+                break;
+            }
+            break;
+        }
+        _lock_release(&lvgl_api_lock);
+        vTaskDelay(pdMS_TO_TICKS(5000)); // 每5秒更新一次图表
+    }
+}
+
+void get_data_task(void *arg)
+{
+    uint16_t cnt = 0;
+    while (1)
+    {
+        chart_data.co2.oneMinute[12] = stcc4.co2Concentration;
+        chart_data.temperature.oneMinute[12] = (int32_t)(stcc4.temperature * 10);
+        chart_data.humidity.oneMinute[12] = (int32_t)(stcc4.relativeHumidity * 10);
+        chart_data.voc.oneMinute[12] = voc_index;
+        cnt++;
+        // 每间隔5秒钟，一分钟数据前移
+        for (int i = 0; i < 12; i++)
+        {
+            chart_data.co2.oneMinute[i] = chart_data.co2.oneMinute[i + 1];
+            chart_data.temperature.oneMinute[i] = chart_data.temperature.oneMinute[i + 1];
+            chart_data.humidity.oneMinute[i] = chart_data.humidity.oneMinute[i + 1];
+            chart_data.voc.oneMinute[i] = chart_data.voc.oneMinute[i + 1];
+        }
+        // 每间隔5分钟，一小时的数据前移
+        if (cnt % 12 == 0)
+        {
+            chart_data.co2.oneHour[12] = chart_data.co2.oneMinute[12];
+            chart_data.temperature.oneHour[12] = chart_data.temperature.oneMinute[12];
+            chart_data.humidity.oneHour[12] = chart_data.humidity.oneMinute[12];
+            chart_data.voc.oneHour[12] = chart_data.voc.oneMinute[12];
+            for (int i = 0; i < 12; i++)
+            {
+                chart_data.co2.oneHour[i] = chart_data.co2.oneHour[i + 1];
+                chart_data.temperature.oneHour[i] = chart_data.temperature.oneHour[i + 1];
+                chart_data.humidity.oneHour[i] = chart_data.humidity.oneHour[i + 1];
+                chart_data.voc.oneHour[i] = chart_data.voc.oneHour[i + 1];
+            }
+        }
+        // 每间隔1小时，一天数据前移
+        if (cnt % 720 == 0)
+        {
+            cnt = 0;
+            chart_data.co2.oneDay[24] = chart_data.co2.oneHour[12];
+            chart_data.temperature.oneDay[24] = chart_data.temperature.oneHour[12];
+            chart_data.humidity.oneDay[24] = chart_data.humidity.oneHour[12];
+            chart_data.voc.oneDay[24] = chart_data.voc.oneHour[12];
+            for (int i = 0; i < 24; i++)
+            {
+                chart_data.co2.oneDay[i] = chart_data.co2.oneDay[i + 1];
+                chart_data.temperature.oneDay[i] = chart_data.temperature.oneDay[i + 1];
+                chart_data.humidity.oneDay[i] = chart_data.humidity.oneDay[i + 1];
+                chart_data.voc.oneDay[i] = chart_data.voc.oneDay[i + 1];
+            }
+        }
+        vTaskDelay(pdMS_TO_TICKS(5000)); // 每5秒获取一次数据
+    }
+}
+
+void create_chart()
+{
+    lv_obj_t *main_cont = lv_obj_create(lv_screen_active());
+    lv_obj_set_pos(main_cont, 10, 38);
+    lv_obj_set_size(main_cont, 460, 180);
+    lv_obj_center(main_cont);
+    // 创建透明容器，让图表能够左右滑动
+    lv_obj_t *wrapper = lv_obj_create(main_cont);
+    lv_obj_remove_style_all(wrapper);
+    lv_obj_set_flex_flow(wrapper, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_size(wrapper, lv_pct(90), lv_pct(100));
+    lv_obj_set_pos(wrapper, lv_pct(10), 0);
+
+    chart = lv_chart_create(wrapper);
+    lv_obj_set_width(chart, lv_pct(100));
+    lv_obj_set_flex_grow(chart, 1);
+    lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
+    lv_chart_set_div_line_count(chart, 3, 5);
+    lv_chart_set_point_count(chart, 12);                         // 绘制点数
+    lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -100, 400); // 范围
+    ser1 = lv_chart_add_series(chart, lv_color_hex(0x000000), LV_CHART_AXIS_PRIMARY_Y);
+
+    // 设置X轴刻度
+    lv_obj_t *scale_bottom = lv_scale_create(wrapper);
+    lv_scale_set_mode(scale_bottom, LV_SCALE_MODE_HORIZONTAL_BOTTOM);
+    lv_obj_set_size(scale_bottom, lv_pct(100), lv_pct(15));
+    lv_scale_set_total_tick_count(scale_bottom, 12);
+    lv_scale_set_major_tick_every(scale_bottom, 2); // 隔一个放一个刻度
+    lv_obj_set_style_pad_hor(scale_bottom, lv_chart_get_first_point_center_offset(chart), 0);
+
+    switch (current_time_frame)
+    {
+    case TIME_FRAME_1MIN:
+        static const char *time_arr_1min[] = {"55s", "45s", "35s", "25s", "15s", "5s", NULL};
+        lv_scale_set_text_src(scale_bottom, time_arr_1min);
+        break;
+    case TIME_FRAME_1HOUR:
+        static const char *time_arr_1hour[] = {"55m", "45m", "35m", "25m", "15m", "5m", NULL};
+        lv_scale_set_text_src(scale_bottom, time_arr_1hour);
+        break;
+    case TIME_FRAME_1DAY:
+        static const char *time_arr_1day[] = {"23h", "19h", "15h", "11h", "7h", "3h", NULL};
+        lv_scale_set_text_src(scale_bottom, time_arr_1day);
+        break;
+    }
+
+    // 设置Y轴刻度
+    scale_left = lv_scale_create(main_cont);
+    lv_scale_set_mode(scale_left, LV_SCALE_MODE_VERTICAL_LEFT);
+    lv_obj_set_size(scale_left, lv_pct(10), lv_pct(85));
+    lv_obj_set_pos(scale_left, 0, 0);
+    lv_scale_set_total_tick_count(scale_left, 3);
+    lv_scale_set_major_tick_every(scale_left, 1);
+    // lv_scale_set_text_src(scale_left, temp_scale);
+    xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
+}

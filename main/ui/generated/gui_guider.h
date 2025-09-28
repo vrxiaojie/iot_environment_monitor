@@ -93,6 +93,16 @@ typedef struct
 	lv_obj_t *power_setting_screen_save_btn_label;
 	lv_obj_t *power_setting_screen_return_btn;
 	lv_obj_t *power_setting_screen_return_btn_label;
+	lv_obj_t *data_chart_screen;
+	bool data_chart_screen_del;
+	lv_obj_t *data_chart_screen_btn_1min;
+	lv_obj_t *data_chart_screen_btn_1min_label;
+	lv_obj_t *data_chart_screen_btn_1h;
+	lv_obj_t *data_chart_screen_btn_1h_label;
+	lv_obj_t *data_chart_screen_btn_24h;
+	lv_obj_t *data_chart_screen_btn_24h_label;
+	lv_obj_t *data_chart_screen_btn_back;
+	lv_obj_t *data_chart_screen_btn_back_label;
 	lv_obj_t *g_kb_top_layer;
 }lv_ui;
 
@@ -126,6 +136,7 @@ void setup_scr_setting_screen(lv_ui *ui);
 void setup_scr_wifi_setting_screen(lv_ui *ui);
 void setup_scr_wifi_connect_screen(lv_ui *ui);
 void setup_scr_power_setting_screen(lv_ui *ui);
+void setup_scr_data_chart_screen(lv_ui *ui);
 LV_IMAGE_DECLARE(_WIFI_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_backlight_RGB565A8_32x32);
 LV_IMAGE_DECLARE(_bluetooth_RGB565A8_48x48);

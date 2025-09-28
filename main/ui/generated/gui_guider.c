@@ -77,6 +77,7 @@ void init_scr_del_flag(lv_ui *ui)
     ui->wifi_setting_screen_del = true;
     ui->wifi_connect_screen_del = true;
     ui->power_setting_screen_del = true;
+    ui->data_chart_screen_del = true;
 }
 
 void setup_bottom_layer(void)
@@ -89,8 +90,8 @@ void setup_ui(lv_ui *ui)
     setup_bottom_layer();
     init_scr_del_flag(ui);
     init_keyboard(ui);
-    setup_scr_main_screen(ui);
-    lv_screen_load(ui->main_screen);
+    setup_scr_data_chart_screen(ui);
+    lv_screen_load(ui->data_chart_screen);
 }
 
 void video_play(lv_ui *ui)

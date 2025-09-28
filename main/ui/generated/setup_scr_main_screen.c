@@ -651,7 +651,9 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_shadow_width(ui->main_screen_time_month_day, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //The custom code of main_screen.
+#ifndef LV_USE_GUIDER_SIMULATOR
     update_data_timer = lv_timer_create(update_data_cb, 1000, 0);
+#endif
 
     //Update current screen layout.
     lv_obj_update_layout(ui->main_screen);

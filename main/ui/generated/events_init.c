@@ -55,6 +55,10 @@ void delete_update_power_setting_screen_task();
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "power_management.h"
 #endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "data_chart.h"
+#include "status_bar.h"
+#endif
 
 static void main_screen_event_handler (lv_event_t *e)
 {
@@ -543,6 +547,52 @@ void events_init_power_setting_screen (lv_ui *ui)
     lv_obj_add_event_cb(ui->power_setting_screen_charge_thresh_slider, power_setting_screen_charge_thresh_slider_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->power_setting_screen_save_btn, power_setting_screen_save_btn_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->power_setting_screen_return_btn, power_setting_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
+}
+
+static void data_chart_screen_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SCREEN_LOADED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_time_frame = TIME_FRAME_1MIN;
+        create_chart();
+        status_bar_hide();
+#endif
+        break;
+    }
+    case LV_EVENT_SCREEN_UNLOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        vTaskDelete(update_chart_task_handle);
+        status_bar_show();
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void data_chart_screen_btn_back_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.main_screen, guider_ui.main_screen_del, &guider_ui.data_chart_screen_del, setup_scr_main_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void events_init_data_chart_screen (lv_ui *ui)
+{
+    lv_obj_add_event_cb(ui->data_chart_screen, data_chart_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->data_chart_screen_btn_back, data_chart_screen_btn_back_event_handler, LV_EVENT_ALL, ui);
 }
 
 
