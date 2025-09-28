@@ -15,6 +15,7 @@
 #include "freemaster_client.h"
 #endif
 
+extern lv_timer_t *update_data_timer;
 uint8_t wifi_status = 0;
 uint8_t bluetooth_status = 0;
 uint8_t powerSaveMode_status = 0;
@@ -84,12 +85,71 @@ static void main_screen_event_handler (lv_event_t *e)
     }
 }
 
+static void main_screen_temp_container_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_chart_type = CHART_TYPE_TEMPERATURE;
+        lv_timer_delete(update_data_timer);
+#endif
+        ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void main_screen_co2_container_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_chart_type = CHART_TYPE_CO2;
+        lv_timer_delete(update_data_timer);
+#endif
+        ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void main_screen_humid_container_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_chart_type = CHART_TYPE_HUMIDITY;
+        lv_timer_delete(update_data_timer);
+#endif
+        ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 static void main_screen_voc_container_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
     case LV_EVENT_CLICKED:
     {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_chart_type = CHART_TYPE_VOC;
+        lv_timer_delete(update_data_timer);
+#endif
+        ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
         break;
     }
     default:
@@ -100,6 +160,9 @@ static void main_screen_voc_container_event_handler (lv_event_t *e)
 void events_init_main_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->main_screen, main_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->main_screen_temp_container, main_screen_temp_container_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->main_screen_co2_container, main_screen_co2_container_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->main_screen_humid_container, main_screen_humid_container_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->main_screen_voc_container, main_screen_voc_container_event_handler, LV_EVENT_ALL, ui);
 }
 
@@ -558,16 +621,89 @@ static void data_chart_screen_event_handler (lv_event_t *e)
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_time_frame = TIME_FRAME_1MIN;
         create_chart();
-        status_bar_hide();
+        status_bar_hide(false);
 #endif
         break;
     }
     case LV_EVENT_SCREEN_UNLOAD_START:
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
-        vTaskDelete(update_chart_task_handle);
-        status_bar_show();
+        if (update_chart_task_handle != NULL)
+        {
+            vTaskDelete(update_chart_task_handle);
+            update_chart_task_handle = NULL;
+        }
+        status_bar_show(false);
 #endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void data_chart_screen_btn_1min_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_time_frame = TIME_FRAME_1MIN;
+        xTaskNotifyGive(update_chart_task_handle);
+#endif
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1h, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1h, 107, LV_PART_MAIN);
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_24h, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_24h, 106, LV_PART_MAIN);
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1min, lv_color_hex(0x0f4187), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1min, 255, LV_PART_MAIN);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void data_chart_screen_btn_1h_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_time_frame = TIME_FRAME_1HOUR;
+        xTaskNotifyGive(update_chart_task_handle);
+#endif
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1min, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1min, 107, LV_PART_MAIN);
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_24h, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_24h, 107, LV_PART_MAIN);
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1h, lv_color_hex(0x0f4187), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1h, 255, LV_PART_MAIN);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void data_chart_screen_btn_24h_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        current_time_frame = TIME_FRAME_1DAY;
+        xTaskNotifyGive(update_chart_task_handle);
+#endif
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1h, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1h, 107, LV_PART_MAIN);
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_1min, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_1min, 107, LV_PART_MAIN);
+        lv_obj_set_style_bg_color(guider_ui.data_chart_screen_btn_24h, lv_color_hex(0x0f4187), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(guider_ui.data_chart_screen_btn_24h, 255, LV_PART_MAIN);
         break;
     }
     default:
@@ -592,6 +728,9 @@ static void data_chart_screen_btn_back_event_handler (lv_event_t *e)
 void events_init_data_chart_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->data_chart_screen, data_chart_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->data_chart_screen_btn_1min, data_chart_screen_btn_1min_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->data_chart_screen_btn_1h, data_chart_screen_btn_1h_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->data_chart_screen_btn_24h, data_chart_screen_btn_24h_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->data_chart_screen_btn_back, data_chart_screen_btn_back_event_handler, LV_EVENT_ALL, ui);
 }
 

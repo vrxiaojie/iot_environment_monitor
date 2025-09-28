@@ -164,7 +164,7 @@ void update_chart_task(void *arg)
         // 设置Y轴显示范围
         lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max);
         _lock_release(&lvgl_api_lock);
-        vTaskDelay(pdMS_TO_TICKS(5000)); // 每5秒更新一次图表
+        ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(5000)); // 每5秒或收到任务通知时更新图表
     }
 }
 
@@ -223,7 +223,7 @@ void get_data_task(void *arg)
 
 void create_chart()
 {
-    lv_obj_t *main_cont = lv_obj_create(lv_screen_active());
+    lv_obj_t *main_cont = lv_obj_create(guider_ui.data_chart_screen);
     lv_obj_set_pos(main_cont, 10, 38);
     lv_obj_set_size(main_cont, 460, 180);
     lv_obj_center(main_cont);
