@@ -17,9 +17,35 @@ lv_obj_t *chart;
 lv_chart_series_t *ser1;
 lv_obj_t *scale_left;
 
+static int32_t get_max_value(int32_t *array, uint8_t size)
+{
+    int32_t max = array[0];
+    for (uint8_t i = 0; i < size; i++)
+    {
+        if (array[i] > max)
+        {
+            max = array[i];
+        }
+    }
+    return max;
+}
+
+static int32_t get_min_value(int32_t *array, uint8_t size)
+{
+    int32_t min = array[0];
+    for (uint8_t i = 0; i < size; i++)
+    {
+        if (array[i] < min)
+        {
+            min = array[i];
+        }
+    }
+    return min;
+}
+
 void update_chart_task(void *arg)
 {
-
+    int32_t max = 0, min = 0, mid = 0;
     while (1)
     {
         _lock_acquire(&lvgl_api_lock);
@@ -31,58 +57,112 @@ void update_chart_task(void *arg)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneMinute);
+                min = get_min_value(chart_data.co2.oneMinute, 12);
+                max = get_max_value(chart_data.co2.oneMinute, 12);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneHour);
+                min = get_min_value(chart_data.co2.oneHour, 12);
+                max = get_max_value(chart_data.co2.oneHour, 12);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneDay);
+                min = get_min_value(chart_data.co2.oneDay, 24);
+                max = get_max_value(chart_data.co2.oneDay, 24);
                 break;
             }
+            min = min < 300 ? 0 : min - 300;
+            max = max > 5000 ? 5000 : max + 300;
             break;
         case CHART_TYPE_TEMPERATURE:
             switch (current_time_frame)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneMinute);
+                min = get_min_value(chart_data.temperature.oneMinute, 12);
+                max = get_max_value(chart_data.temperature.oneMinute, 12);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneHour);
+                min = get_min_value(chart_data.temperature.oneHour, 12);
+                max = get_max_value(chart_data.temperature.oneHour, 12);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneDay);
+                min = get_min_value(chart_data.temperature.oneDay, 24);
+                max = get_max_value(chart_data.temperature.oneDay, 24);
                 break;
             }
+            min -= 10;
+            max += 10;
             break;
         case CHART_TYPE_HUMIDITY:
             switch (current_time_frame)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneMinute);
+                min = get_min_value(chart_data.humidity.oneMinute, 12);
+                max = get_max_value(chart_data.humidity.oneMinute, 12);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneHour);
+                min = get_min_value(chart_data.humidity.oneHour, 12);
+                max = get_max_value(chart_data.humidity.oneHour, 12);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneDay);
+                min = get_min_value(chart_data.humidity.oneDay, 24);
+                max = get_max_value(chart_data.humidity.oneDay, 24);
                 break;
             }
+            min = min < 100 ? 0 : min - 100;
+            max = max > 900 ? 1000 : max + 100;
             break;
         case CHART_TYPE_VOC:
             switch (current_time_frame)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneMinute);
+                min = get_min_value(chart_data.voc.oneMinute, 12);
+                max = get_max_value(chart_data.voc.oneMinute, 12);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneHour);
+                min = get_min_value(chart_data.voc.oneHour, 12);
+                max = get_max_value(chart_data.voc.oneHour, 12);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneDay);
+                min = get_min_value(chart_data.voc.oneDay, 24);
+                max = get_max_value(chart_data.voc.oneDay, 24);
                 break;
             }
+            min = min < 50 ? 0 : min - 50;
+            max = max > 500 ? 500 : max + 50;
             break;
         }
+        mid = (max + min) / 2;
+        lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max); // 动态调整范围
+
+        // 设置Y轴的刻度文字
+        switch (current_chart_type)
+        {
+        // 温度和湿度都是浮点数，转成了整数计算，最终显示时再转换回去
+        case CHART_TYPE_TEMPERATURE:
+        case CHART_TYPE_HUMIDITY:
+            sprintf(str0, "%.1f", min / 10.0);
+            sprintf(str1, "%.1f", mid / 10.0);
+            sprintf(str2, "%.1f", max / 10.0);
+            break;
+        case CHART_TYPE_VOC:
+        case CHART_TYPE_CO2:
+            sprintf(str0, "%ld", min);
+            sprintf(str1, "%ld", mid);
+            sprintf(str2, "%ld", max);
+            break;
+        }
+        // 设置Y轴显示范围
+        lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max);
         _lock_release(&lvgl_api_lock);
         vTaskDelay(pdMS_TO_TICKS(5000)); // 每5秒更新一次图表
     }
@@ -159,8 +239,8 @@ void create_chart()
     lv_obj_set_flex_grow(chart, 1);
     lv_chart_set_type(chart, LV_CHART_TYPE_LINE);
     lv_chart_set_div_line_count(chart, 3, 5);
-    lv_chart_set_point_count(chart, 12);                         // 绘制点数
-    lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -100, 400); // 范围
+    lv_chart_set_point_count(chart, 12);                           // 绘制点数
+    lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100); // 范围
     ser1 = lv_chart_add_series(chart, lv_color_hex(0x000000), LV_CHART_AXIS_PRIMARY_Y);
 
     // 设置X轴刻度
@@ -194,6 +274,6 @@ void create_chart()
     lv_obj_set_pos(scale_left, 0, 0);
     lv_scale_set_total_tick_count(scale_left, 3);
     lv_scale_set_major_tick_every(scale_left, 1);
-    // lv_scale_set_text_src(scale_left, temp_scale);
+    lv_scale_set_text_src(scale_left, y_scale);
     xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
 }
