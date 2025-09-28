@@ -14,9 +14,13 @@ static lv_obj_t *charge_status_icon;
 lv_obj_t *status_bar;
 extern _lock_t lvgl_api_lock;
 
-void status_bar_show()
+void status_bar_show(bool need_api_lock)
 {
-    if (status_bar)
+    if (status_bar && need_api_lock == false)
+    {
+        lv_obj_clear_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
+    }
+    else if (status_bar && need_api_lock == true)
     {
         _lock_acquire(&lvgl_api_lock);
         lv_obj_clear_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
@@ -24,9 +28,13 @@ void status_bar_show()
     }
 }
 
-void status_bar_hide()
+void status_bar_hide(bool need_api_lock)
 {
-    if (status_bar)
+    if (status_bar && need_api_lock == false)
+    {
+        lv_obj_add_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
+    }
+    else if (status_bar && need_api_lock == true)
     {
         _lock_acquire(&lvgl_api_lock);
         lv_obj_add_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
