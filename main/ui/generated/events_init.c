@@ -93,7 +93,6 @@ static void main_screen_temp_container_event_handler (lv_event_t *e)
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_chart_type = CHART_TYPE_TEMPERATURE;
-        lv_timer_delete(update_data_timer);
 #endif
         ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
         break;
@@ -111,7 +110,6 @@ static void main_screen_co2_container_event_handler (lv_event_t *e)
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_chart_type = CHART_TYPE_CO2;
-        lv_timer_delete(update_data_timer);
 #endif
         ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
         break;
@@ -129,7 +127,6 @@ static void main_screen_humid_container_event_handler (lv_event_t *e)
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_chart_type = CHART_TYPE_HUMIDITY;
-        lv_timer_delete(update_data_timer);
 #endif
         ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
         break;
@@ -147,7 +144,6 @@ static void main_screen_voc_container_event_handler (lv_event_t *e)
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_chart_type = CHART_TYPE_VOC;
-        lv_timer_delete(update_data_timer);
 #endif
         ui_load_scr_animation(&guider_ui, &guider_ui.data_chart_screen, guider_ui.data_chart_screen_del, &guider_ui.main_screen_del, setup_scr_data_chart_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
         break;
@@ -616,7 +612,7 @@ static void data_chart_screen_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
-    case LV_EVENT_SCREEN_LOADED:
+    case LV_EVENT_SCREEN_LOAD_START:
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
         current_time_frame = TIME_FRAME_1MIN;
@@ -628,11 +624,7 @@ static void data_chart_screen_event_handler (lv_event_t *e)
     case LV_EVENT_SCREEN_UNLOAD_START:
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
-        if (update_chart_task_handle != NULL)
-        {
-            vTaskDelete(update_chart_task_handle);
-            update_chart_task_handle = NULL;
-        }
+        delete_chart();
         status_bar_show(false);
 #endif
         break;

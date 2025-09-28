@@ -277,3 +277,17 @@ void create_chart()
     lv_scale_set_text_src(scale_left, y_scale);
     xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
 }
+
+void delete_chart()
+{
+    if (update_chart_task_handle)
+    {
+        vTaskDelete(update_chart_task_handle);
+        update_chart_task_handle = NULL;
+    }
+    if (chart)
+    {
+        lv_obj_del(chart);
+        chart = NULL;
+    }
+}

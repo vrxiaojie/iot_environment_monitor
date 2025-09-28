@@ -46,3 +46,4 @@ extern TaskHandle_t get_data_task_handle;
 void update_chart_task(void *arg);
 void get_data_task(void *arg);
 void create_chart();
+void delete_chart();
