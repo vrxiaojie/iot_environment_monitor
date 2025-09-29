@@ -361,8 +361,8 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
 
     //Write codes wifi_setting_screen_return_btn
     ui->wifi_setting_screen_return_btn = lv_button_create(ui->wifi_setting_screen);
-    lv_obj_set_pos(ui->wifi_setting_screen_return_btn, 8, 48);
-    lv_obj_set_size(ui->wifi_setting_screen_return_btn, 24, 24);
+    lv_obj_set_pos(ui->wifi_setting_screen_return_btn, 2, 42);
+    lv_obj_set_size(ui->wifi_setting_screen_return_btn, 32, 32);
     ui->wifi_setting_screen_return_btn_label = lv_label_create(ui->wifi_setting_screen_return_btn);
     lv_label_set_text(ui->wifi_setting_screen_return_btn_label, "<-");
     lv_label_set_long_mode(ui->wifi_setting_screen_return_btn_label, LV_LABEL_LONG_WRAP);

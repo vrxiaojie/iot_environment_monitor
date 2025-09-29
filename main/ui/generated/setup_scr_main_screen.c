@@ -221,7 +221,7 @@ void setup_scr_main_screen(lv_ui *ui)
 
     //Write codes main_screen_temp_container
     ui->main_screen_temp_container = lv_obj_create(ui->main_screen);
-    lv_obj_set_pos(ui->main_screen_temp_container, 18, 30);
+    lv_obj_set_pos(ui->main_screen_temp_container, 18, 40);
     lv_obj_set_size(ui->main_screen_temp_container, 150, 94);
     lv_obj_set_scrollbar_mode(ui->main_screen_temp_container, LV_SCROLLBAR_MODE_OFF);
 
@@ -307,7 +307,7 @@ void setup_scr_main_screen(lv_ui *ui)
 
     //Write codes main_screen_co2_container
     ui->main_screen_co2_container = lv_obj_create(ui->main_screen);
-    lv_obj_set_pos(ui->main_screen_co2_container, 18, 148);
+    lv_obj_set_pos(ui->main_screen_co2_container, 18, 155);
     lv_obj_set_size(ui->main_screen_co2_container, 150, 94);
     lv_obj_set_scrollbar_mode(ui->main_screen_co2_container, LV_SCROLLBAR_MODE_OFF);
 
@@ -393,7 +393,7 @@ void setup_scr_main_screen(lv_ui *ui)
 
     //Write codes main_screen_humid_container
     ui->main_screen_humid_container = lv_obj_create(ui->main_screen);
-    lv_obj_set_pos(ui->main_screen_humid_container, 188, 30);
+    lv_obj_set_pos(ui->main_screen_humid_container, 188, 40);
     lv_obj_set_size(ui->main_screen_humid_container, 150, 94);
     lv_obj_set_scrollbar_mode(ui->main_screen_humid_container, LV_SCROLLBAR_MODE_OFF);
 
@@ -479,7 +479,7 @@ void setup_scr_main_screen(lv_ui *ui)
 
     //Write codes main_screen_voc_container
     ui->main_screen_voc_container = lv_obj_create(ui->main_screen);
-    lv_obj_set_pos(ui->main_screen_voc_container, 188, 148);
+    lv_obj_set_pos(ui->main_screen_voc_container, 188, 155);
     lv_obj_set_size(ui->main_screen_voc_container, 150, 94);
     lv_obj_set_scrollbar_mode(ui->main_screen_voc_container, LV_SCROLLBAR_MODE_OFF);
 
@@ -566,12 +566,12 @@ void setup_scr_main_screen(lv_ui *ui)
     //Write codes main_screen_time_container
     ui->main_screen_time_container = lv_obj_create(ui->main_screen);
     lv_obj_set_pos(ui->main_screen_time_container, 352, 35);
-    lv_obj_set_size(ui->main_screen_time_container, 103, 205);
+    lv_obj_set_size(ui->main_screen_time_container, 103, 220);
     lv_obj_set_scrollbar_mode(ui->main_screen_time_container, LV_SCROLLBAR_MODE_OFF);
 
     //Write style for main_screen_time_container, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_border_width(ui->main_screen_time_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(ui->main_screen_time_container, 5, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->main_screen_time_container, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->main_screen_time_container, 222, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->main_screen_time_container, lv_color_hex(0x1B1E20), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->main_screen_time_container, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
