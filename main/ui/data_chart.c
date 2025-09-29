@@ -272,12 +272,17 @@ void create_chart()
     lv_obj_set_pos(main_cont, 10, 38);
     lv_obj_set_size(main_cont, 460, 180);
     lv_obj_center(main_cont);
+    lv_obj_set_style_bg_color(main_cont, lv_color_hex(0x5B5B5B), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(main_cont, LV_OPA_40, LV_PART_MAIN);
+    lv_obj_set_style_border_width(main_cont, 0, LV_PART_MAIN);
     // 创建透明容器，让图表能够左右滑动
     lv_obj_t *wrapper = lv_obj_create(main_cont);
     lv_obj_remove_style_all(wrapper);
     lv_obj_set_flex_flow(wrapper, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_size(wrapper, lv_pct(90), lv_pct(100));
     lv_obj_set_pos(wrapper, lv_pct(10), 0);
+    lv_obj_set_style_bg_color(wrapper, lv_color_hex(0x5B5B5B), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(wrapper, LV_OPA_0, LV_PART_MAIN);
 
     chart = lv_chart_create(wrapper);
     lv_obj_set_width(chart, lv_pct(100));
@@ -286,7 +291,19 @@ void create_chart()
     lv_chart_set_div_line_count(chart, 3, 5);
     lv_chart_set_point_count(chart, 12);                        // 绘制点数
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100); // 范围
-    ser1 = lv_chart_add_series(chart, lv_color_hex(0x000000), LV_CHART_AXIS_PRIMARY_Y);
+    ser1 = lv_chart_add_series(chart, lv_color_hex(0x409eff), LV_CHART_AXIS_PRIMARY_Y);
+    // 设置主区域样式
+    lv_obj_set_style_bg_color(chart, lv_color_hex(0x5B5B5B), LV_PART_MAIN);
+    lv_obj_set_style_bg_opa(chart, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_set_style_pad_left(chart, 15, LV_PART_MAIN);
+    lv_obj_set_style_border_width(chart, 2, LV_PART_MAIN);
+    lv_obj_set_style_border_color(chart, lv_color_hex(0x5E5E5E), LV_PART_MAIN);
+    lv_obj_set_style_line_color(chart, lv_color_hex(0x404040), LV_PART_MAIN);
+
+    // 设置数据点样式
+    lv_obj_set_style_bg_color(chart, lv_color_hex(0x409eff), LV_PART_INDICATOR);
+    lv_obj_set_style_size(chart, 4, 4, LV_PART_INDICATOR);
+    lv_obj_set_style_radius(chart, LV_RADIUS_CIRCLE, LV_PART_INDICATOR);
 
     // 设置X轴刻度
     scale_bottom = lv_scale_create(wrapper);
@@ -295,6 +312,10 @@ void create_chart()
     lv_scale_set_total_tick_count(scale_bottom, 12);
     lv_scale_set_major_tick_every(scale_bottom, 2); // 隔一个放一个刻度
     lv_obj_set_style_pad_hor(scale_bottom, lv_chart_get_first_point_center_offset(chart), 0);
+    lv_obj_set_style_line_color(scale_bottom, lv_color_hex(0xFFFFFF), LV_PART_MAIN);
+    lv_obj_set_style_text_color(scale_bottom, lv_color_hex(0xFFFFFF), LV_PART_INDICATOR);
+    lv_obj_set_style_line_color(scale_bottom, lv_color_hex(0xFFFFFF), LV_PART_INDICATOR);
+    lv_obj_set_style_line_color(scale_bottom, lv_color_hex(0xFFFFFF), LV_PART_ITEMS);
     update_chart_x_scale_text();
 
     // 设置Y轴刻度
@@ -305,6 +326,10 @@ void create_chart()
     lv_scale_set_total_tick_count(scale_left, 3);
     lv_scale_set_major_tick_every(scale_left, 1);
     lv_scale_set_text_src(scale_left, y_scale);
+    lv_obj_set_style_line_color(scale_left, lv_color_hex(0xFFFFFF), LV_PART_MAIN);
+    lv_obj_set_style_text_color(scale_left, lv_color_hex(0xFFFFFF), LV_PART_INDICATOR);
+    lv_obj_set_style_line_color(scale_left, lv_color_hex(0xFFFFFF), LV_PART_INDICATOR);
+    lv_obj_set_style_line_color(scale_left, lv_color_hex(0xFFFFFF), LV_PART_ITEMS);
     
     // 修改数据显示页的标题
     switch (current_chart_type)
@@ -324,7 +349,7 @@ void create_chart()
     }
     // 创建更新图表的任务
     xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
-    // TODO: 改图表样式
+
 }
 
 void delete_chart()
