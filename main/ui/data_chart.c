@@ -18,10 +18,10 @@ lv_chart_series_t *ser1;
 lv_obj_t *scale_left;
 lv_obj_t *scale_bottom;
 
-static int32_t get_max_value(int32_t *array, uint8_t size)
+static int32_t get_max_value(int32_t *array, int8_t total_size, int8_t size)
 {
-    int32_t max = array[0];
-    for (uint8_t i = 0; i < size; i++)
+    int32_t max = array[total_size - 1];
+    for (int8_t i = total_size - 1; i > total_size - size; i--)
     {
         if (array[i] > max)
         {
@@ -31,10 +31,10 @@ static int32_t get_max_value(int32_t *array, uint8_t size)
     return max;
 }
 
-static int32_t get_min_value(int32_t *array, uint8_t size)
+static int32_t get_min_value(int32_t *array, int8_t total_size, int8_t size)
 {
-    int32_t min = array[0];
-    for (uint8_t i = 0; i < size; i++)
+    int32_t min = array[total_size - 1];
+    for (int8_t i = total_size - 1; i > total_size - size; i--)
     {
         if (array[i] < min)
         {
@@ -105,40 +105,40 @@ void update_chart_task(void *arg)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneMinute);
-                min = get_min_value(chart_data.co2.oneMinute, 12);
-                max = get_max_value(chart_data.co2.oneMinute, 12);
+                min = get_min_value(chart_data.co2.oneMinute, 12, chart_data.oneMinute_cnt);
+                max = get_max_value(chart_data.co2.oneMinute, 12, chart_data.oneMinute_cnt);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneHour);
-                min = get_min_value(chart_data.co2.oneHour, 12);
-                max = get_max_value(chart_data.co2.oneHour, 12);
+                min = get_min_value(chart_data.co2.oneHour, 12, chart_data.oneHour_cnt);
+                max = get_max_value(chart_data.co2.oneHour, 12, chart_data.oneHour_cnt);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.co2.oneDay);
-                min = get_min_value(chart_data.co2.oneDay, 24);
-                max = get_max_value(chart_data.co2.oneDay, 24);
+                min = get_min_value(chart_data.co2.oneDay, 24, chart_data.oneDay_cnt);
+                max = get_max_value(chart_data.co2.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
-            min = min < 300 ? 0 : min - 300;
-            max = max > 5000 ? 5000 : max + 300;
+            min = min < 200 ? 0 : min - 200;
+            max = max > 5000 ? 5000 : max + 200;
             break;
         case CHART_TYPE_TEMPERATURE:
             switch (current_time_frame)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneMinute);
-                min = get_min_value(chart_data.temperature.oneMinute, 12);
-                max = get_max_value(chart_data.temperature.oneMinute, 12);
+                min = get_min_value(chart_data.temperature.oneMinute, 12, chart_data.oneMinute_cnt);
+                max = get_max_value(chart_data.temperature.oneMinute, 12, chart_data.oneMinute_cnt);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneHour);
-                min = get_min_value(chart_data.temperature.oneHour, 12);
-                max = get_max_value(chart_data.temperature.oneHour, 12);
+                min = get_min_value(chart_data.temperature.oneHour, 12, chart_data.oneHour_cnt);
+                max = get_max_value(chart_data.temperature.oneHour, 12, chart_data.oneHour_cnt);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.temperature.oneDay);
-                min = get_min_value(chart_data.temperature.oneDay, 24);
-                max = get_max_value(chart_data.temperature.oneDay, 24);
+                min = get_min_value(chart_data.temperature.oneDay, 24, chart_data.oneDay_cnt);
+                max = get_max_value(chart_data.temperature.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
             min -= 10;
@@ -149,40 +149,40 @@ void update_chart_task(void *arg)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneMinute);
-                min = get_min_value(chart_data.humidity.oneMinute, 12);
-                max = get_max_value(chart_data.humidity.oneMinute, 12);
+                min = get_min_value(chart_data.humidity.oneMinute, 12, chart_data.oneMinute_cnt);
+                max = get_max_value(chart_data.humidity.oneMinute, 12, chart_data.oneMinute_cnt);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneHour);
-                min = get_min_value(chart_data.humidity.oneHour, 12);
-                max = get_max_value(chart_data.humidity.oneHour, 12);
+                min = get_min_value(chart_data.humidity.oneHour, 12, chart_data.oneHour_cnt);
+                max = get_max_value(chart_data.humidity.oneHour, 12, chart_data.oneHour_cnt);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.humidity.oneDay);
-                min = get_min_value(chart_data.humidity.oneDay, 24);
-                max = get_max_value(chart_data.humidity.oneDay, 24);
+                min = get_min_value(chart_data.humidity.oneDay, 24, chart_data.oneDay_cnt);
+                max = get_max_value(chart_data.humidity.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
-            min = min < 100 ? 0 : min - 100;
-            max = max > 900 ? 1000 : max + 100;
+            min = min < 50 ? 0 : min - 50;
+            max = max > 950 ? 1000 : max + 50;
             break;
         case CHART_TYPE_VOC:
             switch (current_time_frame)
             {
             case TIME_FRAME_1MIN:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneMinute);
-                min = get_min_value(chart_data.voc.oneMinute, 12);
-                max = get_max_value(chart_data.voc.oneMinute, 12);
+                min = get_min_value(chart_data.voc.oneMinute, 12, chart_data.oneMinute_cnt);
+                max = get_max_value(chart_data.voc.oneMinute, 12, chart_data.oneMinute_cnt);
                 break;
             case TIME_FRAME_1HOUR:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneHour);
-                min = get_min_value(chart_data.voc.oneHour, 12);
-                max = get_max_value(chart_data.voc.oneHour, 12);
+                min = get_min_value(chart_data.voc.oneHour, 12, chart_data.oneHour_cnt);
+                max = get_max_value(chart_data.voc.oneHour, 12, chart_data.oneHour_cnt);
                 break;
             case TIME_FRAME_1DAY:
                 lv_chart_set_ext_y_array(chart, ser1, chart_data.voc.oneDay);
-                min = get_min_value(chart_data.voc.oneDay, 24);
-                max = get_max_value(chart_data.voc.oneDay, 24);
+                min = get_min_value(chart_data.voc.oneDay, 24, chart_data.oneDay_cnt);
+                max = get_max_value(chart_data.voc.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
             min = min < 50 ? 0 : min - 50;
@@ -209,8 +209,40 @@ void update_chart_task(void *arg)
             sprintf(str2, "%ld", max);
             break;
         }
-        // 设置Y轴显示范围
-        lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max);
+        // 设置Y轴显示范围，当该时间跨度的数据量为0时，设置一个较大的y轴范围，实现不显示该图表的效果
+        switch (current_time_frame)
+        {
+        case TIME_FRAME_1MIN:
+            if (chart_data.oneMinute_cnt > 0)
+            {
+                lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max);
+            }
+            else
+            {
+                lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -1000, -999);
+            }
+            break;
+        case TIME_FRAME_1HOUR:
+            if (chart_data.oneHour_cnt > 0)
+            {
+                lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max);
+            }
+            else
+            {
+                lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -1000, -999);
+            }
+            break;
+        case TIME_FRAME_1DAY:
+            if (chart_data.oneDay_cnt > 0)
+            {
+                lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max);
+            }
+            else
+            {
+                lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, -1000, -999);
+            }
+            break;
+        }
         // 更新数据显示页面的数据标签、时间标签
         switch (current_chart_type)
         {
@@ -259,6 +291,10 @@ void get_data_task(void *arg)
         chart_data.temperature.oneMinute[11] = (int32_t)(stcc4.temperature * 10);
         chart_data.humidity.oneMinute[11] = (int32_t)(stcc4.relativeHumidity * 10);
         chart_data.voc.oneMinute[11] = voc_index;
+        if (chart_data.oneMinute_cnt < 12)
+        {
+            chart_data.oneMinute_cnt++;
+        }
 
         // 每间隔5分钟，一小时的数据前移
         if (cnt % 60 == 0)
@@ -274,6 +310,10 @@ void get_data_task(void *arg)
             chart_data.temperature.oneHour[11] = chart_data.temperature.oneMinute[11];
             chart_data.humidity.oneHour[11] = chart_data.humidity.oneMinute[11];
             chart_data.voc.oneHour[11] = chart_data.voc.oneMinute[11];
+            if (chart_data.oneHour_cnt < 12)
+            {
+                chart_data.oneHour_cnt++;
+            }
         }
         // 每间隔1小时，一天数据前移
         if (cnt % 720 == 0)
@@ -290,6 +330,10 @@ void get_data_task(void *arg)
             chart_data.temperature.oneDay[23] = chart_data.temperature.oneHour[11];
             chart_data.humidity.oneDay[23] = chart_data.humidity.oneHour[11];
             chart_data.voc.oneDay[23] = chart_data.voc.oneHour[11];
+            if (chart_data.oneDay_cnt < 24)
+            {
+                chart_data.oneDay_cnt++;
+            }
         }
         vTaskDelay(pdMS_TO_TICKS(5000)); // 每5秒获取一次数据
     }

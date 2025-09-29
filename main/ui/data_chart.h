@@ -12,27 +12,34 @@
 #include "time.h"
 
 // 按1分钟、1小时、1天来存储数据点
-typedef struct {
+typedef struct
+{
     int32_t oneMinute[13];
     int32_t oneHour[13];
     int32_t oneDay[25];
 } chart_data_points_t;
 
-typedef struct {
+typedef struct
+{
     chart_data_points_t co2;
     chart_data_points_t temperature;
     chart_data_points_t humidity;
     chart_data_points_t voc;
+    int8_t oneMinute_cnt; // 1分钟数据计数
+    int8_t oneHour_cnt;   // 1小时数据计数
+    int8_t oneDay_cnt;    // 1天数据计数
 } chart_data_t;
 
-typedef enum {
+typedef enum
+{
     CHART_TYPE_CO2 = 0,
     CHART_TYPE_TEMPERATURE,
     CHART_TYPE_HUMIDITY,
     CHART_TYPE_VOC,
 } chart_type_t;
 
-typedef enum {
+typedef enum
+{
     TIME_FRAME_1MIN = 0,
     TIME_FRAME_1HOUR,
     TIME_FRAME_1DAY,
