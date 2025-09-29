@@ -222,8 +222,9 @@ void update_chart_task(void *arg)
                 max = get_max_value(chart_data.co2.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
-            min = min < 200 ? 0 : min - 200;
-            max = max > 5000 ? 5000 : max + 200;
+            // 取100的倍数
+            min = min < 200 ? 0 : (min - 200 - (min % 100));
+            max = max + 200 - (max % 100);
             break;
         case CHART_TYPE_TEMPERATURE:
             switch (current_time_frame)
@@ -244,8 +245,9 @@ void update_chart_task(void *arg)
                 max = get_max_value(chart_data.temperature.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
-            min -= 10;
-            max += 10;
+            // 取整
+            min = min - 10 - (min % 10); 
+            max = max + 10 - (max % 10); 
             break;
         case CHART_TYPE_HUMIDITY:
             switch (current_time_frame)
@@ -266,8 +268,9 @@ void update_chart_task(void *arg)
                 max = get_max_value(chart_data.humidity.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
-            min = min < 50 ? 0 : min - 50;
-            max = max > 950 ? 1000 : max + 50;
+            // 取10的倍数
+            min = min < 100 ? 0 : min - min % 100;
+            max = max > 800 ? 1000 : (max + 100 - (max % 100));
             break;
         case CHART_TYPE_VOC:
             switch (current_time_frame)
@@ -288,30 +291,12 @@ void update_chart_task(void *arg)
                 max = get_max_value(chart_data.voc.oneDay, 24, chart_data.oneDay_cnt);
                 break;
             }
-            min = min < 50 ? 0 : min - 50;
-            max = max > 500 ? 500 : max + 50;
+            min = min < 50 ? 0 : (min - 50 - (min % 10));
+            max = max + 50 - (max % 10);
             break;
         }
         mid = (max + min) / 2;
-        lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max); // 动态调整范围
 
-        // 设置Y轴的刻度文字
-        switch (current_chart_type)
-        {
-        // 温度和湿度都是浮点数，转成了整数计算，最终显示时再转换回去
-        case CHART_TYPE_TEMPERATURE:
-        case CHART_TYPE_HUMIDITY:
-            sprintf(str0, "%.1f", min / 10.0);
-            sprintf(str1, "%.1f", mid / 10.0);
-            sprintf(str2, "%.1f", max / 10.0);
-            break;
-        case CHART_TYPE_VOC:
-        case CHART_TYPE_CO2:
-            sprintf(str0, "%ld", min);
-            sprintf(str1, "%ld", mid);
-            sprintf(str2, "%ld", max);
-            break;
-        }
         // 设置Y轴显示范围，当该时间跨度的数据量为0时，设置一个较大的y轴范围，实现不显示该图表的效果
         switch (current_time_frame)
         {
@@ -346,6 +331,27 @@ void update_chart_task(void *arg)
             }
             break;
         }
+
+        // 设置Y轴的刻度文字
+        switch (current_chart_type)
+        {
+        // 温度和湿度都是浮点数，转成了整数计算，最终显示时再转换回去
+        case CHART_TYPE_TEMPERATURE:
+        case CHART_TYPE_HUMIDITY:
+            sprintf(str0, "%.1f", min / 10.0);
+            sprintf(str1, "%.1f", mid / 10.0);
+            sprintf(str2, "%.1f", max / 10.0);
+            break;
+        case CHART_TYPE_VOC:
+        case CHART_TYPE_CO2:
+            sprintf(str0, "%ld", min);
+            sprintf(str1, "%ld", mid);
+            sprintf(str2, "%ld", max);
+            break;
+        }
+
+        lv_chart_refresh(chart); // 通知图表重新渲染
+
         // 更新数据显示页面的数据标签、时间标签
         switch (current_chart_type)
         {
@@ -438,6 +444,8 @@ void get_data_task(void *arg)
                 chart_data.oneDay_cnt++;
             }
         }
+        if (update_chart_task_handle != NULL)
+            xTaskNotifyGive(update_chart_task_handle);
         vTaskDelay(pdMS_TO_TICKS(5000)); // 每5秒获取一次数据
     }
 }
