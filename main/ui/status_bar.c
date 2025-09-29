@@ -11,11 +11,41 @@ static lv_obj_t *wifi_icon;
 static lv_obj_t *battery_icon;
 static lv_obj_t *battery_level_label;
 static lv_obj_t *charge_status_icon;
+lv_obj_t *status_bar;
 extern _lock_t lvgl_api_lock;
+
+void status_bar_show(bool need_api_lock)
+{
+    if (status_bar && need_api_lock == false)
+    {
+        lv_obj_clear_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
+    }
+    else if (status_bar && need_api_lock == true)
+    {
+        _lock_acquire(&lvgl_api_lock);
+        lv_obj_clear_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
+        _lock_release(&lvgl_api_lock);
+    }
+}
+
+void status_bar_hide(bool need_api_lock)
+{
+    if (status_bar && need_api_lock == false)
+    {
+        lv_obj_add_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
+    }
+    else if (status_bar && need_api_lock == true)
+    {
+        _lock_acquire(&lvgl_api_lock);
+        lv_obj_add_flag(status_bar, LV_OBJ_FLAG_HIDDEN);
+        _lock_release(&lvgl_api_lock);
+    }
+}
+
 void status_bar_create()
 {
     _lock_acquire(&lvgl_api_lock);
-    lv_obj_t *status_bar = lv_obj_create(lv_layer_sys());
+    status_bar = lv_obj_create(lv_layer_sys());
     lv_obj_set_size(status_bar, 480, 24);
     lv_obj_set_style_bg_color(status_bar, lv_color_hex(0x000000), 0);
     lv_obj_set_style_border_width(status_bar, 0, 0);

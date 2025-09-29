@@ -77,6 +77,7 @@ void init_scr_del_flag(lv_ui *ui)
     ui->wifi_setting_screen_del = true;
     ui->wifi_connect_screen_del = true;
     ui->power_setting_screen_del = true;
+    ui->data_chart_screen_del = true;
 }
 
 void setup_bottom_layer(void)

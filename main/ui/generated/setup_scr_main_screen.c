@@ -32,7 +32,7 @@
 #define BLUE (0x0d6bfd)
 #define BRIGHT_BLUE (0x11c0f5)
 
-lv_timer_t *update_data_timer;
+lv_timer_t *update_data_timer = NULL;
 
 static void update_voc_display() {
     static int32_t voc_idx;
@@ -497,7 +497,7 @@ void setup_scr_main_screen(lv_ui *ui)
 
     //Write codes main_screen_voc_value
     ui->main_screen_voc_value = lv_label_create(ui->main_screen_voc_container);
-    lv_obj_set_pos(ui->main_screen_voc_value, 15, 34);
+    lv_obj_set_pos(ui->main_screen_voc_value, 15, 33);
     lv_obj_set_size(ui->main_screen_voc_value, 120, 40);
     lv_label_set_text(ui->main_screen_voc_value, "----");
     lv_label_set_long_mode(ui->main_screen_voc_value, LV_LABEL_LONG_WRAP);
@@ -651,7 +651,10 @@ void setup_scr_main_screen(lv_ui *ui)
     lv_obj_set_style_shadow_width(ui->main_screen_time_month_day, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //The custom code of main_screen.
-    update_data_timer = lv_timer_create(update_data_cb, 1000, 0);
+#ifndef LV_USE_GUIDER_SIMULATOR
+    if (update_data_timer == NULL)
+        update_data_timer = lv_timer_create(update_data_cb, 1000, 0);
+#endif
 
     //Update current screen layout.
     lv_obj_update_layout(ui->main_screen);

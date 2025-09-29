@@ -24,6 +24,7 @@
 
 #include "RTOS_tasks.h"
 #include "lvgl_setup.h"
+#include "data_chart.h"
 
 static const char *TAG = "main";
 
@@ -69,7 +70,6 @@ void app_main(void)
     aw32001_init(bus_handle);
     aw32001_disable_watchdog();
     aw32001_interrupt_init();
-
     xTaskCreate(sgp4x_task, "sgp4x_task", 4 * 1024, NULL, 5, NULL);
     xTaskCreate(stcc4_task, "stcc4_task", 4 * 1024, NULL, 5, NULL);
     // WiFi相关的初始化
@@ -78,4 +78,5 @@ void app_main(void)
     xTaskCreate(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, NULL);
     xTaskCreate(status_bar_init_task, "status_bar_task", 2 * 1024, NULL, 5, NULL);
     xTaskCreate(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, &bat_adc_task_handle);
+    xTaskCreate(get_data_task, "get_data_task", 8 * 1024, NULL, 5, &get_data_task_handle);
 }
