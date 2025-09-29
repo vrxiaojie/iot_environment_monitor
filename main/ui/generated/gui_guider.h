@@ -104,6 +104,9 @@ typedef struct
 	lv_obj_t *data_chart_screen_btn_back;
 	lv_obj_t *data_chart_screen_btn_back_label;
 	lv_obj_t *data_chart_screen_title_label;
+	lv_obj_t *data_chart_screen_date_label;
+	lv_obj_t *data_chart_screen_time_label;
+	lv_obj_t *data_chart_screen_data_label;
 	lv_obj_t *g_kb_top_layer;
 }lv_ui;
 

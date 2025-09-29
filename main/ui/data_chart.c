@@ -91,6 +91,9 @@ void set_x_tick_count()
 void update_chart_task(void *arg)
 {
     int32_t max = 0, min = 0, mid = 0;
+    struct tm timeinfo;
+    time_t now;
+    char date_buffer[10], time_buffer[10], data_buffer[10];
     while (1)
     {
         _lock_acquire(&lvgl_api_lock);
@@ -208,6 +211,31 @@ void update_chart_task(void *arg)
         }
         // 设置Y轴显示范围
         lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, min, max);
+        // 更新数据显示页面的数据标签、时间标签
+        switch (current_chart_type)
+        {
+        case CHART_TYPE_CO2:
+            sprintf(data_buffer, "%ld ppm", chart_data.co2.oneMinute[12]);
+            lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
+            break;
+        case CHART_TYPE_TEMPERATURE:
+            sprintf(data_buffer, "%.1f C", chart_data.temperature.oneMinute[12] / 10.0);
+            lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
+            break;
+        case CHART_TYPE_HUMIDITY:
+            sprintf(data_buffer, "%.1f %%", chart_data.humidity.oneMinute[12] / 10.0);
+            lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
+            break;
+        case CHART_TYPE_VOC:
+            sprintf(data_buffer, "%ld", chart_data.voc.oneMinute[12]);
+            lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
+        }
+        time(&now);
+        localtime_r(&now, &timeinfo);
+        strftime(date_buffer, sizeof(date_buffer), "%m-%d", &timeinfo);
+        strftime(time_buffer, sizeof(time_buffer), "%H:%M", &timeinfo);
+        lv_label_set_text(guider_ui.data_chart_screen_date_label, date_buffer);
+        lv_label_set_text(guider_ui.data_chart_screen_time_label, time_buffer);
         _lock_release(&lvgl_api_lock);
         ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(5000)); // 每5秒或收到任务通知时更新图表
     }
@@ -335,13 +363,13 @@ void create_chart()
     switch (current_chart_type)
     {
     case CHART_TYPE_CO2:
-        lv_label_set_text(guider_ui.data_chart_screen_title_label, "CO2 历史数据(ppm)");
+        lv_label_set_text(guider_ui.data_chart_screen_title_label, "CO2 历史数据");
         break;
     case CHART_TYPE_TEMPERATURE:
-        lv_label_set_text(guider_ui.data_chart_screen_title_label, "温度 历史数据(℃)");
+        lv_label_set_text(guider_ui.data_chart_screen_title_label, "温度 历史数据");
         break;
     case CHART_TYPE_HUMIDITY:
-        lv_label_set_text(guider_ui.data_chart_screen_title_label, "湿度 历史数据(%)");
+        lv_label_set_text(guider_ui.data_chart_screen_title_label, "湿度 历史数据");
         break;
     case CHART_TYPE_VOC:
         lv_label_set_text(guider_ui.data_chart_screen_title_label, "VOC指数 历史数据");

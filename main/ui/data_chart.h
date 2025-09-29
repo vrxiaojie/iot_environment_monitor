@@ -9,6 +9,7 @@
 #include "sgp4x.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "time.h"
 
 // 按1分钟、1小时、1天来存储数据点
 typedef struct {
