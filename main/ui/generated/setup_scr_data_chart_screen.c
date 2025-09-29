@@ -125,6 +125,29 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_text_opa(ui->data_chart_screen_btn_back, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->data_chart_screen_btn_back, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
+    //Write codes data_chart_screen_title_label
+    ui->data_chart_screen_title_label = lv_label_create(ui->data_chart_screen);
+    lv_obj_set_pos(ui->data_chart_screen_title_label, 136, 14);
+    lv_obj_set_size(ui->data_chart_screen_title_label, 208, 18);
+    lv_label_set_text(ui->data_chart_screen_title_label, "xxxx 历史数据");
+    lv_label_set_long_mode(ui->data_chart_screen_title_label, LV_LABEL_LONG_WRAP);
+
+    //Write style for data_chart_screen_title_label, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->data_chart_screen_title_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_title_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->data_chart_screen_title_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->data_chart_screen_title_label, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
     //The custom code of data_chart_screen.
 
 

@@ -305,8 +305,25 @@ void create_chart()
     lv_scale_set_total_tick_count(scale_left, 3);
     lv_scale_set_major_tick_every(scale_left, 1);
     lv_scale_set_text_src(scale_left, y_scale);
+    
+    // 修改数据显示页的标题
+    switch (current_chart_type)
+    {
+    case CHART_TYPE_CO2:
+        lv_label_set_text(guider_ui.data_chart_screen_title_label, "CO2 历史数据(ppm)");
+        break;
+    case CHART_TYPE_TEMPERATURE:
+        lv_label_set_text(guider_ui.data_chart_screen_title_label, "温度 历史数据(℃)");
+        break;
+    case CHART_TYPE_HUMIDITY:
+        lv_label_set_text(guider_ui.data_chart_screen_title_label, "湿度 历史数据(%)");
+        break;
+    case CHART_TYPE_VOC:
+        lv_label_set_text(guider_ui.data_chart_screen_title_label, "VOC指数 历史数据");
+        break;
+    }
+    // 创建更新图表的任务
     xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
-    // TODO: 数据显示页的大标题
     // TODO: 改图表样式
 }
 
