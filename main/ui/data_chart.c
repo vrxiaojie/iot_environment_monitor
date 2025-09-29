@@ -13,11 +13,13 @@ TaskHandle_t get_data_task_handle = NULL;
 static char str0[12], str1[12], str2[12];
 static const char *y_scale[] = {str0, str1, str2, NULL}; // Y轴刻度
 
-lv_obj_t *chart;
-lv_chart_series_t *ser1;
-lv_obj_t *scale_left;
-lv_obj_t *scale_bottom;
+static lv_obj_t *chart;
+static lv_chart_series_t *ser1;
+static lv_obj_t *scale_left;
+static lv_obj_t *scale_bottom;
+static lv_obj_t *wrapper;
 static lv_obj_t *value_label = NULL;
+static lv_obj_t *main_cont;
 
 static int32_t get_max_value(int32_t *array, int8_t total_size, int8_t size)
 {
@@ -66,6 +68,8 @@ static void chart_event_cb(lv_event_t *e)
         // 获取数据点的坐标
         lv_point_t p;
         lv_chart_get_point_pos_by_id(obj, ser1, id, &p);
+        p.x += lv_obj_get_x(main_cont);
+        p.y += lv_obj_get_y(main_cont);
 
         // 获取数据点的数值
         int32_t value = 0;
@@ -128,14 +132,14 @@ static void chart_event_cb(lv_event_t *e)
         }
 
         // 创建标签来显示数值
-        value_label = lv_label_create(obj);
+        value_label = lv_label_create(main_cont);
         lv_label_set_text(value_label, buf);
         lv_obj_set_style_bg_color(value_label, lv_color_hex(0x000000), 0);
         lv_obj_set_style_bg_opa(value_label, LV_OPA_50, 0);
         lv_obj_set_style_text_color(value_label, lv_color_white(), 0);
         lv_obj_set_style_pad_all(value_label, 2, 0);
         lv_obj_set_style_radius(value_label, 2, 0);
-        lv_obj_set_pos(value_label, p.x - 30, p.y - 60); // 将标签放置在数据点的上方
+        lv_obj_set_pos(value_label, p.x + 20, p.y - 80); // 将标签放置在数据点的上方
     }
     else if (code == LV_EVENT_RELEASED)
     {
@@ -246,8 +250,8 @@ void update_chart_task(void *arg)
                 break;
             }
             // 取整
-            min = min - 10 - (min % 10); 
-            max = max + 10 - (max % 10); 
+            min = min - 10 - (min % 10);
+            max = max + 10 - (max % 10);
             break;
         case CHART_TYPE_HUMIDITY:
             switch (current_time_frame)
@@ -452,7 +456,7 @@ void get_data_task(void *arg)
 
 void create_chart()
 {
-    lv_obj_t *main_cont = lv_obj_create(guider_ui.data_chart_screen);
+    main_cont = lv_obj_create(guider_ui.data_chart_screen);
     lv_obj_set_pos(main_cont, 10, 38);
     lv_obj_set_size(main_cont, 460, 180);
     lv_obj_center(main_cont);
@@ -460,7 +464,7 @@ void create_chart()
     lv_obj_set_style_bg_opa(main_cont, LV_OPA_40, LV_PART_MAIN);
     lv_obj_set_style_border_width(main_cont, 0, LV_PART_MAIN);
 
-    lv_obj_t *wrapper = lv_obj_create(main_cont);
+    wrapper = lv_obj_create(main_cont);
     lv_obj_remove_style_all(wrapper);
     lv_obj_set_flex_flow(wrapper, LV_FLEX_FLOW_COLUMN);
     lv_obj_set_size(wrapper, lv_pct(90), lv_pct(100));
