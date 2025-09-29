@@ -17,6 +17,7 @@ lv_obj_t *chart;
 lv_chart_series_t *ser1;
 lv_obj_t *scale_left;
 lv_obj_t *scale_bottom;
+static lv_obj_t *value_label = NULL;
 
 static int32_t get_max_value(int32_t *array, int8_t total_size, int8_t size)
 {
@@ -42,6 +43,108 @@ static int32_t get_min_value(int32_t *array, int8_t total_size, int8_t size)
         }
     }
     return min;
+}
+
+// 图表事件回调函数
+static void chart_event_cb(lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t *obj = lv_event_get_target(e);
+
+    // 当数值改变（即数据点被按下）时
+    if (code == LV_EVENT_VALUE_CHANGED)
+    {
+        // 先删除上一个创建的标签（如果存在）
+        if (value_label)
+        {
+            lv_obj_del(value_label);
+            value_label = NULL;
+        }
+
+        uint16_t id = lv_chart_get_pressed_point(obj);
+
+        // 获取数据点的坐标
+        lv_point_t p;
+        lv_chart_get_point_pos_by_id(obj, ser1, id, &p);
+
+        // 获取数据点的数值
+        int32_t value = 0;
+        int32_t *data_array = NULL;
+
+        // 根据当前图表类型和时间范围，从我们自己的数据源获取值
+        switch (current_chart_type)
+        {
+        case CHART_TYPE_CO2:
+            if (current_time_frame == TIME_FRAME_1MIN)
+                data_array = chart_data.co2.oneMinute;
+            else if (current_time_frame == TIME_FRAME_1HOUR)
+                data_array = chart_data.co2.oneHour;
+            else
+                data_array = chart_data.co2.oneDay;
+            break;
+        case CHART_TYPE_TEMPERATURE:
+            if (current_time_frame == TIME_FRAME_1MIN)
+                data_array = chart_data.temperature.oneMinute;
+            else if (current_time_frame == TIME_FRAME_1HOUR)
+                data_array = chart_data.temperature.oneHour;
+            else
+                data_array = chart_data.temperature.oneDay;
+            break;
+        case CHART_TYPE_HUMIDITY:
+            if (current_time_frame == TIME_FRAME_1MIN)
+                data_array = chart_data.humidity.oneMinute;
+            else if (current_time_frame == TIME_FRAME_1HOUR)
+                data_array = chart_data.humidity.oneHour;
+            else
+                data_array = chart_data.humidity.oneDay;
+            break;
+        case CHART_TYPE_VOC:
+            if (current_time_frame == TIME_FRAME_1MIN)
+                data_array = chart_data.voc.oneMinute;
+            else if (current_time_frame == TIME_FRAME_1HOUR)
+                data_array = chart_data.voc.oneHour;
+            else
+                data_array = chart_data.voc.oneDay;
+            break;
+        }
+
+        if (data_array)
+        {
+            value = data_array[id];
+        }
+
+        char buf[16];
+        // 根据当前图表类型格式化数值字符串
+        switch (current_chart_type)
+        {
+        case CHART_TYPE_TEMPERATURE:
+        case CHART_TYPE_HUMIDITY:
+            sprintf(buf, "%.1f", value / 10.0);
+            break;
+        case CHART_TYPE_VOC:
+        case CHART_TYPE_CO2:
+            sprintf(buf, "%ld", value);
+            break;
+        }
+
+        // 创建标签来显示数值
+        value_label = lv_label_create(obj);
+        lv_label_set_text(value_label, buf);
+        lv_obj_set_style_bg_color(value_label, lv_color_hex(0x000000), 0);
+        lv_obj_set_style_bg_opa(value_label, LV_OPA_50, 0);
+        lv_obj_set_style_text_color(value_label, lv_color_white(), 0);
+        lv_obj_set_style_pad_all(value_label, 2, 0);
+        lv_obj_set_style_radius(value_label, 2, 0);
+        lv_obj_set_pos(value_label, p.x - 30, p.y - 60); // 将标签放置在数据点的上方
+    }
+    else if (code == LV_EVENT_RELEASED)
+    {
+        if (value_label)
+        {
+            lv_obj_del(value_label);
+            value_label = NULL;
+        }
+    }
 }
 
 void update_chart_x_scale_text()
@@ -348,7 +451,7 @@ void create_chart()
     lv_obj_set_style_bg_color(main_cont, lv_color_hex(0x5B5B5B), LV_PART_MAIN);
     lv_obj_set_style_bg_opa(main_cont, LV_OPA_40, LV_PART_MAIN);
     lv_obj_set_style_border_width(main_cont, 0, LV_PART_MAIN);
-    // 创建透明容器，让图表能够左右滑动
+
     lv_obj_t *wrapper = lv_obj_create(main_cont);
     lv_obj_remove_style_all(wrapper);
     lv_obj_set_flex_flow(wrapper, LV_FLEX_FLOW_COLUMN);
@@ -356,6 +459,7 @@ void create_chart()
     lv_obj_set_pos(wrapper, lv_pct(10), 0);
     lv_obj_set_style_bg_color(wrapper, lv_color_hex(0x5B5B5B), LV_PART_MAIN);
     lv_obj_set_style_bg_opa(wrapper, LV_OPA_0, LV_PART_MAIN);
+    lv_obj_remove_flag(wrapper, LV_OBJ_FLAG_SCROLLABLE);
 
     chart = lv_chart_create(wrapper);
     lv_obj_set_width(chart, lv_pct(100));
@@ -365,6 +469,8 @@ void create_chart()
     lv_chart_set_point_count(chart, 12);                        // 绘制点数
     lv_chart_set_range(chart, LV_CHART_AXIS_PRIMARY_Y, 0, 100); // 范围
     ser1 = lv_chart_add_series(chart, lv_color_hex(0x409eff), LV_CHART_AXIS_PRIMARY_Y);
+    // 添加事件回调
+    lv_obj_add_event_cb(chart, chart_event_cb, LV_EVENT_ALL, NULL);
     // 设置主区域样式
     lv_obj_set_style_bg_color(chart, lv_color_hex(0x5B5B5B), LV_PART_MAIN);
     lv_obj_set_style_bg_opa(chart, LV_OPA_0, LV_PART_MAIN);
@@ -372,6 +478,7 @@ void create_chart()
     lv_obj_set_style_border_width(chart, 2, LV_PART_MAIN);
     lv_obj_set_style_border_color(chart, lv_color_hex(0x5E5E5E), LV_PART_MAIN);
     lv_obj_set_style_line_color(chart, lv_color_hex(0x404040), LV_PART_MAIN);
+    lv_obj_remove_flag(chart, LV_OBJ_FLAG_SCROLLABLE);
 
     // 设置数据点样式
     lv_obj_set_style_bg_color(chart, lv_color_hex(0x409eff), LV_PART_INDICATOR);
