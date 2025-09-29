@@ -215,19 +215,19 @@ void update_chart_task(void *arg)
         switch (current_chart_type)
         {
         case CHART_TYPE_CO2:
-            sprintf(data_buffer, "%ld ppm", chart_data.co2.oneMinute[12]);
+            sprintf(data_buffer, "%ld ppm", chart_data.co2.oneMinute[11]);
             lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
             break;
         case CHART_TYPE_TEMPERATURE:
-            sprintf(data_buffer, "%.1f C", chart_data.temperature.oneMinute[12] / 10.0);
+            sprintf(data_buffer, "%.1f C", chart_data.temperature.oneMinute[11] / 10.0);
             lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
             break;
         case CHART_TYPE_HUMIDITY:
-            sprintf(data_buffer, "%.1f %%", chart_data.humidity.oneMinute[12] / 10.0);
+            sprintf(data_buffer, "%.1f %%", chart_data.humidity.oneMinute[11] / 10.0);
             lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
             break;
         case CHART_TYPE_VOC:
-            sprintf(data_buffer, "%ld", chart_data.voc.oneMinute[12]);
+            sprintf(data_buffer, "%ld", chart_data.voc.oneMinute[11]);
             lv_label_set_text(guider_ui.data_chart_screen_data_label, data_buffer);
         }
         time(&now);
@@ -246,49 +246,50 @@ void get_data_task(void *arg)
     uint16_t cnt = 0;
     while (1)
     {
-        chart_data.co2.oneMinute[12] = stcc4.co2Concentration;
-        chart_data.temperature.oneMinute[12] = (int32_t)(stcc4.temperature * 10);
-        chart_data.humidity.oneMinute[12] = (int32_t)(stcc4.relativeHumidity * 10);
-        chart_data.voc.oneMinute[12] = voc_index;
         cnt++;
         // 每间隔5秒钟，一分钟数据前移
-        for (int i = 0; i < 12; i++)
+        for (int i = 0; i < 11; i++)
         {
             chart_data.co2.oneMinute[i] = chart_data.co2.oneMinute[i + 1];
             chart_data.temperature.oneMinute[i] = chart_data.temperature.oneMinute[i + 1];
             chart_data.humidity.oneMinute[i] = chart_data.humidity.oneMinute[i + 1];
             chart_data.voc.oneMinute[i] = chart_data.voc.oneMinute[i + 1];
         }
+        chart_data.co2.oneMinute[11] = stcc4.co2Concentration;
+        chart_data.temperature.oneMinute[11] = (int32_t)(stcc4.temperature * 10);
+        chart_data.humidity.oneMinute[11] = (int32_t)(stcc4.relativeHumidity * 10);
+        chart_data.voc.oneMinute[11] = voc_index;
+
         // 每间隔5分钟，一小时的数据前移
         if (cnt % 60 == 0)
         {
-            chart_data.co2.oneHour[12] = chart_data.co2.oneMinute[12];
-            chart_data.temperature.oneHour[12] = chart_data.temperature.oneMinute[12];
-            chart_data.humidity.oneHour[12] = chart_data.humidity.oneMinute[12];
-            chart_data.voc.oneHour[12] = chart_data.voc.oneMinute[12];
-            for (int i = 0; i < 12; i++)
+            for (int i = 0; i < 11; i++)
             {
                 chart_data.co2.oneHour[i] = chart_data.co2.oneHour[i + 1];
                 chart_data.temperature.oneHour[i] = chart_data.temperature.oneHour[i + 1];
                 chart_data.humidity.oneHour[i] = chart_data.humidity.oneHour[i + 1];
                 chart_data.voc.oneHour[i] = chart_data.voc.oneHour[i + 1];
             }
+            chart_data.co2.oneHour[11] = chart_data.co2.oneMinute[11];
+            chart_data.temperature.oneHour[11] = chart_data.temperature.oneMinute[11];
+            chart_data.humidity.oneHour[11] = chart_data.humidity.oneMinute[11];
+            chart_data.voc.oneHour[11] = chart_data.voc.oneMinute[11];
         }
         // 每间隔1小时，一天数据前移
         if (cnt % 720 == 0)
         {
             cnt = 0;
-            chart_data.co2.oneDay[24] = chart_data.co2.oneHour[12];
-            chart_data.temperature.oneDay[24] = chart_data.temperature.oneHour[12];
-            chart_data.humidity.oneDay[24] = chart_data.humidity.oneHour[12];
-            chart_data.voc.oneDay[24] = chart_data.voc.oneHour[12];
-            for (int i = 0; i < 24; i++)
+            for (int i = 0; i < 23; i++)
             {
                 chart_data.co2.oneDay[i] = chart_data.co2.oneDay[i + 1];
                 chart_data.temperature.oneDay[i] = chart_data.temperature.oneDay[i + 1];
                 chart_data.humidity.oneDay[i] = chart_data.humidity.oneDay[i + 1];
                 chart_data.voc.oneDay[i] = chart_data.voc.oneDay[i + 1];
             }
+            chart_data.co2.oneDay[23] = chart_data.co2.oneHour[11];
+            chart_data.temperature.oneDay[23] = chart_data.temperature.oneHour[11];
+            chart_data.humidity.oneDay[23] = chart_data.humidity.oneHour[11];
+            chart_data.voc.oneDay[23] = chart_data.voc.oneHour[11];
         }
         vTaskDelay(pdMS_TO_TICKS(5000)); // 每5秒获取一次数据
     }
@@ -358,7 +359,7 @@ void create_chart()
     lv_obj_set_style_text_color(scale_left, lv_color_hex(0xFFFFFF), LV_PART_INDICATOR);
     lv_obj_set_style_line_color(scale_left, lv_color_hex(0xFFFFFF), LV_PART_INDICATOR);
     lv_obj_set_style_line_color(scale_left, lv_color_hex(0xFFFFFF), LV_PART_ITEMS);
-    
+
     // 修改数据显示页的标题
     switch (current_chart_type)
     {
@@ -377,7 +378,6 @@ void create_chart()
     }
     // 创建更新图表的任务
     xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
-
 }
 
 void delete_chart()
