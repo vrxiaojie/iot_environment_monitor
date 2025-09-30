@@ -179,6 +179,38 @@ void setup_scr_setting_screen(lv_ui *ui)
     lv_obj_set_style_image_recolor(ui->setting_screen_power_save_icon, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_image_opa(ui->setting_screen_power_save_icon, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
 
+    //Write codes setting_screen_mqtt_container
+    ui->setting_screen_mqtt_container = lv_obj_create(ui->setting_screen);
+    lv_obj_set_pos(ui->setting_screen_mqtt_container, 184, 159);
+    lv_obj_set_size(ui->setting_screen_mqtt_container, 64, 64);
+    lv_obj_set_scrollbar_mode(ui->setting_screen_mqtt_container, LV_SCROLLBAR_MODE_OFF);
+
+    //Write style for setting_screen_mqtt_container, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->setting_screen_mqtt_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->setting_screen_mqtt_container, 48, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->setting_screen_mqtt_container, 128, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->setting_screen_mqtt_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->setting_screen_mqtt_container, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->setting_screen_mqtt_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->setting_screen_mqtt_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->setting_screen_mqtt_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->setting_screen_mqtt_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->setting_screen_mqtt_container, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes setting_screen_mqtt_icon
+    ui->setting_screen_mqtt_icon = lv_image_create(ui->setting_screen_mqtt_container);
+    lv_obj_set_pos(ui->setting_screen_mqtt_icon, 8, 8);
+    lv_obj_set_size(ui->setting_screen_mqtt_icon, 48, 48);
+    lv_obj_add_flag(ui->setting_screen_mqtt_icon, LV_OBJ_FLAG_CLICKABLE);
+    lv_image_set_src(ui->setting_screen_mqtt_icon, &_MQTT_RGB565A8_48x48);
+    lv_image_set_pivot(ui->setting_screen_mqtt_icon, 50,50);
+    lv_image_set_rotation(ui->setting_screen_mqtt_icon, 0);
+
+    //Write style for setting_screen_mqtt_icon, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_image_recolor_opa(ui->setting_screen_mqtt_icon, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_image_recolor(ui->setting_screen_mqtt_icon, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_image_opa(ui->setting_screen_mqtt_icon, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+
     //The custom code of setting_screen.
 
 
