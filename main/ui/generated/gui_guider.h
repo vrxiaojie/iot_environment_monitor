@@ -123,6 +123,10 @@ typedef struct
 	lv_obj_t *mqtt_setting_screen_label_16;
 	lv_obj_t *mqtt_setting_screen_port_input;
 	lv_obj_t *mqtt_setting_screen_address_input;
+	lv_obj_t *mqtt_setting_screen_label_18;
+	lv_obj_t *mqtt_setting_screen_username_input;
+	lv_obj_t *mqtt_setting_screen_label_17;
+	lv_obj_t *mqtt_setting_screen_passwd_input;
 	lv_obj_t *mqtt_setting_screen_save_btn;
 	lv_obj_t *mqtt_setting_screen_save_btn_label;
 	lv_obj_t *mqtt_setting_screen_return_btn;

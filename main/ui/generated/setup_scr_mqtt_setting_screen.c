@@ -71,7 +71,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write codes mqtt_setting_screen_label_13
     ui->mqtt_setting_screen_label_13 = lv_label_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_label_13, 20, 94);
+    lv_obj_set_pos(ui->mqtt_setting_screen_label_13, 20, 136);
     lv_obj_set_size(ui->mqtt_setting_screen_label_13, 80, 20);
     lv_label_set_text(ui->mqtt_setting_screen_label_13, "自动连接");
     lv_label_set_long_mode(ui->mqtt_setting_screen_label_13, LV_LABEL_LONG_WRAP);
@@ -94,7 +94,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write codes mqtt_setting_screen_auto_connect_switch
     ui->mqtt_setting_screen_auto_connect_switch = lv_switch_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_auto_connect_switch, 112, 92);
+    lv_obj_set_pos(ui->mqtt_setting_screen_auto_connect_switch, 112, 134);
     lv_obj_set_size(ui->mqtt_setting_screen_auto_connect_switch, 40, 20);
 
     //Write style for mqtt_setting_screen_auto_connect_switch, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -120,7 +120,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write codes mqtt_setting_screen_label_11
     ui->mqtt_setting_screen_label_11 = lv_label_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_label_11, 200, 94);
+    lv_obj_set_pos(ui->mqtt_setting_screen_label_11, 200, 136);
     lv_obj_set_size(ui->mqtt_setting_screen_label_11, 80, 20);
     lv_label_set_text(ui->mqtt_setting_screen_label_11, "上传间隔");
     lv_label_set_long_mode(ui->mqtt_setting_screen_label_11, LV_LABEL_LONG_WRAP);
@@ -143,7 +143,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write codes mqtt_setting_screen_label_7
     ui->mqtt_setting_screen_label_7 = lv_label_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_label_7, 20, 137);
+    lv_obj_set_pos(ui->mqtt_setting_screen_label_7, 150, 10);
     lv_obj_set_size(ui->mqtt_setting_screen_label_7, 71, 20);
     lv_label_set_text(ui->mqtt_setting_screen_label_7, "当前状态");
     lv_label_set_long_mode(ui->mqtt_setting_screen_label_7, LV_LABEL_LONG_WRAP);
@@ -166,7 +166,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write codes mqtt_setting_screen_mqtt_status_label
     ui->mqtt_setting_screen_mqtt_status_label = lv_label_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_mqtt_status_label, 112, 137);
+    lv_obj_set_pos(ui->mqtt_setting_screen_mqtt_status_label, 240, 10);
     lv_obj_set_size(ui->mqtt_setting_screen_mqtt_status_label, 71, 20);
     lv_label_set_text(ui->mqtt_setting_screen_mqtt_status_label, "已连接\n未连接\n连接失败");
     lv_label_set_long_mode(ui->mqtt_setting_screen_mqtt_status_label, LV_LABEL_LONG_WRAP);
@@ -212,7 +212,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write codes mqtt_setting_screen_upload_interval_list
     ui->mqtt_setting_screen_upload_interval_list = lv_dropdown_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_upload_interval_list, 300, 87);
+    lv_obj_set_pos(ui->mqtt_setting_screen_upload_interval_list, 300, 129);
     lv_obj_set_size(ui->mqtt_setting_screen_upload_interval_list, 62, 28);
     lv_dropdown_set_options(ui->mqtt_setting_screen_upload_interval_list, "5s\n30s\n60s");
 
@@ -279,9 +279,6 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     static lv_style_t style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked;
     ui_init_style(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked);
 
-    lv_style_set_text_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, lv_color_hex(0xffffff));
-    lv_style_set_text_font(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, &lv_font_montserratMedium_12);
-    lv_style_set_text_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, 255);
     lv_style_set_border_width(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, 2);
     lv_style_set_border_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, 255);
     lv_style_set_border_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, lv_color_hex(0x0f4187));
@@ -300,13 +297,10 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_style_set_text_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, lv_color_hex(0xffffff));
     lv_style_set_text_font(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, &lv_font_montserratMedium_12);
     lv_style_set_text_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 255);
-    lv_style_set_border_width(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 1);
-    lv_style_set_border_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 255);
-    lv_style_set_border_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, lv_color_hex(0xffffff));
-    lv_style_set_border_side(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, LV_BORDER_SIDE_FULL);
-    lv_style_set_radius(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 3);
-    lv_style_set_bg_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 102);
-    lv_style_set_bg_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, lv_color_hex(0x000000));
+    lv_style_set_border_width(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 0);
+    lv_style_set_radius(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 4);
+    lv_style_set_bg_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 129);
+    lv_style_set_bg_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, lv_color_hex(0x5b5b5b));
     lv_style_set_bg_grad_dir(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, LV_GRAD_DIR_NONE);
     lv_obj_add_style(lv_dropdown_get_list(ui->mqtt_setting_screen_upload_interval_list), &style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, LV_PART_MAIN|LV_STATE_DEFAULT);
 
@@ -382,10 +376,10 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write codes mqtt_setting_screen_address_input
     ui->mqtt_setting_screen_address_input = lv_textarea_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_address_input, 60, 35);
-    lv_obj_set_size(ui->mqtt_setting_screen_address_input, 232, 36);
-    lv_textarea_set_text(ui->mqtt_setting_screen_address_input, "");
-    lv_textarea_set_placeholder_text(ui->mqtt_setting_screen_address_input, "Server Address");
+    lv_obj_set_pos(ui->mqtt_setting_screen_address_input, 80, 35);
+    lv_obj_set_size(ui->mqtt_setting_screen_address_input, 212, 36);
+    lv_textarea_set_text(ui->mqtt_setting_screen_address_input, "mqtt://");
+    lv_textarea_set_placeholder_text(ui->mqtt_setting_screen_address_input, "Broker uri e.g mqtt://10.0.0.1");
     lv_textarea_set_password_bullet(ui->mqtt_setting_screen_address_input, "*");
     lv_textarea_set_password_mode(ui->mqtt_setting_screen_address_input, false);
     lv_textarea_set_one_line(ui->mqtt_setting_screen_address_input, true);
@@ -396,26 +390,146 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 #endif
 
     //Write style for mqtt_setting_screen_address_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_address_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_address_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(ui->mqtt_setting_screen_address_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui->mqtt_setting_screen_address_input, &lv_font_montserratMedium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->mqtt_setting_screen_address_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_address_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->mqtt_setting_screen_address_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_address_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_address_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->mqtt_setting_screen_address_input, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui->mqtt_setting_screen_address_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_address_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write style for mqtt_setting_screen_address_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_address_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_address_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_address_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+
+    //Write codes mqtt_setting_screen_label_18
+    ui->mqtt_setting_screen_label_18 = lv_label_create(ui->mqtt_setting_screen_cont_1);
+    lv_obj_set_pos(ui->mqtt_setting_screen_label_18, 20, 92);
+    lv_obj_set_size(ui->mqtt_setting_screen_label_18, 49, 20);
+    lv_label_set_text(ui->mqtt_setting_screen_label_18, "用户名");
+    lv_label_set_long_mode(ui->mqtt_setting_screen_label_18, LV_LABEL_LONG_WRAP);
+
+    //Write style for mqtt_setting_screen_label_18, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->mqtt_setting_screen_label_18, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_label_18, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->mqtt_setting_screen_label_18, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->mqtt_setting_screen_label_18, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_label_18, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes mqtt_setting_screen_username_input
+    ui->mqtt_setting_screen_username_input = lv_textarea_create(ui->mqtt_setting_screen_cont_1);
+    lv_obj_set_pos(ui->mqtt_setting_screen_username_input, 80, 82);
+    lv_obj_set_size(ui->mqtt_setting_screen_username_input, 128, 36);
+    lv_textarea_set_text(ui->mqtt_setting_screen_username_input, "");
+    lv_textarea_set_placeholder_text(ui->mqtt_setting_screen_username_input, "Username");
+    lv_textarea_set_password_bullet(ui->mqtt_setting_screen_username_input, "*");
+    lv_textarea_set_password_mode(ui->mqtt_setting_screen_username_input, false);
+    lv_textarea_set_one_line(ui->mqtt_setting_screen_username_input, true);
+    lv_textarea_set_accepted_chars(ui->mqtt_setting_screen_username_input, "");
+    lv_textarea_set_max_length(ui->mqtt_setting_screen_username_input, 128);
+#if LV_USE_KEYBOARD
+    lv_obj_add_event_cb(ui->mqtt_setting_screen_username_input, ta_event_cb, LV_EVENT_ALL, ui->g_kb_top_layer);
+#endif
+
+    //Write style for mqtt_setting_screen_username_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_text_color(ui->mqtt_setting_screen_username_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_username_input, &lv_font_montserratMedium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->mqtt_setting_screen_username_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_username_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->mqtt_setting_screen_username_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_username_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_username_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_username_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->mqtt_setting_screen_username_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_username_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_username_input, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->mqtt_setting_screen_username_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->mqtt_setting_screen_username_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_username_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write style for mqtt_setting_screen_username_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_username_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_username_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_username_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_username_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+
+    //Write codes mqtt_setting_screen_label_17
+    ui->mqtt_setting_screen_label_17 = lv_label_create(ui->mqtt_setting_screen_cont_1);
+    lv_obj_set_pos(ui->mqtt_setting_screen_label_17, 229, 92);
+    lv_obj_set_size(ui->mqtt_setting_screen_label_17, 37, 20);
+    lv_label_set_text(ui->mqtt_setting_screen_label_17, "密码");
+    lv_label_set_long_mode(ui->mqtt_setting_screen_label_17, LV_LABEL_LONG_WRAP);
+
+    //Write style for mqtt_setting_screen_label_17, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_border_width(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->mqtt_setting_screen_label_17, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_label_17, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->mqtt_setting_screen_label_17, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_line_space(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->mqtt_setting_screen_label_17, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_label_17, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write codes mqtt_setting_screen_passwd_input
+    ui->mqtt_setting_screen_passwd_input = lv_textarea_create(ui->mqtt_setting_screen_cont_1);
+    lv_obj_set_pos(ui->mqtt_setting_screen_passwd_input, 280, 82);
+    lv_obj_set_size(ui->mqtt_setting_screen_passwd_input, 128, 36);
+    lv_textarea_set_text(ui->mqtt_setting_screen_passwd_input, "");
+    lv_textarea_set_placeholder_text(ui->mqtt_setting_screen_passwd_input, "Password");
+    lv_textarea_set_password_bullet(ui->mqtt_setting_screen_passwd_input, "*");
+    lv_textarea_set_password_mode(ui->mqtt_setting_screen_passwd_input, false);
+    lv_textarea_set_one_line(ui->mqtt_setting_screen_passwd_input, true);
+    lv_textarea_set_accepted_chars(ui->mqtt_setting_screen_passwd_input, "");
+    lv_textarea_set_max_length(ui->mqtt_setting_screen_passwd_input, 128);
+#if LV_USE_KEYBOARD
+    lv_obj_add_event_cb(ui->mqtt_setting_screen_passwd_input, ta_event_cb, LV_EVENT_ALL, ui->g_kb_top_layer);
+#endif
+
+    //Write style for mqtt_setting_screen_passwd_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_text_color(ui->mqtt_setting_screen_passwd_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_passwd_input, &lv_font_montserratMedium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->mqtt_setting_screen_passwd_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_passwd_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->mqtt_setting_screen_passwd_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_passwd_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_passwd_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_passwd_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_passwd_input, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->mqtt_setting_screen_passwd_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_passwd_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
+
+    //Write style for mqtt_setting_screen_passwd_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_passwd_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_passwd_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_passwd_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
 
     //Write codes mqtt_setting_screen_save_btn
     ui->mqtt_setting_screen_save_btn = lv_button_create(ui->mqtt_setting_screen);
@@ -429,11 +543,11 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_obj_set_width(ui->mqtt_setting_screen_save_btn_label, LV_PCT(100));
 
     //Write style for mqtt_setting_screen_save_btn, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_border_width(ui->mqtt_setting_screen_save_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(ui->mqtt_setting_screen_save_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_save_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_save_btn, lv_color_hex(0x0f4187), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_save_btn, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->mqtt_setting_screen_save_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_save_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_save_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_save_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui->mqtt_setting_screen_save_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
