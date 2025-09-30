@@ -131,6 +131,8 @@ typedef struct
 	lv_obj_t *mqtt_setting_screen_save_btn_label;
 	lv_obj_t *mqtt_setting_screen_return_btn;
 	lv_obj_t *mqtt_setting_screen_return_btn_label;
+	lv_obj_t *mqtt_setting_screen_connect_btn;
+	lv_obj_t *mqtt_setting_screen_connect_btn_label;
 	lv_obj_t *g_kb_top_layer;
 }lv_ui;
 
