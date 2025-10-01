@@ -52,6 +52,8 @@ typedef struct
 	lv_obj_t *setting_screen_bluetooth_icon;
 	lv_obj_t *setting_screen_power_save_container;
 	lv_obj_t *setting_screen_power_save_icon;
+	lv_obj_t *setting_screen_mqtt_container;
+	lv_obj_t *setting_screen_mqtt_icon;
 	lv_obj_t *wifi_setting_screen;
 	bool wifi_setting_screen_del;
 	lv_obj_t *wifi_setting_screen_wifi_container;
@@ -107,6 +109,30 @@ typedef struct
 	lv_obj_t *data_chart_screen_date_label;
 	lv_obj_t *data_chart_screen_time_label;
 	lv_obj_t *data_chart_screen_data_label;
+	lv_obj_t *mqtt_setting_screen;
+	bool mqtt_setting_screen_del;
+	lv_obj_t *mqtt_setting_screen_cont_1;
+	lv_obj_t *mqtt_setting_screen_label_14;
+	lv_obj_t *mqtt_setting_screen_label_13;
+	lv_obj_t *mqtt_setting_screen_auto_connect_switch;
+	lv_obj_t *mqtt_setting_screen_label_11;
+	lv_obj_t *mqtt_setting_screen_label_7;
+	lv_obj_t *mqtt_setting_screen_mqtt_status_label;
+	lv_obj_t *mqtt_setting_screen_label_15;
+	lv_obj_t *mqtt_setting_screen_upload_interval_list;
+	lv_obj_t *mqtt_setting_screen_label_16;
+	lv_obj_t *mqtt_setting_screen_port_input;
+	lv_obj_t *mqtt_setting_screen_address_input;
+	lv_obj_t *mqtt_setting_screen_label_18;
+	lv_obj_t *mqtt_setting_screen_username_input;
+	lv_obj_t *mqtt_setting_screen_label_17;
+	lv_obj_t *mqtt_setting_screen_passwd_input;
+	lv_obj_t *mqtt_setting_screen_save_btn;
+	lv_obj_t *mqtt_setting_screen_save_btn_label;
+	lv_obj_t *mqtt_setting_screen_return_btn;
+	lv_obj_t *mqtt_setting_screen_return_btn_label;
+	lv_obj_t *mqtt_setting_screen_connect_btn;
+	lv_obj_t *mqtt_setting_screen_connect_btn_label;
 	lv_obj_t *g_kb_top_layer;
 }lv_ui;
 
@@ -141,10 +167,12 @@ void setup_scr_wifi_setting_screen(lv_ui *ui);
 void setup_scr_wifi_connect_screen(lv_ui *ui);
 void setup_scr_power_setting_screen(lv_ui *ui);
 void setup_scr_data_chart_screen(lv_ui *ui);
+void setup_scr_mqtt_setting_screen(lv_ui *ui);
 LV_IMAGE_DECLARE(_WIFI_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_backlight_RGB565A8_32x32);
 LV_IMAGE_DECLARE(_bluetooth_RGB565A8_48x48);
 LV_IMAGE_DECLARE(_power_save_mode_RGB565A8_48x48);
+LV_IMAGE_DECLARE(_MQTT_RGB565A8_48x48);
 
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)

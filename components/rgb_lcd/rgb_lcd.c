@@ -14,7 +14,7 @@ void rgb_lcd_restart_panel_task(void *args)
         if (panel_handle)
         {
             esp_lcd_rgb_panel_set_pclk(panel_handle, 10 * 1000 * 1000);
-            esp_lcd_rgb_panel_restart(panel_handle);
+            // esp_lcd_rgb_panel_restart(panel_handle);
         }
     }
 }

@@ -10,15 +10,27 @@
 
 extern TaskHandle_t update_wifi_icon_task_handle;
 extern TaskHandle_t wifi_status_change_task_handle;
+static TaskHandle_t wifi_reconnect_task_handle = NULL;
 
 void wifi_add_list_task(void *args);
 void wifi_status_change_task(void *args);
+
+static void wifi_reconnect_task(void *args)
+{
+    while (1)
+    {
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        esp_lcd_rgb_panel_set_pclk(panel_handle, 5 * 1000 * 1000); // 连接wifi前临时降低刷新率防止屏幕偏移
+        vTaskDelay(pdMS_TO_TICKS(50));                             // 延时50ms 等待屏幕刷完一帧
+        ESP_ERROR_CHECK(esp_wifi_connect());
+    }
+}
 
 void wifi_event_callback(void *arg, esp_event_base_t event_base,
                          int32_t event_id, void *event_data)
 {
     static uint8_t retry_cnt = 0;
-    BaseType_t yiled = pdFALSE;
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_SCAN_DONE))
     {
         wifi_event_sta_scan_done_t *scan_done = (wifi_event_sta_scan_done_t *)event_data;
@@ -40,14 +52,14 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         if (wifi_status_change_task_handle == NULL)
         {
             xTaskCreatePinnedToCore(wifi_status_change_task, "wifi_status_change_task", 2 * 1024, NULL, 3, &wifi_status_change_task_handle, 1);
-            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &xHigherPriorityTaskWoken);
         }
         else
         {
-            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &xHigherPriorityTaskWoken);
         }
-        xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
-        xTaskNotifyGive(update_wifi_icon_task_handle);
+        vTaskNotifyGiveFromISR(rgb_lcd_restart_panel_task_handle, &xHigherPriorityTaskWoken);
+        vTaskNotifyGiveFromISR(update_wifi_icon_task_handle, &xHigherPriorityTaskWoken);
     }
 
     if ((event_base == WIFI_EVENT) && (event_id == WIFI_EVENT_STA_DISCONNECTED))
@@ -59,44 +71,43 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         {
             ESP_LOGW(TAG, "WiFi disconnected due to wrong password or auth expire. Reason: %d", disconnected->reason);
             retry_cnt = 0;
-            xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
+            vTaskNotifyGiveFromISR(rgb_lcd_restart_panel_task_handle, &xHigherPriorityTaskWoken);
         }
         else if (disconnected->reason == WIFI_REASON_ASSOC_LEAVE) // 手动断开连接(用于切换wifi)
         {
             ESP_LOGI(TAG, "WiFi stopped or connecting to new WiFi");
             retry_cnt = 0;
-            xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
+            vTaskNotifyGiveFromISR(rgb_lcd_restart_panel_task_handle, &xHigherPriorityTaskWoken);
         }
-        else  // 其他断开连接的情况均尝试重连
+        else // 其他断开连接的情况均尝试重连
         {
             ESP_LOGI(TAG, "WiFi disconnected, reason: %d", disconnected->reason);
             // 重连尝试1次
             if (retry_cnt < 1)
             {
                 retry_cnt++;
-                esp_lcd_rgb_panel_set_pclk(panel_handle, 5 * 1000 * 1000); // 连接wifi前临时降低刷新率防止屏幕偏移
-                vTaskDelay(pdMS_TO_TICKS(20));                             // 延时20ms 等待屏幕刷完一帧
-                ESP_ERROR_CHECK(esp_wifi_connect());
+                vTaskNotifyGiveFromISR(wifi_reconnect_task_handle, &xHigherPriorityTaskWoken);
             }
             else
             {
                 retry_cnt = 0;
                 ESP_LOGI(TAG, "WiFi reconnect failed after 1 attempt");
-                xTaskNotifyGive(rgb_lcd_restart_panel_task_handle);
+                vTaskNotifyGiveFromISR(rgb_lcd_restart_panel_task_handle, &xHigherPriorityTaskWoken);
             }
         }
 
         if (wifi_status_change_task_handle == NULL)
         {
             xTaskCreatePinnedToCore(wifi_status_change_task, "wifi_status_change_task", 2 * 1024, NULL, 3, &wifi_status_change_task_handle, 1);
-            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &xHigherPriorityTaskWoken);
         }
         else
         {
-            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &yiled);
+            vTaskNotifyGiveFromISR(wifi_status_change_task_handle, &xHigherPriorityTaskWoken);
         }
-        xTaskNotifyGive(update_wifi_icon_task_handle);
+        vTaskNotifyGiveFromISR(update_wifi_icon_task_handle, &xHigherPriorityTaskWoken);
     }
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
 void wifi_event_init()
@@ -106,4 +117,9 @@ void wifi_event_init()
     esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
     // 绑定wifi扫描结束后的回调函数
     esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &wifi_event_callback, NULL, NULL);
+    // 创建wifi重连任务
+    if (wifi_reconnect_task_handle == NULL)
+    {
+        xTaskCreatePinnedToCore(wifi_reconnect_task, "wifi_reconnect_task", 4 * 1024, NULL, 3, &wifi_reconnect_task_handle, 1);
+    }
 }

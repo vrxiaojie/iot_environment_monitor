@@ -25,7 +25,7 @@ enum WIFISTATUS{
 };
 
 extern wifi_ap_record_t ap_info[16];
-extern uint8_t wifi_sta_status;
+extern volatile uint8_t wifi_sta_status;
 
 // WiFi functions
 void wifi_init(void);

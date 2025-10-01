@@ -235,4 +235,12 @@ menu "IoT Env Monitor Configuration"
             help
                 GPIO pin number for GT911 RST signal.
     endmenu
+
+    menu "MQTT config"
+        config MQTT_PUBLISH_TOPIC
+            string "MQTT Publish Topic"
+            default "/iot_env_monitor/value"
+            help
+                The MQTT topic to publish to.
+    endmenu
 endmenu
