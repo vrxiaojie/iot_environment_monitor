@@ -7,6 +7,7 @@
 
 #define TAG "sensor_sgp40"
 int32_t voc_index = 0;
+TaskHandle_t spg4x_task_handle = NULL;
 extern i2c_master_bus_handle_t bus_handle;
 void sgp4x_task(void *arg)
 {
@@ -34,6 +35,6 @@ void sgp4x_task(void *arg)
 
             ESP_LOGI(TAG, "SRAW VOC: %u | VOC Index: %li", sraw_voc, voc_index);
         }
-        vTaskDelay(pdMS_TO_TICKS(1000)); // 每秒读取一次
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     }
 }

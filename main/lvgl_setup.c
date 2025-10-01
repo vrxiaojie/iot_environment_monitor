@@ -124,8 +124,8 @@ void lvgl_init(void)
     ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, LVGL_TICK_PERIOD_MS * 1000));
 
     ESP_LOGI(TAG, "Create LVGL task");
-    xTaskCreatePinnedToCore(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE,
-                            NULL, LVGL_TASK_PRIORITY, NULL, 1);
+    xTaskCreatePinnedToCoreWithCaps(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE,
+                            NULL, LVGL_TASK_PRIORITY, NULL, 1, MALLOC_CAP_SPIRAM);
 
     _lock_acquire(&lvgl_api_lock);
     events_init(&guider_ui);

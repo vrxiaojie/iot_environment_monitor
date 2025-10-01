@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include "nvs_helper.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 #define TAG "nvs_helper"
+
+volatile nvs_read_idx_t nvs_read_idx;
+volatile nvs_write_idx_t nvs_write_idx;
 
 static void nvs_open_handle(const char *namespace, nvs_open_mode_t mode, nvs_handle_t *handle)
 {
@@ -26,7 +31,7 @@ void nvs_init(void)
 }
 
 power_settings_t power_settings = {};
-void nvs_read_power_settings(void)
+static void nvs_read_power_settings(void)
 {
     nvs_handle_t handle;
     esp_err_t err;
@@ -48,7 +53,7 @@ void nvs_read_power_settings(void)
     nvs_close(handle);
 }
 
-void nvs_write_power_settings(power_settings_t new_power_settings)
+static void nvs_write_power_settings(power_settings_t new_power_settings)
 {
     nvs_handle_t handle;
     nvs_open_handle("pwr_setting", NVS_READWRITE, &handle);
@@ -66,7 +71,7 @@ void nvs_write_power_settings(power_settings_t new_power_settings)
 }
 
 mqtt_user_config_t mqtt_user_config = {};
-void mqtt_read_settings()
+static void mqtt_read_settings()
 {
     nvs_handle_t handle;
     esp_err_t err;
@@ -84,7 +89,7 @@ void mqtt_read_settings()
         mqtt_user_config.uri = malloc(required_size);
         err = nvs_get_str(handle, "uri", (char *)mqtt_user_config.uri, &required_size);
     }
-    
+
     err = nvs_get_str(handle, "password", NULL, &required_size);
     if (err == ESP_ERR_NVS_NOT_FOUND)
     {
@@ -108,7 +113,7 @@ void mqtt_read_settings()
         mqtt_user_config.username = malloc(required_size);
         err = nvs_get_str(handle, "username", (char *)mqtt_user_config.username, &required_size);
     }
-    
+
     err = nvs_get_u32(handle, "port", &mqtt_user_config.port);
     if (err == ESP_ERR_NVS_NOT_FOUND)
     {
@@ -130,7 +135,7 @@ void mqtt_read_settings()
     nvs_close(handle);
 }
 
-void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
+static void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
 {
     nvs_handle_t handle;
     nvs_open_handle("mqtt_setting", NVS_READWRITE, &handle);
@@ -162,4 +167,76 @@ void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
     }
     ESP_ERROR_CHECK(nvs_commit(handle));
     nvs_close(handle);
+}
+
+
+static TaskHandle_t nvs_write_task_handle = NULL;
+static void nvs_write_task(void *arg)
+{
+    switch (nvs_write_idx)
+    {
+    case NVS_WRITE_PWR:
+        nvs_write_power_settings(power_settings);
+        break;
+    case NVS_WRITE_MQTT:
+        mqtt_write_settings(mqtt_user_config);
+        break;
+    }
+    nvs_write_task_handle = NULL;
+    vTaskDelete(NULL);
+}
+
+static TaskHandle_t nvs_read_task_handle = NULL;
+static void nvs_read_task(void *arg)
+{
+    switch (nvs_read_idx)
+    {
+    case NVS_READ_PWR:
+        nvs_read_power_settings();
+        break;
+    case NVS_READ_MQTT:
+        mqtt_read_settings();
+        break;
+    }
+    nvs_read_task_handle = NULL;
+    vTaskDelete(NULL);
+}
+
+void nvs_read(nvs_read_idx_t idx)
+{
+    nvs_read_idx = idx;
+    if (nvs_read_task_handle != NULL)
+    {
+        vTaskDelete(nvs_read_task_handle);
+        nvs_read_task_handle = NULL;
+    }
+    xTaskCreate(nvs_read_task, "nvs_read_task", 8 * 1024, NULL, 10, &nvs_read_task_handle);
+}
+
+void nvs_write(nvs_write_idx_t idx, void* arg)
+{
+    switch (idx)
+    {
+    case NVS_WRITE_PWR:
+        if (arg != NULL)
+        {
+            // power_settings_t *new_power_settings = (power_settings_t *)arg;
+            power_settings = *(power_settings_t *)arg;
+        }
+        break;
+    case NVS_WRITE_MQTT:
+        if (arg != NULL)
+        {
+            // mqtt_user_config_t *new_mqtt_user_config = (mqtt_user_config_t *)arg;
+            mqtt_user_config = *(mqtt_user_config_t *)arg;
+        }
+        break;
+    }
+    nvs_write_idx = idx;
+    if (nvs_write_task_handle != NULL)
+    {
+        vTaskDelete(nvs_write_task_handle);
+        nvs_write_task_handle = NULL;
+    }
+    xTaskCreate(nvs_write_task, "nvs_write_task", 8 * 1024, NULL, 10, &nvs_write_task_handle);
 }

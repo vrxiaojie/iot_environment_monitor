@@ -72,5 +72,5 @@ void aw32001_interrupt_init()
         ESP_LOGW(TAG, "AW32001 interrupt task already created");
         return;
     }
-    xTaskCreate(aw32001_interrupt_task, "aw32001_interrupt_task", 8 * 1024, NULL, 6, &aw32001_interrupt_task_handle);
+    xTaskCreateWithCaps(aw32001_interrupt_task, "aw32001_interrupt_task", 8 * 1024, NULL, 6, &aw32001_interrupt_task_handle, MALLOC_CAP_SPIRAM);
 }

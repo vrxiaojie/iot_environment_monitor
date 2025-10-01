@@ -87,7 +87,7 @@ static void save_mqtt_settings()
         break;
     }
     new_mqtt_user_config.auto_conn = lv_obj_has_state(guider_ui.mqtt_setting_screen_auto_connect_switch, LV_STATE_CHECKED) ? 1 : 0;
-    mqtt_write_settings(new_mqtt_user_config);
+    nvs_write(NVS_WRITE_MQTT, &new_mqtt_user_config);
 }
 #endif
 #ifndef LV_USE_GUIDER_SIMULATOR
@@ -519,7 +519,7 @@ static void power_setting_screen_event_handler (lv_event_t *e)
             lv_obj_remove_state(guider_ui.power_setting_screen_fast_charge_sw, LV_STATE_CHECKED);
         }
 
-        nvs_read_power_settings(); // 读取保存在NVS的值
+        nvs_read(NVS_READ_PWR); // 读取保存在NVS的值
         //省电模式开关
         if (power_settings.power_save_mode)
         {
@@ -613,7 +613,7 @@ static void power_setting_screen_save_btn_event_handler (lv_event_t *e)
         power_settings_t new_power_settings;
         new_power_settings.power_save_mode = lv_obj_has_state(guider_ui.power_setting_screen_pwr_save_mode_sw, LV_STATE_CHECKED) ? 1 : 0;
         new_power_settings.charge_limit = lv_slider_get_value(guider_ui.power_setting_screen_charge_thresh_slider);
-        nvs_write_power_settings(new_power_settings);
+        nvs_write(NVS_WRITE_PWR, &new_power_settings);
         xTaskNotifyGive(bat_adc_task_handle);
 #endif
         break;
@@ -777,7 +777,7 @@ static void mqtt_setting_screen_event_handler (lv_event_t *e)
     case LV_EVENT_SCREEN_LOAD_START:
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
-        mqtt_read_settings();
+        nvs_read(NVS_READ_MQTT);
         lv_textarea_set_text(guider_ui.mqtt_setting_screen_address_input, mqtt_user_config.uri);
         lv_textarea_set_text(guider_ui.mqtt_setting_screen_username_input, mqtt_user_config.username);
         lv_textarea_set_text(guider_ui.mqtt_setting_screen_passwd_input, mqtt_user_config.password);

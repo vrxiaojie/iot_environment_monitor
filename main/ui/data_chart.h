@@ -5,8 +5,6 @@
 #include "lvgl.h"
 #include "esp_log.h"
 #include <stdio.h>
-#include "stcc4.h"
-#include "sgp4x.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "time.h"
