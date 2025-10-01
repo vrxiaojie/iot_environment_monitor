@@ -24,15 +24,23 @@ static void update_mqtt_screen_task(void *args)
     while (1)
     {
         _lock_acquire(&lvgl_api_lock);
-        if (is_mqtt_connected())
+        if (mqtt_get_status() == 1)
         {
             lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "断开");
             lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "已连接");
+            lv_obj_set_style_text_color(guider_ui.mqtt_setting_screen_mqtt_status_label, lv_color_hex(0x26c961), LV_PART_MAIN | LV_STATE_DEFAULT);
+        }
+        else if (mqtt_get_status() == 2)
+        {
+            lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "保存&连接");
+            lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "连接失败");
+            lv_obj_set_style_text_color(guider_ui.mqtt_setting_screen_mqtt_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
         else
         {
-            lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "连接");
+            lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "保存&连接");
             lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "未连接");
+            lv_obj_set_style_text_color(guider_ui.mqtt_setting_screen_mqtt_status_label, lv_color_hex(0xdeef18), LV_PART_MAIN | LV_STATE_DEFAULT);
         }
         _lock_release(&lvgl_api_lock);
         ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(2000));
@@ -207,7 +215,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     ui->mqtt_setting_screen_mqtt_status_label = lv_label_create(ui->mqtt_setting_screen_cont_1);
     lv_obj_set_pos(ui->mqtt_setting_screen_mqtt_status_label, 240, 10);
     lv_obj_set_size(ui->mqtt_setting_screen_mqtt_status_label, 71, 20);
-    lv_label_set_text(ui->mqtt_setting_screen_mqtt_status_label, "已连接\n未连接\n连接失败\n已断开");
+    lv_label_set_text(ui->mqtt_setting_screen_mqtt_status_label, "已连接\n未连接\n连接失败");
     lv_label_set_long_mode(ui->mqtt_setting_screen_mqtt_status_label, LV_LABEL_LONG_WRAP);
 
     //Write style for mqtt_setting_screen_mqtt_status_label, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -621,7 +629,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_obj_set_pos(ui->mqtt_setting_screen_connect_btn, 330, 230);
     lv_obj_set_size(ui->mqtt_setting_screen_connect_btn, 120, 30);
     ui->mqtt_setting_screen_connect_btn_label = lv_label_create(ui->mqtt_setting_screen_connect_btn);
-    lv_label_set_text(ui->mqtt_setting_screen_connect_btn_label, "连接");
+    lv_label_set_text(ui->mqtt_setting_screen_connect_btn_label, "保存&连接");
     lv_label_set_long_mode(ui->mqtt_setting_screen_connect_btn_label, LV_LABEL_LONG_WRAP);
     lv_obj_align(ui->mqtt_setting_screen_connect_btn_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_pad_all(ui->mqtt_setting_screen_connect_btn, 0, LV_STATE_DEFAULT);

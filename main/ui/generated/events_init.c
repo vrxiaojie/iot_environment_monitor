@@ -65,6 +65,30 @@ void delete_update_mqtt_screen_task();
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "mqtt_user.h"
 #include "nvs_helper.h"
+
+static void save_mqtt_settings()
+{
+    mqtt_user_config_t new_mqtt_user_config = {};
+    new_mqtt_user_config.uri = lv_textarea_get_text(guider_ui.mqtt_setting_screen_address_input);
+    new_mqtt_user_config.username = lv_textarea_get_text(guider_ui.mqtt_setting_screen_username_input);
+    new_mqtt_user_config.password = lv_textarea_get_text(guider_ui.mqtt_setting_screen_passwd_input);
+    new_mqtt_user_config.port = atoi(lv_textarea_get_text(guider_ui.mqtt_setting_screen_port_input));
+    int idx = lv_dropdown_get_selected(guider_ui.mqtt_setting_screen_upload_interval_list);
+    switch (idx)
+    {
+    case 0:
+        new_mqtt_user_config.upload_interval = 5;
+        break;
+    case 1:
+        new_mqtt_user_config.upload_interval = 30;
+        break;
+    case 2:
+        new_mqtt_user_config.upload_interval = 60;
+        break;
+    }
+    new_mqtt_user_config.auto_conn = lv_obj_has_state(guider_ui.mqtt_setting_screen_auto_connect_switch, LV_STATE_CHECKED) ? 1 : 0;
+    mqtt_write_settings(new_mqtt_user_config);
+}
 #endif
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "mqtt_user.h"
@@ -202,7 +226,7 @@ static void setting_screen_event_handler (lv_event_t *e)
         case LV_DIR_LEFT:
         {
             lv_indev_wait_release(lv_indev_active());
-            ui_load_scr_animation(&guider_ui, &guider_ui.main_screen, guider_ui.main_screen_del, &guider_ui.setting_screen_del, setup_scr_main_screen, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false, false);
+            ui_load_scr_animation(&guider_ui, &guider_ui.main_screen, guider_ui.main_screen_del, &guider_ui.setting_screen_del, setup_scr_main_screen, LV_SCR_LOAD_ANIM_MOVE_LEFT, 200, 0, false, true);
             break;
         }
         default:
@@ -418,7 +442,7 @@ static void wifi_setting_screen_return_btn_event_handler (lv_event_t *e)
     switch (code) {
     case LV_EVENT_CLICKED:
     {
-        ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
         break;
     }
     default:
@@ -803,26 +827,7 @@ static void mqtt_setting_screen_save_btn_event_handler (lv_event_t *e)
     case LV_EVENT_CLICKED:
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
-        mqtt_user_config_t new_mqtt_user_config = {};
-        new_mqtt_user_config.uri = lv_textarea_get_text(guider_ui.mqtt_setting_screen_address_input);
-        new_mqtt_user_config.username = lv_textarea_get_text(guider_ui.mqtt_setting_screen_username_input);
-        new_mqtt_user_config.password = lv_textarea_get_text(guider_ui.mqtt_setting_screen_passwd_input);
-        new_mqtt_user_config.port = atoi(lv_textarea_get_text(guider_ui.mqtt_setting_screen_port_input));
-        int idx = lv_dropdown_get_selected(guider_ui.mqtt_setting_screen_upload_interval_list);
-        switch (idx)
-        {
-        case 0:
-            new_mqtt_user_config.upload_interval = 5;
-            break;
-        case 1:
-            new_mqtt_user_config.upload_interval = 30;
-            break;
-        case 2:
-            new_mqtt_user_config.upload_interval = 60;
-            break;
-        }
-        new_mqtt_user_config.auto_conn = lv_obj_has_state(guider_ui.mqtt_setting_screen_auto_connect_switch, LV_STATE_CHECKED) ? 1 : 0;
-        mqtt_write_settings(new_mqtt_user_config);
+        save_mqtt_settings();
 #endif
         break;
     }
@@ -852,10 +857,13 @@ static void mqtt_setting_screen_connect_btn_event_handler (lv_event_t *e)
     case LV_EVENT_CLICKED:
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
-        if (is_mqtt_connected())
+        if (mqtt_get_status() == 1)
             mqtt_stop();
         else if (is_wifi_connected())
+        {
+            save_mqtt_settings();
             mqtt_start();
+        }
 #endif
         break;
     }

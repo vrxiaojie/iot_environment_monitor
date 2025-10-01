@@ -9,8 +9,8 @@
 #include "wifi.h"
 
 extern esp_mqtt_client_handle_t client;
-extern volatile bool mqtt_status;
+extern volatile uint8_t mqtt_status;
 
 void mqtt_start();
 void mqtt_stop();
-bool is_mqtt_connected();
+uint8_t mqtt_get_status();

@@ -7,11 +7,12 @@
 
 esp_mqtt_client_handle_t client = NULL;
 TaskHandle_t mqtt_publish_task_handle = NULL;
+TaskHandle_t mqtt_stop_task_handle = NULL;
 extern TaskHandle_t update_mqtt_screen_task_handle;
 extern STCC4_t stcc4;
 extern int32_t voc_index;
 
-volatile bool mqtt_status = false;
+volatile uint8_t mqtt_status = 0; // 0:未连接 1:已连接 2: 连接失败
 
 static void mqtt_stop_task(void *args)
 {
@@ -23,13 +24,16 @@ static void mqtt_stop_task(void *args)
     if (client)
     {
         esp_mqtt_client_disconnect(client);
-        mqtt_status = false;
+        if (mqtt_status == 1) // 如果是已连接状态，断开连接后变为未连接状态
+            mqtt_status = 0;
         vTaskDelay(100);
         esp_mqtt_client_stop(client);
+        vTaskDelay(50);
         esp_mqtt_client_destroy(client);
     }
     if (update_mqtt_screen_task_handle)
         xTaskNotifyGive(update_mqtt_screen_task_handle);
+    mqtt_stop_task_handle = NULL;
     vTaskDelete(NULL);
 }
 
@@ -42,13 +46,15 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-        mqtt_status = true;
+        mqtt_status = 1;
         if (update_mqtt_screen_task_handle != NULL)
             vTaskNotifyGiveFromISR(update_mqtt_screen_task_handle, &xHigherPriorityTaskWoken);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
-        mqtt_status = false;
+        if (mqtt_status == 2)
+            break; // 连接失败后会连着调用MQTT_EVENT_ERROR和MQTT_EVENT_DISCONNECTED，此时就不再修改状态
+        mqtt_status = 0;
         if (update_mqtt_screen_task_handle != NULL)
             vTaskNotifyGiveFromISR(update_mqtt_screen_task_handle, &xHigherPriorityTaskWoken);
         break;
@@ -69,6 +75,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+        mqtt_status = 2;
         mqtt_stop();
         break;
     default:
@@ -83,7 +90,7 @@ void mqtt_publish_data_task(void *args)
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
     while (1)
     {
-        if (client && is_mqtt_connected())
+        if (client && mqtt_get_status() == 1)
         {
             // 使用字符串处理，将传感器数据格式化为JSON字符串
             snprintf(json_data, sizeof(json_data),
@@ -121,10 +128,11 @@ void mqtt_start()
 
 void mqtt_stop()
 {
-    xTaskCreate(mqtt_stop_task, "mqtt_stop_task", 4 * 1024, NULL, 5, NULL);
+    if (mqtt_stop_task_handle == NULL)
+        xTaskCreate(mqtt_stop_task, "mqtt_stop_task", 4 * 1024, NULL, 5, &mqtt_stop_task_handle);
 }
 
-bool is_mqtt_connected()
+uint8_t mqtt_get_status()
 {
     return mqtt_status;
 }
