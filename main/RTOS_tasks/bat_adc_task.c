@@ -4,6 +4,7 @@
 #include "power_management.h"
 
 float bat_level = 0.0f;
+static bool fully_charged = false;
 extern TaskHandle_t update_battery_task;
 TaskHandle_t bat_adc_task_handle = NULL;
 void bat_adc_task(void *arg)
@@ -13,11 +14,17 @@ void bat_adc_task(void *arg)
     while (1)
     {
         bat_adc_get_battery_level(&bat_level);
-        if (bat_level > power_settings.charge_limit)
+        if (bat_level > power_settings.charge_limit && !fully_charged)
         {
+            fully_charged = true;
             aw32001_disable_charge();
         }
-        else if (bat_level < power_settings.charge_limit - 2)
+        else if (bat_level < power_settings.charge_limit - 2 && fully_charged)
+        {
+            fully_charged = false;
+            aw32001_enable_charge();
+        }
+        else if (!fully_charged)
         {
             aw32001_enable_charge();
         }
