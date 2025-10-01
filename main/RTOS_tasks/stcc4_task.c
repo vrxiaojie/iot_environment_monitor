@@ -7,6 +7,8 @@
 #define TAG "sensor_stcc4"
 extern i2c_master_bus_handle_t bus_handle;
 
+TaskHandle_t stcc4_task_handle = NULL;
+
 STCC4_t stcc4 = {0};
 void stcc4_task(void *arg)
 {
@@ -30,6 +32,6 @@ void stcc4_task(void *arg)
         ESP_ERROR_CHECK(stcc4_enter_sleep_mode());                                             // step 4 进入睡眠模式，节省功耗
         ESP_LOGI(TAG, "[single shot] CO2 Concentration: %d ppm, Temperature: %.2f C, Relative Humidity: %.2f %%, Sensor Status: 0x%04X",
                  stcc4.co2Concentration, stcc4.temperature, stcc4.relativeHumidity, stcc4.sensorStatus);
-        vTaskDelay(pdMS_TO_TICKS(5000)); // 等待5秒
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     }
 }

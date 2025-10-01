@@ -45,16 +45,6 @@ static esp_err_t i2c_master_init(i2c_master_bus_handle_t *bus_handle)
     return ESP_OK;
 }
 
-void test_task(void *arg)
-{
-    while (1)
-    {
-        ESP_LOGI(TAG, "Test task running");
-        vTaskDelay(100);
-        vTaskDelete(NULL);
-    }
-}
-
 void app_main(void)
 {
     // 初始化背光
