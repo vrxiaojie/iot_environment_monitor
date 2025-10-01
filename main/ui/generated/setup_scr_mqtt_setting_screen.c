@@ -13,7 +13,46 @@
 #include "events_init.h"
 #include "widgets_init.h"
 #include "custom.h"
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "mqtt_user.h"
+extern _lock_t lvgl_api_lock;
+TaskHandle_t update_mqtt_screen_task_handle = NULL;
+static void update_mqtt_screen_task(void *args)
+{
+    while (1)
+    {
+        _lock_acquire(&lvgl_api_lock);
+        if (is_mqtt_connected() && guider_ui.mqtt_setting_screen_connect_btn != NULL && guider_ui.mqtt_setting_screen_mqtt_status_label != NULL)
+        {
+            lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "断开");
+            lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "已连接");
+        }
+        else if (guider_ui.mqtt_setting_screen_connect_btn != NULL && guider_ui.mqtt_setting_screen_mqtt_status_label != NULL)
+        {
+            lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "连接");
+            lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "未连接");
+        }
+        _lock_release(&lvgl_api_lock);
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    }
+}
 
+void create_update_mqtt_screen_task()
+{
+    xTaskCreatePinnedToCore(update_mqtt_screen_task, "update_mqtt_screen_task", 8 * 1024, NULL, 5, &update_mqtt_screen_task_handle, 1);
+}
+
+void delete_update_mqtt_screen_task()
+{
+    if (update_mqtt_screen_task_handle != NULL)
+    {
+        vTaskDelete(update_mqtt_screen_task_handle);
+        update_mqtt_screen_task_handle = NULL;
+    }
+}
+#endif
 
 
 void setup_scr_mqtt_setting_screen(lv_ui *ui)
@@ -39,12 +78,12 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_cont_1, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_cont_1, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_cont_1, 16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(ui->mqtt_setting_screen_cont_1, 16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(ui->mqtt_setting_screen_cont_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write codes mqtt_setting_screen_label_14
     ui->mqtt_setting_screen_label_14 = lv_label_create(ui->mqtt_setting_screen_cont_1);
@@ -168,7 +207,7 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     ui->mqtt_setting_screen_mqtt_status_label = lv_label_create(ui->mqtt_setting_screen_cont_1);
     lv_obj_set_pos(ui->mqtt_setting_screen_mqtt_status_label, 240, 10);
     lv_obj_set_size(ui->mqtt_setting_screen_mqtt_status_label, 71, 20);
-    lv_label_set_text(ui->mqtt_setting_screen_mqtt_status_label, "已连接\n未连接\n连接失败");
+    lv_label_set_text(ui->mqtt_setting_screen_mqtt_status_label, "已连接\n未连接\n连接失败\n已断开");
     lv_label_set_long_mode(ui->mqtt_setting_screen_mqtt_status_label, LV_LABEL_LONG_WRAP);
 
     //Write style for mqtt_setting_screen_mqtt_status_label, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -346,8 +385,8 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_textarea_set_password_bullet(ui->mqtt_setting_screen_port_input, "*");
     lv_textarea_set_password_mode(ui->mqtt_setting_screen_port_input, false);
     lv_textarea_set_one_line(ui->mqtt_setting_screen_port_input, true);
-    lv_textarea_set_accepted_chars(ui->mqtt_setting_screen_port_input, "");
-    lv_textarea_set_max_length(ui->mqtt_setting_screen_port_input, 128);
+    lv_textarea_set_accepted_chars(ui->mqtt_setting_screen_port_input, "0123456789");
+    lv_textarea_set_max_length(ui->mqtt_setting_screen_port_input, 5);
 #if LV_USE_KEYBOARD
     lv_obj_add_event_cb(ui->mqtt_setting_screen_port_input, ta_event_cb, LV_EVENT_ALL, ui->g_kb_top_layer);
 #endif
@@ -543,16 +582,16 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_obj_set_width(ui->mqtt_setting_screen_save_btn_label, LV_PCT(100));
 
     //Write style for mqtt_setting_screen_save_btn, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_save_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_save_btn, lv_color_hex(0x0f4187), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_save_btn, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->mqtt_setting_screen_save_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_save_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_save_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_save_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui->mqtt_setting_screen_save_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->mqtt_setting_screen_save_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->mqtt_setting_screen_save_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_save_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_save_btn, lv_color_hex(0x0f4187), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_save_btn, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_save_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write codes mqtt_setting_screen_return_btn
     ui->mqtt_setting_screen_return_btn = lv_button_create(ui->mqtt_setting_screen);
@@ -566,16 +605,16 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_obj_set_width(ui->mqtt_setting_screen_return_btn_label, LV_PCT(100));
 
     //Write style for mqtt_setting_screen_return_btn, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_text_color(ui->mqtt_setting_screen_return_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->mqtt_setting_screen_return_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui->mqtt_setting_screen_return_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_align(ui->mqtt_setting_screen_return_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_return_btn, 109, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_return_btn, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_return_btn, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->mqtt_setting_screen_return_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_return_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_return_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_return_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->mqtt_setting_screen_return_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_return_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_opa(ui->mqtt_setting_screen_return_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_align(ui->mqtt_setting_screen_return_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write codes mqtt_setting_screen_connect_btn
     ui->mqtt_setting_screen_connect_btn = lv_button_create(ui->mqtt_setting_screen);
@@ -589,12 +628,12 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_obj_set_width(ui->mqtt_setting_screen_connect_btn_label, LV_PCT(100));
 
     //Write style for mqtt_setting_screen_connect_btn, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_border_width(ui->mqtt_setting_screen_connect_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(ui->mqtt_setting_screen_connect_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_connect_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui->mqtt_setting_screen_connect_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->mqtt_setting_screen_connect_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->mqtt_setting_screen_connect_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(ui->mqtt_setting_screen_connect_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_radius(ui->mqtt_setting_screen_connect_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_connect_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_connect_btn, lv_color_hex(0x0f4187), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_connect_btn, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);

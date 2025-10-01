@@ -56,6 +56,19 @@ void delete_update_power_setting_screen_task();
 #include "data_chart.h"
 #include "status_bar.h"
 #endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+void create_update_mqtt_screen_task();
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+void delete_update_mqtt_screen_task();
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "mqtt_user.h"
+#include "nvs_helper.h"
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "mqtt_user.h"
+#endif
 
 static void main_screen_event_handler (lv_event_t *e)
 {
@@ -733,6 +746,91 @@ void events_init_data_chart_screen (lv_ui *ui)
     lv_obj_add_event_cb(ui->data_chart_screen_btn_back, data_chart_screen_btn_back_event_handler, LV_EVENT_ALL, ui);
 }
 
+static void mqtt_setting_screen_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SCREEN_LOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        mqtt_read_settings();
+        lv_textarea_set_text(guider_ui.mqtt_setting_screen_address_input, mqtt_user_config.uri);
+        lv_textarea_set_text(guider_ui.mqtt_setting_screen_username_input, mqtt_user_config.username);
+        lv_textarea_set_text(guider_ui.mqtt_setting_screen_passwd_input, mqtt_user_config.password);
+        char t[6];
+        sprintf(t, "%lu", mqtt_user_config.port);
+        lv_textarea_set_text(guider_ui.mqtt_setting_screen_port_input, t);
+        if (mqtt_user_config.auto_conn)
+        {
+            lv_obj_add_state(guider_ui.mqtt_setting_screen_auto_connect_switch, LV_STATE_CHECKED);
+        }
+        else
+        {
+            lv_obj_remove_state(guider_ui.mqtt_setting_screen_auto_connect_switch, LV_STATE_CHECKED);
+        }
+        if (mqtt_user_config.upload_interval == 30)
+        {
+            lv_dropdown_set_selected(guider_ui.mqtt_setting_screen_upload_interval_list, 1);
+        }
+        else if (mqtt_user_config.upload_interval == 60)
+        {
+            lv_dropdown_set_selected(guider_ui.mqtt_setting_screen_upload_interval_list, 2);
+        }
+        else
+        {
+            lv_dropdown_set_selected(guider_ui.mqtt_setting_screen_upload_interval_list, 0);
+        }
+        create_update_mqtt_screen_task();
+#endif
+        break;
+    }
+    case LV_EVENT_SCREEN_UNLOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        delete_update_mqtt_screen_task();
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void mqtt_setting_screen_save_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        mqtt_user_config_t new_mqtt_user_config = {};
+        new_mqtt_user_config.uri = lv_textarea_get_text(guider_ui.mqtt_setting_screen_address_input);
+        new_mqtt_user_config.username = lv_textarea_get_text(guider_ui.mqtt_setting_screen_username_input);
+        new_mqtt_user_config.password = lv_textarea_get_text(guider_ui.mqtt_setting_screen_passwd_input);
+        new_mqtt_user_config.port = atoi(lv_textarea_get_text(guider_ui.mqtt_setting_screen_port_input));
+        int idx = lv_dropdown_get_selected(guider_ui.mqtt_setting_screen_upload_interval_list);
+        switch (idx)
+        {
+        case 0:
+            new_mqtt_user_config.upload_interval = 5;
+            break;
+        case 1:
+            new_mqtt_user_config.upload_interval = 30;
+            break;
+        case 2:
+            new_mqtt_user_config.upload_interval = 60;
+            break;
+        }
+        new_mqtt_user_config.auto_conn = lv_obj_has_state(guider_ui.mqtt_setting_screen_auto_connect_switch, LV_STATE_CHECKED) ? 1 : 0;
+        mqtt_write_settings(new_mqtt_user_config);
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 static void mqtt_setting_screen_return_btn_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -747,9 +845,31 @@ static void mqtt_setting_screen_return_btn_event_handler (lv_event_t *e)
     }
 }
 
+static void mqtt_setting_screen_connect_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        if (is_mqtt_connected())
+            mqtt_stop();
+        else
+            mqtt_start();
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void events_init_mqtt_setting_screen (lv_ui *ui)
 {
+    lv_obj_add_event_cb(ui->mqtt_setting_screen, mqtt_setting_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->mqtt_setting_screen_save_btn, mqtt_setting_screen_save_btn_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->mqtt_setting_screen_return_btn, mqtt_setting_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->mqtt_setting_screen_connect_btn, mqtt_setting_screen_connect_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
 
