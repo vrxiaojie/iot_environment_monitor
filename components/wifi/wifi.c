@@ -17,35 +17,6 @@ uint8_t wifi_sta_status = WIFI_DISCONNECTED;
 
 void wifi_connect_task(void *args);
 
-
-// void __attribute__((weak)) wifi_connect_task(void *args)
-// {
-//     user_wifi_cfg *cfg = (user_wifi_cfg *)args;
-
-//     wifi_config_t wifi_config = {
-//         .sta = {
-//             .ssid = "",
-//             .password = "",
-//         }};
-//     if (cfg)
-//     {
-//         strlcpy((char *)wifi_config.sta.ssid, (const char *)cfg->ssid, sizeof(wifi_config.sta.ssid));
-//         strlcpy((char *)wifi_config.sta.password, (const char *)cfg->password, sizeof(wifi_config.sta.password));
-//     }
-
-//     ESP_LOGI(TAG, "connecting... ssid: %s, password: %s", wifi_config.sta.ssid, wifi_config.sta.password);
-//     if (sta_netif == NULL)
-//     {
-//         sta_netif = esp_netif_create_default_wifi_sta();
-//         assert(sta_netif);
-//     }
-
-//     // wifi连接相关事件绑定
-//     ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
-//     ESP_ERROR_CHECK(esp_wifi_connect());
-//     vTaskDelete(NULL);
-// }
-
 void wifi_scan_task(void *args)
 {
     if (sta_netif == NULL)
@@ -177,9 +148,5 @@ void wifi_get_ip_info_str(wifi_ip_info_t *wifi_ip_info)
 
 bool is_wifi_connected(void)
 {
-    if (sta_netif == NULL)
-    {
-        return false;
-    }
-    return esp_netif_is_netif_up(sta_netif);
+    return wifi_sta_status == WIFI_CONNECTED ? true : false;
 }
