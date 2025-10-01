@@ -78,5 +78,5 @@ void rgb_lcd_init(void)
     ESP_LOGI(TAG, "Initialize RGB LCD panel");
     ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
     ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
-    xTaskCreatePinnedToCore(rgb_lcd_restart_panel_task, "rgb_lcd_restart_panel_task", 2 * 1024, NULL, 3, &rgb_lcd_restart_panel_task_handle, 1);
+    xTaskCreatePinnedToCoreWithCaps(rgb_lcd_restart_panel_task, "rgb_lcd_restart_panel_task", 2 * 1024, NULL, 3, &rgb_lcd_restart_panel_task_handle, 1, MALLOC_CAP_SPIRAM);
 }

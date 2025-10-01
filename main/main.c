@@ -45,6 +45,16 @@ static esp_err_t i2c_master_init(i2c_master_bus_handle_t *bus_handle)
     return ESP_OK;
 }
 
+void test_task(void *arg)
+{
+    while (1)
+    {
+        ESP_LOGI(TAG, "Test task running");
+        vTaskDelay(100);
+        vTaskDelete(NULL);
+    }
+}
+
 void app_main(void)
 {
     // 初始化背光
@@ -70,13 +80,13 @@ void app_main(void)
     aw32001_init(bus_handle);
     aw32001_disable_watchdog();
     aw32001_interrupt_init();
-    xTaskCreate(sgp4x_task, "sgp4x_task", 4 * 1024, NULL, 5, NULL);
-    xTaskCreate(stcc4_task, "stcc4_task", 4 * 1024, NULL, 5, NULL);
+    xTaskCreateWithCaps(sgp4x_task, "sgp4x_task", 4 * 1024, NULL, 5, &spg4x_task_handle, MALLOC_CAP_SPIRAM);
+    xTaskCreateWithCaps(stcc4_task, "stcc4_task", 4 * 1024, NULL, 5, &stcc4_task_handle, MALLOC_CAP_SPIRAM);
     // WiFi相关的初始化
     wifi_init();
     wifi_event_init();
-    xTaskCreate(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, NULL);
-    xTaskCreate(status_bar_init_task, "status_bar_task", 2 * 1024, NULL, 5, NULL);
-    xTaskCreate(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, &bat_adc_task_handle);
-    xTaskCreate(get_data_task, "get_data_task", 8 * 1024, NULL, 5, &get_data_task_handle);
+    xTaskCreateWithCaps(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, NULL, MALLOC_CAP_SPIRAM);
+    xTaskCreateWithCaps(status_bar_init_task, "status_bar_task", 2 * 1024, NULL, 5, NULL, MALLOC_CAP_SPIRAM);
+    xTaskCreateWithCaps(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, &bat_adc_task_handle, MALLOC_CAP_SPIRAM);
+    xTaskCreateWithCaps(get_data_task, "get_data_task", 8 * 1024, NULL, 5, &get_data_task_handle, MALLOC_CAP_SPIRAM);
 }

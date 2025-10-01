@@ -49,7 +49,7 @@ static void update_mqtt_screen_task(void *args)
 
 void create_update_mqtt_screen_task()
 {
-    xTaskCreatePinnedToCore(update_mqtt_screen_task, "update_mqtt_screen_task", 8 * 1024, NULL, 5, &update_mqtt_screen_task_handle, 1);
+    xTaskCreatePinnedToCoreWithCaps(update_mqtt_screen_task, "update_mqtt_screen_task", 8 * 1024, NULL, 5, &update_mqtt_screen_task_handle, 1, MALLOC_CAP_SPIRAM);
 }
 
 void delete_update_mqtt_screen_task()

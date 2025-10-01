@@ -540,7 +540,7 @@ void create_chart()
         break;
     }
     // 创建更新图表的任务
-    xTaskCreate(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle);
+    xTaskCreateWithCaps(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle, MALLOC_CAP_SPIRAM);
 }
 
 void delete_chart()

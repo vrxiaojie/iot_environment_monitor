@@ -121,7 +121,7 @@ void mqtt_start()
     client = esp_mqtt_client_init(&mqtt_cfg);
     if (mqtt_publish_task_handle == NULL)
     {
-        xTaskCreatePinnedToCore(mqtt_publish_data_task, "mqtt_publish_data_task", 8 * 1024, NULL, 3, &mqtt_publish_task_handle, 1);
+        xTaskCreatePinnedToCoreWithCaps(mqtt_publish_data_task, "mqtt_publish_data_task", 8 * 1024, NULL, 3, &mqtt_publish_task_handle, 1, MALLOC_CAP_SPIRAM);
     }
     esp_mqtt_client_start(client);
 }
@@ -129,7 +129,7 @@ void mqtt_start()
 void mqtt_stop()
 {
     if (mqtt_stop_task_handle == NULL)
-        xTaskCreate(mqtt_stop_task, "mqtt_stop_task", 4 * 1024, NULL, 5, &mqtt_stop_task_handle);
+        xTaskCreateWithCaps(mqtt_stop_task, "mqtt_stop_task", 4 * 1024, NULL, 5, &mqtt_stop_task_handle, MALLOC_CAP_SPIRAM);
 }
 
 uint8_t mqtt_get_status()
