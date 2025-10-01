@@ -11,7 +11,7 @@ extern TaskHandle_t update_mqtt_screen_task_handle;
 extern STCC4_t stcc4;
 extern int32_t voc_index;
 
-bool mqtt_status = false;
+volatile bool mqtt_status = false;
 
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
@@ -27,6 +27,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             vTaskNotifyGiveFromISR(update_mqtt_screen_task_handle, &xHigherPriorityTaskWoken);
         break;
     case MQTT_EVENT_DISCONNECTED:
+        if (wifi_sta_status == WIFI_DISCONNECTED)
+            esp_mqtt_client_stop(client);
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
         mqtt_status = false;
         if (update_mqtt_screen_task_handle != NULL)
@@ -102,9 +104,7 @@ void mqtt_stop()
 {
     if (client)
     {
-        esp_mqtt_client_stop(client);
-        esp_mqtt_client_destroy(client);
-        client = NULL;
+        esp_mqtt_client_disconnect(client);
     }
 }
 

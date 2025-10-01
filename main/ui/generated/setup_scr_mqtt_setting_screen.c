@@ -24,12 +24,12 @@ static void update_mqtt_screen_task(void *args)
     while (1)
     {
         _lock_acquire(&lvgl_api_lock);
-        if (is_mqtt_connected() && guider_ui.mqtt_setting_screen_connect_btn != NULL && guider_ui.mqtt_setting_screen_mqtt_status_label != NULL)
+        if (is_mqtt_connected())
         {
             lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "断开");
             lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "已连接");
         }
-        else if (guider_ui.mqtt_setting_screen_connect_btn != NULL && guider_ui.mqtt_setting_screen_mqtt_status_label != NULL)
+        else
         {
             lv_label_set_text(guider_ui.mqtt_setting_screen_connect_btn_label, "连接");
             lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "未连接");

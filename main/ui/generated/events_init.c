@@ -854,7 +854,7 @@ static void mqtt_setting_screen_connect_btn_event_handler (lv_event_t *e)
 #ifndef LV_USE_GUIDER_SIMULATOR
         if (is_mqtt_connected())
             mqtt_stop();
-        else
+        else if (is_wifi_connected())
             mqtt_start();
 #endif
         break;
