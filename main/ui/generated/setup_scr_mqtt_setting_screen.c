@@ -35,7 +35,7 @@ static void update_mqtt_screen_task(void *args)
             lv_label_set_text(guider_ui.mqtt_setting_screen_mqtt_status_label, "未连接");
         }
         _lock_release(&lvgl_api_lock);
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(2000));
     }
 }
 
