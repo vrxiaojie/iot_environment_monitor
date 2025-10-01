@@ -57,7 +57,7 @@ void app_main(void)
     rgb_lcd_init();
     // 初始化NVS
     nvs_init();
-    nvs_read_power_settings();
+    nvs_read(NVS_READ_PWR);
 
     // 初始化完毕 开启背光 设置亮度(默认20%)
     lcd_backlight_set_duty(20);

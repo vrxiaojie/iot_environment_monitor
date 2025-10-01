@@ -111,7 +111,7 @@ void mqtt_publish_data_task(void *args)
 void mqtt_start()
 {
     // get_mqtt_user_config
-    mqtt_read_settings();
+    nvs_read(NVS_READ_MQTT);
     esp_mqtt_client_config_t mqtt_cfg = {
         .broker.address.uri = mqtt_user_config.uri,
         .broker.address.port = mqtt_user_config.port,
