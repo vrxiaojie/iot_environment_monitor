@@ -176,9 +176,11 @@ LV_IMAGE_DECLARE(_MQTT_RGB565A8_48x48);
 
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
-LV_FONT_DECLARE(lv_font_xiaobiaosong_16)
+LV_FONT_DECLARE(lv_font_siyuanheiti_16)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_24)
 LV_FONT_DECLARE(lv_font_montserratMedium_12)
+LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_16)
+LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_12)
 
 
 #ifdef __cplusplus

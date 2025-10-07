@@ -127,7 +127,7 @@ void setup_scr_wifi_connect_screen(lv_ui *ui)
 
     //Write style for wifi_connect_screen_password_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_text_color(ui->wifi_connect_screen_password_input, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->wifi_connect_screen_password_input, &lv_font_montserratMedium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_connect_screen_password_input, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_connect_screen_password_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->wifi_connect_screen_password_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->wifi_connect_screen_password_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -182,7 +182,7 @@ void setup_scr_wifi_connect_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->wifi_connect_screen_conn_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->wifi_connect_screen_conn_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->wifi_connect_screen_conn_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->wifi_connect_screen_conn_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_connect_screen_conn_btn, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_connect_screen_conn_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->wifi_connect_screen_conn_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
@@ -205,7 +205,7 @@ void setup_scr_wifi_connect_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->wifi_connect_screen_cancel_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->wifi_connect_screen_cancel_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->wifi_connect_screen_cancel_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->wifi_connect_screen_cancel_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_connect_screen_cancel_btn, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_connect_screen_cancel_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->wifi_connect_screen_cancel_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
