@@ -125,7 +125,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_label_3, lv_color_hex(0x26c961), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_label_3, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_label_3, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_label_3, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_label_3, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -148,7 +148,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_pwr_save_mode_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_pwr_save_mode_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_pwr_save_mode_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_pwr_save_mode_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_pwr_save_mode_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_pwr_save_mode_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_pwr_save_mode_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_pwr_save_mode_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -162,7 +162,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
 
     //Write codes power_setting_screen_pwr_save_mode_sw
     ui->power_setting_screen_pwr_save_mode_sw = lv_switch_create(ui->power_setting_screen_cont_1);
-    lv_obj_set_pos(ui->power_setting_screen_pwr_save_mode_sw, 120, 38);
+    lv_obj_set_pos(ui->power_setting_screen_pwr_save_mode_sw, 120, 40);
     lv_obj_set_size(ui->power_setting_screen_pwr_save_mode_sw, 40, 20);
 
     //Write style for power_setting_screen_pwr_save_mode_sw, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -188,7 +188,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
 
     //Write codes power_setting_screen_fast_charge_sw
     ui->power_setting_screen_fast_charge_sw = lv_switch_create(ui->power_setting_screen_cont_1);
-    lv_obj_set_pos(ui->power_setting_screen_fast_charge_sw, 330, 38);
+    lv_obj_set_pos(ui->power_setting_screen_fast_charge_sw, 330, 40);
     lv_obj_set_size(ui->power_setting_screen_fast_charge_sw, 40, 20);
 
     //Write style for power_setting_screen_fast_charge_sw, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
@@ -223,7 +223,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_fast_charge_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_fast_charge_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_fast_charge_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_fast_charge_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_fast_charge_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_fast_charge_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_fast_charge_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_fast_charge_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -246,7 +246,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_charge_thresh_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_charge_thresh_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_charge_thresh_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_charge_thresh_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_charge_thresh_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_charge_thresh_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_charge_thresh_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_charge_thresh_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -298,7 +298,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_charge_thresh_percent_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_charge_thresh_percent_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_charge_thresh_percent_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_charge_thresh_percent_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_charge_thresh_percent_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_charge_thresh_percent_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_charge_thresh_percent_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_charge_thresh_percent_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -321,7 +321,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_label_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_label_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_label_1, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_label_1, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_label_1, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_label_1, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_label_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_label_1, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -344,7 +344,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_charge_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_charge_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_charge_status_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_charge_status_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_charge_status_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_charge_status_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_charge_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_charge_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -367,7 +367,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_label_5, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_label_5, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_label_5, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_label_5, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_label_5, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_label_5, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_label_5, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_label_5, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -390,7 +390,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->power_setting_screen_power_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->power_setting_screen_power_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_power_status_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_power_status_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_power_status_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_power_status_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->power_setting_screen_power_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->power_setting_screen_power_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -421,7 +421,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->power_setting_screen_save_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->power_setting_screen_save_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_save_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_save_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_save_btn, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_save_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->power_setting_screen_save_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
@@ -444,7 +444,7 @@ void setup_scr_power_setting_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->power_setting_screen_return_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->power_setting_screen_return_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->power_setting_screen_return_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->power_setting_screen_return_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->power_setting_screen_return_btn, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->power_setting_screen_return_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->power_setting_screen_return_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 

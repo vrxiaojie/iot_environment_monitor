@@ -47,7 +47,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->data_chart_screen_btn_1min, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->data_chart_screen_btn_1min, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_btn_1min, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_btn_1min, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_btn_1min, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_btn_1min, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->data_chart_screen_btn_1min, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
@@ -70,7 +70,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->data_chart_screen_btn_1h, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->data_chart_screen_btn_1h, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_btn_1h, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_btn_1h, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_btn_1h, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_btn_1h, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->data_chart_screen_btn_1h, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
@@ -93,7 +93,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->data_chart_screen_btn_24h, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->data_chart_screen_btn_24h, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_btn_24h, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_btn_24h, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_btn_24h, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_btn_24h, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->data_chart_screen_btn_24h, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
@@ -121,7 +121,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_shadow_offset_x(ui->data_chart_screen_btn_back, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_offset_y(ui->data_chart_screen_btn_back, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_btn_back, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_btn_back, &lv_font_montserratMedium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_btn_back, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_btn_back, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->data_chart_screen_btn_back, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
@@ -136,7 +136,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_title_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_title_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_title_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_title_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->data_chart_screen_title_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -150,7 +150,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
 
     //Write codes data_chart_screen_date_label
     ui->data_chart_screen_date_label = lv_label_create(ui->data_chart_screen);
-    lv_obj_set_pos(ui->data_chart_screen_date_label, 260, 4);
+    lv_obj_set_pos(ui->data_chart_screen_date_label, 260, 6);
     lv_obj_set_size(ui->data_chart_screen_date_label, 46, 20);
     lv_label_set_text(ui->data_chart_screen_date_label, "--/--");
     lv_label_set_long_mode(ui->data_chart_screen_date_label, LV_LABEL_LONG_WRAP);
@@ -159,7 +159,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->data_chart_screen_date_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->data_chart_screen_date_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_date_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_date_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_date_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_date_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->data_chart_screen_date_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->data_chart_screen_date_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -173,7 +173,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
 
     //Write codes data_chart_screen_time_label
     ui->data_chart_screen_time_label = lv_label_create(ui->data_chart_screen);
-    lv_obj_set_pos(ui->data_chart_screen_time_label, 260, 20);
+    lv_obj_set_pos(ui->data_chart_screen_time_label, 260, 24);
     lv_obj_set_size(ui->data_chart_screen_time_label, 46, 20);
     lv_label_set_text(ui->data_chart_screen_time_label, "--:--");
     lv_label_set_long_mode(ui->data_chart_screen_time_label, LV_LABEL_LONG_WRAP);
@@ -182,7 +182,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->data_chart_screen_time_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->data_chart_screen_time_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_time_label, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_time_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_time_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_time_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->data_chart_screen_time_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->data_chart_screen_time_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);

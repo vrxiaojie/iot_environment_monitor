@@ -58,7 +58,7 @@ static void add_wifi_item_to_list(const char *ssid, int8_t rssi, wifi_auth_mode_
     // 添加按钮到列表
     lv_obj_t *btn = lv_list_add_button(guider_ui.wifi_setting_screen_wifi_scan_list, LV_SYMBOL_WIFI, wifi_item_text);
     // 设置按钮文本样式
-    lv_obj_set_style_text_font(btn, &lv_font_montserratMedium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(btn, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(btn, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -267,13 +267,13 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
     lv_obj_set_style_radius(ui->wifi_setting_screen_network_info_btn, 25, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->wifi_setting_screen_network_info_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->wifi_setting_screen_network_info_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->wifi_setting_screen_network_info_btn, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_setting_screen_network_info_btn, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_setting_screen_network_info_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->wifi_setting_screen_network_info_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write codes wifi_setting_screen_connect_status_label
     ui->wifi_setting_screen_connect_status_label = lv_label_create(ui->wifi_setting_screen_wifi_container);
-    lv_obj_set_pos(ui->wifi_setting_screen_connect_status_label, 109, 12);
+    lv_obj_set_pos(ui->wifi_setting_screen_connect_status_label, 109, 10);
     lv_obj_set_size(ui->wifi_setting_screen_connect_status_label, 89, 22);
     lv_label_set_text(ui->wifi_setting_screen_connect_status_label, "" LV_SYMBOL_WIFI " ");
     lv_label_set_long_mode(ui->wifi_setting_screen_connect_status_label, LV_LABEL_LONG_WRAP);
@@ -282,7 +282,7 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
     lv_obj_set_style_border_width(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->wifi_setting_screen_connect_status_label, &lv_font_xiaobiaosong_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_setting_screen_connect_status_label, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_setting_screen_connect_status_label, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_letter_space(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_line_space(ui->wifi_setting_screen_connect_status_label, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -336,7 +336,7 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
     lv_style_set_pad_bottom(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, 5);
     lv_style_set_border_width(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, 0);
     lv_style_set_text_color(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, lv_color_hex(0xffffff));
-    lv_style_set_text_font(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, &lv_font_montserratMedium_16);
+    lv_style_set_text_font(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, &lv_font_JetBrainsMono_Medium_16);
     lv_style_set_text_opa(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, 255);
     lv_style_set_radius(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, 3);
     lv_style_set_bg_opa(&style_wifi_setting_screen_wifi_scan_list_extra_btns_main_default, 118);
@@ -353,7 +353,7 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
     lv_style_set_pad_bottom(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, 5);
     lv_style_set_border_width(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, 0);
     lv_style_set_text_color(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, lv_color_hex(0x1483f3));
-    lv_style_set_text_font(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, &lv_font_montserratMedium_16);
+    lv_style_set_text_font(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, &lv_font_JetBrainsMono_Medium_16);
     lv_style_set_text_opa(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, 255);
     lv_style_set_radius(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, 3);
     lv_style_set_transform_width(&style_wifi_setting_screen_wifi_scan_list_extra_texts_main_default, 0);
@@ -383,7 +383,7 @@ void setup_scr_wifi_setting_screen(lv_ui *ui)
     lv_obj_set_style_shadow_offset_x(ui->wifi_setting_screen_return_btn, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_offset_y(ui->wifi_setting_screen_return_btn, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->wifi_setting_screen_return_btn, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->wifi_setting_screen_return_btn, &lv_font_montserratMedium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_setting_screen_return_btn, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_setting_screen_return_btn, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->wifi_setting_screen_return_btn, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
