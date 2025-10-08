@@ -14,29 +14,6 @@ extern int32_t voc_index;
 
 volatile uint8_t mqtt_status = 0; // 0:未连接 1:已连接 2: 连接失败
 
-static void mqtt_stop_task(void *args)
-{
-    if (mqtt_publish_task_handle)
-    {
-        vTaskDelete(mqtt_publish_task_handle);
-        mqtt_publish_task_handle = NULL;
-    }
-    if (client)
-    {
-        esp_mqtt_client_disconnect(client);
-        if (mqtt_status == 1) // 如果是已连接状态，断开连接后变为未连接状态
-            mqtt_status = 0;
-        vTaskDelay(100);
-        esp_mqtt_client_stop(client);
-        vTaskDelay(50);
-        esp_mqtt_client_destroy(client);
-    }
-    if (update_mqtt_screen_task_handle)
-        xTaskNotifyGive(update_mqtt_screen_task_handle);
-    mqtt_stop_task_handle = NULL;
-    vTaskDelete(NULL);
-}
-
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -110,20 +87,49 @@ void mqtt_publish_data_task(void *args)
 
 void mqtt_start()
 {
-    // get_mqtt_user_config
-    nvs_read(NVS_READ_MQTT);
-    esp_mqtt_client_config_t mqtt_cfg = {
-        .broker.address.uri = mqtt_user_config.uri,
-        .broker.address.port = mqtt_user_config.port,
-        .credentials.username = mqtt_user_config.username,
-        .credentials.authentication.password = mqtt_user_config.password,
-    };
-    client = esp_mqtt_client_init(&mqtt_cfg);
-    if (mqtt_publish_task_handle == NULL)
+    if (client == NULL)
     {
-        xTaskCreatePinnedToCoreWithCaps(mqtt_publish_data_task, "mqtt_publish_data_task", 8 * 1024, NULL, 3, &mqtt_publish_task_handle, 1, MALLOC_CAP_SPIRAM);
+        // get_mqtt_user_config
+        nvs_read(NVS_READ_MQTT);
+        esp_mqtt_client_config_t mqtt_cfg = {
+            .broker.address.uri = mqtt_user_config.uri,
+            .broker.address.port = mqtt_user_config.port,
+            .credentials.username = mqtt_user_config.username,
+            .credentials.authentication.password = mqtt_user_config.password,
+            .network.disable_auto_reconnect = true,
+        };
+        client = esp_mqtt_client_init(&mqtt_cfg);
+        if (mqtt_publish_task_handle == NULL)
+        {
+            xTaskCreatePinnedToCoreWithCaps(mqtt_publish_data_task, "mqtt_publish_data_task", 8 * 1024, NULL, 3, &mqtt_publish_task_handle, 1, MALLOC_CAP_SPIRAM);
+        }
+        esp_mqtt_client_start(client);
     }
-    esp_mqtt_client_start(client);
+}
+
+static void mqtt_stop_task(void *args)
+{
+    if (mqtt_publish_task_handle)
+    {
+        vTaskDelete(mqtt_publish_task_handle);
+        mqtt_publish_task_handle = NULL;
+    }
+    if (client)
+    {
+        esp_mqtt_client_unregister_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler);
+        esp_mqtt_client_disconnect(client);
+        if (mqtt_status == 1) // 如果是已连接状态，断开连接后变为未连接状态
+            mqtt_status = 0;
+        vTaskDelay(100);
+        esp_mqtt_client_stop(client);
+        vTaskDelay(50);
+        esp_mqtt_client_destroy(client);
+        client = NULL;
+    }
+    if (update_mqtt_screen_task_handle)
+        xTaskNotifyGive(update_mqtt_screen_task_handle);
+    mqtt_stop_task_handle = NULL;
+    vTaskDelete(NULL);
 }
 
 void mqtt_stop()
