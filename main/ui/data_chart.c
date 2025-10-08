@@ -475,14 +475,40 @@ void create_chart()
 
 void delete_chart()
 {
-    if (update_chart_task_handle)
+    if (update_chart_task_handle != NULL)
     {
         vTaskDelete(update_chart_task_handle);
+        vPortFree(update_chart_task_handle);
         update_chart_task_handle = NULL;
     }
     if (chart)
     {
         lv_obj_del(chart);
         chart = NULL;
+    }
+    if (scale_bottom)
+    {
+        lv_obj_del(scale_bottom);
+        scale_bottom = NULL;
+    }
+    if (scale_left)
+    {
+        lv_obj_del(scale_left);
+        scale_left = NULL;
+    }
+    if (wrapper)
+    {
+        lv_obj_del(wrapper);
+        wrapper = NULL;
+    }
+    if (main_cont)
+    {
+        lv_obj_del(main_cont);
+        main_cont = NULL;
+    }
+    if (value_label)
+    {
+        lv_obj_del(value_label);
+        value_label = NULL;
     }
 }

@@ -54,19 +54,22 @@ static void add_wifi_item_to_list(const char *ssid, int8_t rssi, wifi_auth_mode_
     // 创建WiFi项文本，包含SSID和信号强度
     char wifi_item_text[64];
     snprintf(wifi_item_text, sizeof(wifi_item_text), "%s (%ddBm)", ssid, rssi);
-    _lock_acquire(&lvgl_api_lock);
-    // 添加按钮到列表
-    lv_obj_t *btn = lv_list_add_button(guider_ui.wifi_setting_screen_wifi_scan_list, LV_SYMBOL_WIFI, wifi_item_text);
-    // 设置按钮文本样式
-    lv_obj_set_style_text_font(btn, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_color(btn, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(btn, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
-    // 为按钮添加点击事件
-    lv_obj_add_event_cb(btn, ssid_select_cb, LV_EVENT_ALL, (void *)ssid);
-    _lock_release(&lvgl_api_lock);
-    ESP_LOGI(TAG, "Added WiFi item: %s", wifi_item_text);
+    if (guider_ui.wifi_setting_screen_wifi_scan_list)
+    {
+        _lock_acquire(&lvgl_api_lock);
+        // 添加按钮到列表
+        lv_obj_t *btn = lv_list_add_button(guider_ui.wifi_setting_screen_wifi_scan_list, LV_SYMBOL_WIFI, wifi_item_text);
+        // 设置按钮文本样式
+        lv_obj_set_style_text_font(btn, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_text_color(btn, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_opa(btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_border_width(btn, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(btn, 8, LV_PART_MAIN | LV_STATE_DEFAULT);
+        // 为按钮添加点击事件
+        lv_obj_add_event_cb(btn, ssid_select_cb, LV_EVENT_ALL, (void *)ssid);
+        _lock_release(&lvgl_api_lock);
+        ESP_LOGI(TAG, "Added WiFi item: %s", wifi_item_text);
+    }
 }
 
 void wifi_add_list_task(void *args)

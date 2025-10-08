@@ -15,6 +15,9 @@
 #include "freemaster_client.h"
 #endif
 
+#ifndef LV_USE_GUIDER_SIMULATOR
+void update_data_cb(lv_timer_t * timer);
+#endif
 extern lv_timer_t *update_data_timer;
 uint8_t wifi_status = 0;
 uint8_t bluetooth_status = 0;
@@ -98,6 +101,25 @@ static void main_screen_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
+    case LV_EVENT_SCREEN_LOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        if (update_data_timer == NULL)
+            update_data_timer = lv_timer_create(update_data_cb, 1000, 0);
+#endif
+        break;
+    }
+    case LV_EVENT_SCREEN_UNLOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        if (update_data_timer)
+        {
+            lv_timer_delete(update_data_timer);
+            update_data_timer = NULL;
+        }
+#endif
+        break;
+    }
     case LV_EVENT_GESTURE:
     {
         lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_active());
@@ -442,7 +464,7 @@ static void wifi_setting_screen_return_btn_event_handler (lv_event_t *e)
     switch (code) {
     case LV_EVENT_CLICKED:
     {
-        ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+        ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.wifi_setting_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
         break;
     }
     default:
