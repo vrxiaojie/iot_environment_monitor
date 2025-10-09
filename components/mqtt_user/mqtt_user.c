@@ -111,7 +111,7 @@ static void mqtt_stop_task(void *args)
 {
     if (mqtt_publish_task_handle)
     {
-        vTaskDelete(mqtt_publish_task_handle);
+        vTaskDeleteWithCaps(mqtt_publish_task_handle);
         mqtt_publish_task_handle = NULL;
     }
     if (client)
@@ -129,7 +129,7 @@ static void mqtt_stop_task(void *args)
     if (update_mqtt_screen_task_handle)
         xTaskNotifyGive(update_mqtt_screen_task_handle);
     mqtt_stop_task_handle = NULL;
-    vTaskDelete(NULL);
+    vTaskDeleteWithCaps(NULL);
 }
 
 void mqtt_stop()

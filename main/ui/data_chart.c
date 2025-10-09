@@ -477,8 +477,7 @@ void delete_chart()
 {
     if (update_chart_task_handle != NULL)
     {
-        vTaskDelete(update_chart_task_handle);
-        vPortFree(update_chart_task_handle);
+        vTaskDeleteWithCaps(update_chart_task_handle);
         update_chart_task_handle = NULL;
     }
     if (chart)

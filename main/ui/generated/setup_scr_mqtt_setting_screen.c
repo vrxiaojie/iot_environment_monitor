@@ -56,8 +56,8 @@ void delete_update_mqtt_screen_task()
 {
     if (update_mqtt_screen_task_handle != NULL)
     {
-        vTaskDelete(update_mqtt_screen_task_handle);
-        vPortFree(update_mqtt_screen_task_handle);
+        vTaskDeleteWithCaps(update_mqtt_screen_task_handle);
+        update_mqtt_screen_task_handle = NULL;
     }
 }
 #endif

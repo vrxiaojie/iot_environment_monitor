@@ -76,8 +76,8 @@ void delete_update_power_setting_screen_task()
 {
     if (update_power_setting_screen_task_handle != NULL)
     {
-        vTaskDelete(update_power_setting_screen_task_handle);
-        vPortFree(update_power_setting_screen_task_handle);
+        vTaskDeleteWithCaps(update_power_setting_screen_task_handle);
+        update_power_setting_screen_task_handle = NULL;
     }
 }
 
