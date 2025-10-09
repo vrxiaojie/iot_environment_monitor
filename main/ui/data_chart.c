@@ -470,19 +470,47 @@ void create_chart()
         break;
     }
     // 创建更新图表的任务
-    xTaskCreateWithCaps(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle, MALLOC_CAP_SPIRAM);
+    if (update_chart_task_handle == NULL)
+    {
+        xTaskCreateWithCaps(update_chart_task, "update_chart_task", 16 * 1024, NULL, 5, &update_chart_task_handle, MALLOC_CAP_SPIRAM);
+    }
 }
 
 void delete_chart()
 {
-    if (update_chart_task_handle)
+    if (update_chart_task_handle != NULL)
     {
-        vTaskDelete(update_chart_task_handle);
+        vTaskDeleteWithCaps(update_chart_task_handle);
         update_chart_task_handle = NULL;
     }
     if (chart)
     {
         lv_obj_del(chart);
         chart = NULL;
+    }
+    if (scale_bottom)
+    {
+        lv_obj_del(scale_bottom);
+        scale_bottom = NULL;
+    }
+    if (scale_left)
+    {
+        lv_obj_del(scale_left);
+        scale_left = NULL;
+    }
+    if (wrapper)
+    {
+        lv_obj_del(wrapper);
+        wrapper = NULL;
+    }
+    if (main_cont)
+    {
+        lv_obj_del(main_cont);
+        main_cont = NULL;
+    }
+    if (value_label)
+    {
+        lv_obj_del(value_label);
+        value_label = NULL;
     }
 }

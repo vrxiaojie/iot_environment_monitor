@@ -76,5 +76,5 @@ void status_bar_init_task(void *pvParameter)
     xTaskCreateWithCaps(status_bar_update_battery_task, "update_battery_task", 4 * 1024, NULL, 6, &update_battery_task, MALLOC_CAP_SPIRAM);
     xTaskCreateWithCaps(status_bar_update_time_task, "update_time_task", 4 * 1024, NULL, 6, NULL, MALLOC_CAP_SPIRAM);
     xTaskCreateWithCaps(status_bar_update_wifi_icon_task, "update_wifi_icon_task", 4 * 1024, NULL, 6, &update_wifi_icon_task_handle, MALLOC_CAP_SPIRAM);
-    vTaskDelete(NULL);
+    vTaskDeleteWithCaps(NULL);
 }

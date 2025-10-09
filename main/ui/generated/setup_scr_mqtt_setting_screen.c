@@ -46,17 +46,19 @@ static void update_mqtt_screen_task(void *args)
         ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(2000));
     }
 }
-
 void create_update_mqtt_screen_task()
 {
-    xTaskCreatePinnedToCoreWithCaps(update_mqtt_screen_task, "update_mqtt_screen_task", 8 * 1024, NULL, 5, &update_mqtt_screen_task_handle, 1, MALLOC_CAP_SPIRAM);
+    if (update_mqtt_screen_task_handle == NULL)
+    {
+        xTaskCreatePinnedToCoreWithCaps(update_mqtt_screen_task, "update_mqtt_screen_task", 8 * 1024, NULL, 5, &update_mqtt_screen_task_handle, 1, MALLOC_CAP_SPIRAM);
+    }
 }
 
 void delete_update_mqtt_screen_task()
 {
     if (update_mqtt_screen_task_handle != NULL)
     {
-        vTaskDelete(update_mqtt_screen_task_handle);
+        vTaskDeleteWithCaps(update_mqtt_screen_task_handle);
         update_mqtt_screen_task_handle = NULL;
     }
 }
@@ -336,19 +338,20 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
     lv_style_set_bg_grad_dir(&style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, LV_GRAD_DIR_NONE);
     lv_obj_add_style(lv_dropdown_get_list(ui->mqtt_setting_screen_upload_interval_list), &style_mqtt_setting_screen_upload_interval_list_extra_list_selected_checked, LV_PART_SELECTED|LV_STATE_CHECKED);
 
-    //Write style for mqtt_setting_screen_upload_interval_list, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_text_color(ui->mqtt_setting_screen_upload_interval_list, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->mqtt_setting_screen_upload_interval_list, &lv_font_JetBrainsMono_Medium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_opa(ui->mqtt_setting_screen_upload_interval_list, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_border_width(ui->mqtt_setting_screen_upload_interval_list, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_upload_interval_list, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(ui->mqtt_setting_screen_upload_interval_list, 6, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(ui->mqtt_setting_screen_upload_interval_list, 6, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_radius(ui->mqtt_setting_screen_upload_interval_list, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_upload_interval_list, 129, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_upload_interval_list, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_upload_interval_list, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_upload_interval_list, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+    //Write style state: LV_STATE_DEFAULT for &style_mqtt_setting_screen_upload_interval_list_extra_list_main_default
+    static lv_style_t style_mqtt_setting_screen_upload_interval_list_extra_list_main_default;
+    ui_init_style(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default);
+
+    lv_style_set_max_height(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 90);
+    lv_style_set_text_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, lv_color_hex(0xffffff));
+    lv_style_set_text_font(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, &lv_font_JetBrainsMono_Medium_12);
+    lv_style_set_text_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 255);
+    lv_style_set_border_width(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 0);
+    lv_style_set_radius(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 4);
+    lv_style_set_bg_opa(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, 129);
+    lv_style_set_bg_color(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, lv_color_hex(0x5b5b5b));
+    lv_style_set_bg_grad_dir(&style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, LV_GRAD_DIR_NONE);
+    lv_obj_add_style(lv_dropdown_get_list(ui->mqtt_setting_screen_upload_interval_list), &style_mqtt_setting_screen_upload_interval_list_extra_list_main_default, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write style state: LV_STATE_DEFAULT for &style_mqtt_setting_screen_upload_interval_list_extra_list_scrollbar_default
     static lv_style_t style_mqtt_setting_screen_upload_interval_list_extra_list_scrollbar_default;
