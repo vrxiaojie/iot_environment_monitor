@@ -22,7 +22,11 @@ static void wifi_reconnect_task(void *args)
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         esp_lcd_rgb_panel_set_pclk(panel_handle, 5 * 1000 * 1000); // 连接wifi前临时降低刷新率防止屏幕偏移
         vTaskDelay(pdMS_TO_TICKS(50));                             // 延时50ms 等待屏幕刷完一帧
-        ESP_ERROR_CHECK(esp_wifi_connect());
+        esp_err_t err = esp_wifi_connect();
+        if (err != ESP_OK)
+        {
+            ESP_LOGE(TAG, "Failed to reconnect WiFi: %s", esp_err_to_name(err));
+        }
     }
 }
 
