@@ -86,8 +86,10 @@ static void mqtt_read_settings()
     }
     else if (err == ESP_OK)
     {
-        mqtt_user_config.uri = malloc(required_size);
-        err = nvs_get_str(handle, "uri", (char *)mqtt_user_config.uri, &required_size);
+        char* uri = malloc(required_size);
+        memcpy(uri, mqtt_user_config.uri, required_size);
+        err = nvs_get_str(handle, "uri", mqtt_user_config.uri, &required_size);
+        free((void*)uri);
     }
 
     err = nvs_get_str(handle, "password", NULL, &required_size);
@@ -98,8 +100,10 @@ static void mqtt_read_settings()
     }
     else if (err == ESP_OK)
     {
-        mqtt_user_config.password = malloc(required_size);
-        err = nvs_get_str(handle, "password", (char *)mqtt_user_config.password, &required_size);
+        char* passwd = malloc(required_size);
+        memcpy(passwd, mqtt_user_config.password, required_size);
+        err = nvs_get_str(handle, "password", mqtt_user_config.password, &required_size);
+        free((void*)passwd);
     }
 
     err = nvs_get_str(handle, "username", NULL, &required_size);
@@ -110,8 +114,10 @@ static void mqtt_read_settings()
     }
     else if (err == ESP_OK)
     {
-        mqtt_user_config.username = malloc(required_size);
-        err = nvs_get_str(handle, "username", (char *)mqtt_user_config.username, &required_size);
+        char* username = malloc(required_size);
+        memcpy(username, mqtt_user_config.username, required_size);
+        err = nvs_get_str(handle, "username", mqtt_user_config.username, &required_size);
+        free((void*)username);
     }
 
     err = nvs_get_u32(handle, "port", &mqtt_user_config.port);
@@ -141,15 +147,15 @@ static void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
     nvs_open_handle("mqtt_setting", NVS_READWRITE, &handle);
     mqtt_read_settings();
 
-    if (new_mqtt_user_config.uri != NULL && strcmp(new_mqtt_user_config.uri, mqtt_user_config.uri) != 0)
+    if (strcmp(new_mqtt_user_config.uri, mqtt_user_config.uri) != 0)
     {
         ESP_ERROR_CHECK(nvs_set_str(handle, "uri", new_mqtt_user_config.uri));
     }
-    if (new_mqtt_user_config.password != NULL && strcmp(new_mqtt_user_config.password, mqtt_user_config.password) != 0)
+    if (strcmp(new_mqtt_user_config.password, mqtt_user_config.password) != 0)
     {
         ESP_ERROR_CHECK(nvs_set_str(handle, "password", new_mqtt_user_config.password));
     }
-    if (new_mqtt_user_config.username != NULL && strcmp(new_mqtt_user_config.username, mqtt_user_config.username) != 0)
+    if (strcmp(new_mqtt_user_config.username, mqtt_user_config.username) != 0)
     {
         ESP_ERROR_CHECK(nvs_set_str(handle, "username", new_mqtt_user_config.username));
     }
@@ -168,7 +174,6 @@ static void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
     ESP_ERROR_CHECK(nvs_commit(handle));
     nvs_close(handle);
 }
-
 
 static TaskHandle_t nvs_write_task_handle = NULL;
 static void nvs_write_task(void *arg)
@@ -213,7 +218,7 @@ void nvs_read(nvs_read_idx_t idx)
     xTaskCreate(nvs_read_task, "nvs_read_task", 8 * 1024, NULL, 10, &nvs_read_task_handle);
 }
 
-void nvs_write(nvs_write_idx_t idx, void* arg)
+void nvs_write(nvs_write_idx_t idx, void *arg)
 {
     switch (idx)
     {

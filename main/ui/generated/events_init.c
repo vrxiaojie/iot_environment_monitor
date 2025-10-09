@@ -71,10 +71,14 @@ void delete_update_mqtt_screen_task();
 
 static void save_mqtt_settings()
 {
+    const char *temp;
     mqtt_user_config_t new_mqtt_user_config = {};
-    new_mqtt_user_config.uri = lv_textarea_get_text(guider_ui.mqtt_setting_screen_address_input);
-    new_mqtt_user_config.username = lv_textarea_get_text(guider_ui.mqtt_setting_screen_username_input);
-    new_mqtt_user_config.password = lv_textarea_get_text(guider_ui.mqtt_setting_screen_passwd_input);
+    temp = lv_textarea_get_text(guider_ui.mqtt_setting_screen_address_input);
+    memcpy(new_mqtt_user_config.uri, temp, strlen(temp) + 1);
+    temp = lv_textarea_get_text(guider_ui.mqtt_setting_screen_username_input);
+    memcpy(new_mqtt_user_config.username, temp, strlen(temp) + 1);
+    temp = lv_textarea_get_text(guider_ui.mqtt_setting_screen_passwd_input);
+    memcpy(new_mqtt_user_config.password, temp, strlen(temp) + 1);
     new_mqtt_user_config.port = atoi(lv_textarea_get_text(guider_ui.mqtt_setting_screen_port_input));
     int idx = lv_dropdown_get_selected(guider_ui.mqtt_setting_screen_upload_interval_list);
     switch (idx)

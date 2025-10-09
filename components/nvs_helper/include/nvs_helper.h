@@ -14,10 +14,10 @@ extern power_settings_t power_settings;
 
 typedef struct
 {
-    const char *uri;
+    char uri[64];
     uint32_t port;
-    const char *username;
-    const char *password;
+    char username[64];
+    char password[64];
     uint8_t upload_interval;
     uint8_t auto_conn;
 } mqtt_user_config_t;
