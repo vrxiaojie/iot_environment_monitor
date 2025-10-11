@@ -99,6 +99,19 @@ static void save_mqtt_settings()
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "mqtt_user.h"
 #endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+void create_update_ota_screen_task();
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+void delete_update_ota_screen_task();
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "ota.h"
+#include "wifi.h"
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "nvs_helper.h"
+#endif
 
 static void main_screen_event_handler (lv_event_t *e)
 {
@@ -920,6 +933,66 @@ void events_init_mqtt_setting_screen (lv_ui *ui)
     lv_obj_add_event_cb(ui->mqtt_setting_screen_connect_btn, mqtt_setting_screen_connect_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
+static void ota_screen_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SCREEN_LOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        create_update_ota_screen_task();
+#endif
+        break;
+    }
+    case LV_EVENT_SCREEN_UNLOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        delete_update_ota_screen_task();
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void ota_screen_update_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        if (!is_wifi_connected())
+        {
+            lv_label_set_text(guider_ui.ota_screen_hint_label, "网络未连接");
+            ota_status = OTA_STATUS_IDLE;
+            return ;
+        }
+        switch (ota_status)
+        {
+        case OTA_STATUS_CHECKING_UPDATE:
+        case OTA_STATUS_DOWNLOADING:
+            break;
+        case OTA_STATUS_IDLE:
+        case OTA_STATUS_NO_UPDATE:
+        case OTA_STATUS_FAILED:
+            ota_check_for_update();
+            ota_status = OTA_STATUS_CHECKING_UPDATE;
+            break;
+        case OTA_STATUS_FOUND_UPDATE:
+            ota_start();
+            ota_status = OTA_STATUS_DOWNLOADING;
+            break;
+        }
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 static void ota_screen_return_btn_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -927,6 +1000,29 @@ static void ota_screen_return_btn_event_handler (lv_event_t *e)
     case LV_EVENT_CLICKED:
     {
         ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.ota_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+#ifndef LV_USE_GUIDER_SIMULATOR
+        const char *temp;
+        ota_settings_t new_ota_settings;
+        temp = lv_textarea_get_text(guider_ui.ota_screen_url_input);
+        memcpy(new_ota_settings.info_url, temp, strlen(temp) + 1);
+        nvs_write(NVS_WRITE_OTA, &new_ota_settings);
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void ota_screen_btn_1_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        lv_textarea_set_text(guider_ui.ota_screen_url_input, DEFAULT_OTA_URL);
+#endif
         break;
     }
     default:
@@ -936,7 +1032,10 @@ static void ota_screen_return_btn_event_handler (lv_event_t *e)
 
 void events_init_ota_screen (lv_ui *ui)
 {
+    lv_obj_add_event_cb(ui->ota_screen, ota_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->ota_screen_update_btn, ota_screen_update_btn_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->ota_screen_return_btn, ota_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->ota_screen_btn_1, ota_screen_btn_1_event_handler, LV_EVENT_ALL, ui);
 }
 
 
