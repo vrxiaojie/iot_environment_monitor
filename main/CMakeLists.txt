@@ -24,4 +24,5 @@ idf_component_register( SRCS
                        "rgb_lcd"
                        "nvs_helper"
                        "mqtt_user"
+                       "ota"
                        INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/" "./ui")

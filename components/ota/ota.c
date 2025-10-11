@@ -17,15 +17,13 @@
 #include "esp_crt_bundle.h"
 #include "wifi.h"
 #include "rgb_lcd.h"
+#include "nvs_helper.h"
 
-#define OTA_WRITE_BUFFSIZE 1024
-
+#define OTA_WRITE_BUFFSIZE 4096
+static char* ota_write_data = NULL;
 static const char *TAG = "ota";
+volatile uint8_t ota_status = OTA_STATUS_IDLE; // OTA状态
 /*an ota data write buffer ready to write to the flash*/
-static char ota_write_data[OTA_WRITE_BUFFSIZE + 1] = {0};
-
-#define OTA_URL_SIZE 256
-static char download_url[OTA_URL_SIZE] = {0};
 
 static void http_cleanup(esp_http_client_handle_t client)
 {
@@ -35,13 +33,19 @@ static void http_cleanup(esp_http_client_handle_t client)
 
 static void delete_ota_task()
 {
+    if (ota_write_data != NULL)
+    {
+        free(ota_write_data);
+        ota_write_data = NULL;
+    }
+    ota_status = OTA_STATUS_FAILED;
     rgb_lcd_set_pclk(10 * 1000 * 1000);
-    //TODO: 更新UI
     vTaskDelete(NULL);
 }
 
 static void ota_task(void *pvParameter)
 {
+    ota_write_data = malloc(OTA_WRITE_BUFFSIZE + 1);
     rgb_lcd_set_pclk(5 * 1000 * 1000); // 降低PCLK频率，减少OTA过程中LCD的干扰
     esp_err_t err;
     /* update handle : set by esp_ota_begin(), must be freed via esp_ota_end() */
@@ -63,7 +67,7 @@ static void ota_task(void *pvParameter)
              running->type, running->subtype, running->address);
 
     esp_http_client_config_t config = {
-        .url = download_url,
+        .url = ota_settings.download_url,
         .timeout_ms = 20000,
         .keep_alive_enable = true,
         .crt_bundle_attach = esp_crt_bundle_attach,
@@ -95,6 +99,7 @@ static void ota_task(void *pvParameter)
     bool image_header_was_checked = false;
     while (1)
     {
+        ota_status = OTA_STATUS_DOWNLOADING;
         int data_read = esp_http_client_read(client, ota_write_data, OTA_WRITE_BUFFSIZE);
         if (data_read < 0)
         {
@@ -225,12 +230,9 @@ static void ota_task(void *pvParameter)
 
 #define MAX_HTTP_RECV_BUFFER 1024
 
-static void get_download_url_task(void *args)
+static void get_ota_info_task(void *args)
 {
-    while (!is_wifi_connected())
-    {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
+    ota_status = OTA_STATUS_CHECKING_UPDATE;
     char *buffer = malloc(MAX_HTTP_RECV_BUFFER + 1);
     if (buffer == NULL)
     {
@@ -238,7 +240,7 @@ static void get_download_url_task(void *args)
         return;
     }
     esp_http_client_config_t config = {
-        .url = "https://raw.gitcode.com/VRxiaojie/testOTA/raw/main/version.json",
+        .url = ota_settings.info_url,
         .disable_auto_redirect = true,
         .crt_bundle_attach = esp_crt_bundle_attach,
     };
@@ -248,6 +250,7 @@ static void get_download_url_task(void *args)
 
     if (client == NULL)
     {
+        ota_status = OTA_STATUS_FAILED;
         ESP_LOGE(TAG, "Failed to initialise HTTP connection");
         free(buffer);
         vTaskDelete(NULL);
@@ -255,6 +258,7 @@ static void get_download_url_task(void *args)
 
     if ((err = esp_http_client_open(client, 0)) != ESP_OK)
     {
+        ota_status = OTA_STATUS_FAILED;
         ESP_LOGE(TAG, "Failed to open HTTP connection: %s", esp_err_to_name(err));
         free(buffer);
         vTaskDelete(NULL);
@@ -275,18 +279,50 @@ static void get_download_url_task(void *args)
              esp_http_client_get_status_code(client),
              esp_http_client_get_content_length(client));
     ESP_LOGI(TAG, "Received data: %s", buffer);
+
     cJSON *root = cJSON_Parse(buffer);
-    strcpy(download_url, cJSON_GetObjectItem(root, "download_url")->valuestring);
-    ESP_LOGI(TAG, "download_url = %s", download_url);
+    strcpy(ota_settings.download_url, cJSON_GetObjectItem(root, "download_url")->valuestring);
+    ESP_LOGI(TAG, "download_url = %s", ota_settings.download_url);
+    strcpy(ota_settings.newest_version, cJSON_GetObjectItem(root, "version")->valuestring);
+    ESP_LOGI(TAG, "newest_version = %s", ota_settings.newest_version);
     cJSON_Delete(root);
     esp_http_client_close(client);
     esp_http_client_cleanup(client);
     free(buffer);
-    xTaskCreate(&ota_task, "ota_task", 8192, NULL, 5, NULL);
+    // 检查是否有新版本
+    char* current_version = malloc(32);
+    ota_get_current_version(current_version);
+    if (strcmp(current_version, ota_settings.newest_version) != 0)
+    {
+        ESP_LOGI(TAG, "Found new version %s, current version is %s", ota_settings.newest_version, current_version);
+        ota_status = OTA_STATUS_FOUND_UPDATE;
+    }
+    else
+    {
+        ESP_LOGI(TAG, "Current version %s is the latest version", current_version);
+        ota_status = OTA_STATUS_NO_UPDATE;
+    }
+    free(current_version);
     vTaskDelete(NULL);
 }
 
-void start_ota(void)
+void ota_start(void)
 {
-    xTaskCreate(&get_download_url_task, "get_download_url_task", 8192, NULL, 5, NULL);
+    xTaskCreate(&ota_task, "ota_task", 16384, NULL, 5, NULL);
+}
+
+void ota_check_for_update(void)
+{
+    xTaskCreate(&get_ota_info_task, "get_ota_info_task", 8192, NULL, 5, NULL);
+}
+
+void ota_get_current_version(char ota_version[])
+{
+    const esp_partition_t *running = esp_ota_get_running_partition();
+    esp_app_desc_t running_app_info;
+    if (esp_ota_get_partition_description(running, &running_app_info) == ESP_OK)
+    {
+        ESP_LOGI(TAG, "Running firmware version: %s", running_app_info.version);
+        strcpy(ota_version, running_app_info.version);
+    }
 }
