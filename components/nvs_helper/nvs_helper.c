@@ -175,7 +175,7 @@ static void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
     nvs_close(handle);
 }
 
-ota_settings_t ota_settings = {0};
+ota_settings_t ota_settings = {.download_url = DEFAULT_OTA_URL};
 static void ota_read_settings()
 {
     nvs_handle_t handle;
@@ -188,14 +188,14 @@ static void ota_read_settings()
     {
         nvs_set_str(handle, "url", DEFAULT_OTA_URL);
         ESP_ERROR_CHECK(nvs_commit(handle));
-        strcpy(ota_settings.url, DEFAULT_OTA_URL);
+        strcpy(ota_settings.info_url, DEFAULT_OTA_URL);
     }
     else if (err == ESP_OK)
     {
-        char* url = malloc(required_size);
-        memcpy(url, ota_settings.url, required_size);
-        err = nvs_get_str(handle, "url", ota_settings.url, &required_size);
-        free((void*)url);
+        char* info_url = malloc(required_size);
+        memcpy(info_url, ota_settings.info_url, required_size);
+        err = nvs_get_str(handle, "url", ota_settings.info_url, &required_size);
+        free((void*)info_url);
     }
     nvs_close(handle);
 }
@@ -206,9 +206,9 @@ static void ota_write_settings(ota_settings_t new_ota_settings)
     nvs_open_handle("ota_setting", NVS_READWRITE, &handle);
     ota_read_settings();
 
-    if (strcmp(new_ota_settings.url, ota_settings.url) != 0)
+    if (strcmp(new_ota_settings.info_url, ota_settings.info_url) != 0)
     {
-        ESP_ERROR_CHECK(nvs_set_str(handle, "url", new_ota_settings.url));
+        ESP_ERROR_CHECK(nvs_set_str(handle, "url", new_ota_settings.info_url));
     }
     ESP_ERROR_CHECK(nvs_commit(handle));
     nvs_close(handle);

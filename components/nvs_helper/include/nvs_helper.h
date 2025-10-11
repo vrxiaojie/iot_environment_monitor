@@ -28,7 +28,9 @@ extern mqtt_user_config_t mqtt_user_config;
 
 typedef struct
 {
-    char url[128];
+    char info_url[128];
+    char newest_version[32];
+    char download_url[256];
 } ota_settings_t;
 
 extern ota_settings_t ota_settings;
