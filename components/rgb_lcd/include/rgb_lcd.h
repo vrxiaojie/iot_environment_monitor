@@ -57,4 +57,5 @@ extern esp_lcd_panel_handle_t panel_handle;
 extern TaskHandle_t rgb_lcd_restart_panel_task_handle;
 
 void rgb_lcd_init(void);
+void rgb_lcd_set_pclk(uint32_t pclk_hz);
 
