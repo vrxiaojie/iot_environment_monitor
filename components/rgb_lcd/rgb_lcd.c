@@ -6,7 +6,15 @@
 esp_lcd_panel_handle_t panel_handle = NULL;
 TaskHandle_t rgb_lcd_restart_panel_task_handle = NULL;
 
-void rgb_lcd_restart_panel_task(void *args)
+void rgb_lcd_set_pclk(uint32_t pclk_hz)
+{
+    if (panel_handle)
+    {
+        esp_lcd_rgb_panel_set_pclk(panel_handle, pclk_hz);
+    }
+}
+
+static void rgb_lcd_restart_panel_task(void *args)
 {
     while (1)
     {

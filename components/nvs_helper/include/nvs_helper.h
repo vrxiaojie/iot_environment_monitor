@@ -4,6 +4,8 @@
 #include "nvs_flash.h"
 #include "nvs.h"
 
+#define DEFAULT_OTA_URL "https://raw.gitcode.com/VRxiaojie/testOTA/raw/main/version.json"
+
 typedef struct {
     uint8_t power_save_mode; // 省电模式
     uint8_t charge_limit;    // 电量百分比上限
@@ -24,16 +26,27 @@ typedef struct
 
 extern mqtt_user_config_t mqtt_user_config;
 
+typedef struct
+{
+    char info_url[128];
+    char newest_version[32];
+    char download_url[256];
+} ota_settings_t;
+
+extern ota_settings_t ota_settings;
+
 typedef enum
 {
     NVS_READ_PWR,
     NVS_READ_MQTT,
+    NVS_READ_OTA,
 } nvs_read_idx_t;
 
 typedef enum
 {
     NVS_WRITE_PWR,
     NVS_WRITE_MQTT,
+    NVS_WRITE_OTA,
 } nvs_write_idx_t;
 
 extern volatile nvs_read_idx_t nvs_read_idx;
