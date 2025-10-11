@@ -243,7 +243,8 @@ static void get_ota_info_task(void *args)
     if (buffer == NULL)
     {
         ESP_LOGE(TAG, "Cannot malloc http receive buffer");
-        return;
+        free(buffer);
+        vTaskDelete(NULL);
     }
     esp_http_client_config_t config = {
         .url = ota_settings.info_url,
@@ -258,6 +259,7 @@ static void get_ota_info_task(void *args)
     {
         ota_status = OTA_STATUS_FAILED;
         ESP_LOGE(TAG, "Failed to initialise HTTP connection");
+        http_cleanup(client);
         free(buffer);
         vTaskDelete(NULL);
     }
@@ -266,6 +268,7 @@ static void get_ota_info_task(void *args)
     {
         ota_status = OTA_STATUS_FAILED;
         ESP_LOGE(TAG, "Failed to open HTTP connection: %s", esp_err_to_name(err));
+        http_cleanup(client);
         free(buffer);
         vTaskDelete(NULL);
     }
@@ -292,8 +295,7 @@ static void get_ota_info_task(void *args)
     strcpy(ota_settings.newest_version, cJSON_GetObjectItem(root, "version")->valuestring);
     ESP_LOGI(TAG, "newest_version = %s", ota_settings.newest_version);
     cJSON_Delete(root);
-    esp_http_client_close(client);
-    esp_http_client_cleanup(client);
+    http_cleanup(client);
     free(buffer);
     // 检查是否有新版本
     char* current_version = malloc(32);
