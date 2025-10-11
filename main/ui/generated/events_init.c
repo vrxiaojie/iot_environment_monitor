@@ -1006,6 +1006,7 @@ static void ota_screen_return_btn_event_handler (lv_event_t *e)
         temp = lv_textarea_get_text(guider_ui.ota_screen_url_input);
         memcpy(new_ota_settings.info_url, temp, strlen(temp) + 1);
         nvs_write(NVS_WRITE_OTA, &new_ota_settings);
+        ota_status = OTA_STATUS_IDLE;
 #endif
         break;
     }
