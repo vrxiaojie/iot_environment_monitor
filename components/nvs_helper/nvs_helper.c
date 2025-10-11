@@ -175,6 +175,45 @@ static void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
     nvs_close(handle);
 }
 
+ota_settings_t ota_settings = {0};
+static void ota_read_settings()
+{
+    nvs_handle_t handle;
+    esp_err_t err;
+    nvs_open_handle("ota_setting", NVS_READWRITE, &handle);
+    size_t required_size;
+
+    err = nvs_get_str(handle, "url", NULL, &required_size);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+    {
+        nvs_set_str(handle, "url", DEFAULT_OTA_URL);
+        ESP_ERROR_CHECK(nvs_commit(handle));
+        strcpy(ota_settings.url, DEFAULT_OTA_URL);
+    }
+    else if (err == ESP_OK)
+    {
+        char* url = malloc(required_size);
+        memcpy(url, ota_settings.url, required_size);
+        err = nvs_get_str(handle, "url", ota_settings.url, &required_size);
+        free((void*)url);
+    }
+    nvs_close(handle);
+}
+
+static void ota_write_settings(ota_settings_t new_ota_settings)
+{
+    nvs_handle_t handle;
+    nvs_open_handle("ota_setting", NVS_READWRITE, &handle);
+    ota_read_settings();
+
+    if (strcmp(new_ota_settings.url, ota_settings.url) != 0)
+    {
+        ESP_ERROR_CHECK(nvs_set_str(handle, "url", new_ota_settings.url));
+    }
+    ESP_ERROR_CHECK(nvs_commit(handle));
+    nvs_close(handle);
+}
+
 static TaskHandle_t nvs_write_task_handle = NULL;
 static void nvs_write_task(void *arg)
 {
@@ -185,6 +224,9 @@ static void nvs_write_task(void *arg)
         break;
     case NVS_WRITE_MQTT:
         mqtt_write_settings(mqtt_user_config);
+        break;
+    case NVS_WRITE_OTA:
+        ota_write_settings(ota_settings);
         break;
     }
     nvs_write_task_handle = NULL;
@@ -201,6 +243,9 @@ static void nvs_read_task(void *arg)
         break;
     case NVS_READ_MQTT:
         mqtt_read_settings();
+        break;
+    case NVS_READ_OTA:
+        ota_read_settings();
         break;
     }
     nvs_read_task_handle = NULL;
@@ -234,6 +279,13 @@ void nvs_write(nvs_write_idx_t idx, void *arg)
         {
             // mqtt_user_config_t *new_mqtt_user_config = (mqtt_user_config_t *)arg;
             mqtt_user_config = *(mqtt_user_config_t *)arg;
+        }
+        break;
+    case NVS_WRITE_OTA:
+        if (arg != NULL)
+        {
+            // ota_settings_t *new_ota_settings = (ota_settings_t *)arg;
+            ota_settings = *(ota_settings_t *)arg;
         }
         break;
     }
