@@ -14,3 +14,4 @@ extern volatile uint8_t ota_status;
 void ota_start(void);
 void ota_check_for_update(void);
 void ota_get_current_version(char ota_version[]);
+double ota_get_download_progress(void);

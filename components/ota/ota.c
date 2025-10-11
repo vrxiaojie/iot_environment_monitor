@@ -22,6 +22,7 @@
 #define OTA_WRITE_BUFFSIZE 4096
 static char* ota_write_data = NULL;
 static const char *TAG = "ota";
+static volatile double ota_download_progress = 0; // OTA下载进度
 volatile uint8_t ota_status = OTA_STATUS_IDLE; // OTA状态
 /*an ota data write buffer ready to write to the flash*/
 
@@ -33,6 +34,7 @@ static void http_cleanup(esp_http_client_handle_t client)
 
 static void delete_ota_task()
 {
+    ota_download_progress = 0;
     if (ota_write_data != NULL)
     {
         free(ota_write_data);
@@ -88,6 +90,8 @@ static void ota_task(void *pvParameter)
         delete_ota_task();
     }
     esp_http_client_fetch_headers(client);
+
+    int64_t content_length = esp_http_client_get_content_length(client);
 
     update_partition = esp_ota_get_next_update_partition(NULL);
     assert(update_partition != NULL);
@@ -164,6 +168,8 @@ static void ota_task(void *pvParameter)
                     delete_ota_task();
                 }
             }
+            // 获取下载进度
+            ota_download_progress = (binary_file_length + data_read) * 100.0 / content_length;
             err = esp_ota_write(update_handle, (const void *)ota_write_data, data_read);
             if (err != ESP_OK)
             {
@@ -325,4 +331,9 @@ void ota_get_current_version(char ota_version[])
         ESP_LOGI(TAG, "Running firmware version: %s", running_app_info.version);
         strcpy(ota_version, running_app_info.version);
     }
+}
+
+double ota_get_download_progress(void)
+{
+    return ota_download_progress;
 }
