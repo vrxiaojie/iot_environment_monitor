@@ -20,7 +20,6 @@ void update_data_cb(lv_timer_t * timer);
 #endif
 extern lv_timer_t *update_data_timer;
 uint8_t wifi_status = 0;
-uint8_t bluetooth_status = 0;
 uint8_t powerSaveMode_status = 0;
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "backlight.h"
@@ -296,6 +295,20 @@ static void setting_screen_backlight_slider_event_handler (lv_event_t *e)
     }
 }
 
+static void setting_screen_ota_icon_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.ota_screen, guider_ui.ota_screen_del, &guider_ui.setting_screen_del, setup_scr_ota_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 static void setting_screen_power_save_icon_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -342,6 +355,7 @@ void events_init_setting_screen (lv_ui *ui)
     lv_obj_add_event_cb(ui->setting_screen, setting_screen_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->setting_screen_wifi_icon, setting_screen_wifi_icon_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->setting_screen_backlight_slider, setting_screen_backlight_slider_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->setting_screen_ota_icon, setting_screen_ota_icon_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->setting_screen_power_save_icon, setting_screen_power_save_icon_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->setting_screen_mqtt_container, setting_screen_mqtt_container_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->setting_screen_mqtt_icon, setting_screen_mqtt_icon_event_handler, LV_EVENT_ALL, ui);
@@ -904,6 +918,25 @@ void events_init_mqtt_setting_screen (lv_ui *ui)
     lv_obj_add_event_cb(ui->mqtt_setting_screen_save_btn, mqtt_setting_screen_save_btn_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->mqtt_setting_screen_return_btn, mqtt_setting_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
     lv_obj_add_event_cb(ui->mqtt_setting_screen_connect_btn, mqtt_setting_screen_connect_btn_event_handler, LV_EVENT_ALL, ui);
+}
+
+static void ota_screen_return_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.setting_screen, guider_ui.setting_screen_del, &guider_ui.ota_screen_del, setup_scr_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void events_init_ota_screen (lv_ui *ui)
+{
+    lv_obj_add_event_cb(ui->ota_screen_return_btn, ota_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
 

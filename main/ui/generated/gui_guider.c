@@ -79,6 +79,7 @@ void init_scr_del_flag(lv_ui *ui)
     ui->power_setting_screen_del = true;
     ui->data_chart_screen_del = true;
     ui->mqtt_setting_screen_del = true;
+    ui->ota_screen_del = true;
 }
 
 void setup_bottom_layer(void)
@@ -91,8 +92,8 @@ void setup_ui(lv_ui *ui)
     setup_bottom_layer();
     init_scr_del_flag(ui);
     init_keyboard(ui);
-    setup_scr_main_screen(ui);
-    lv_screen_load(ui->main_screen);
+    setup_scr_setting_screen(ui);
+    lv_screen_load(ui->setting_screen);
 }
 
 void video_play(lv_ui *ui)
