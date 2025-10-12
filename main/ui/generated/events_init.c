@@ -458,21 +458,38 @@ static void wifi_setting_screen_network_info_btn_event_handler (lv_event_t *e)
         snprintf(t, 96, "%s\nIP: %s\nMask: %s\nGW: %s\n",
                  wifi_config.sta.ssid, wifi_ip_info.ip, wifi_ip_info.netmask, wifi_ip_info.gw);
         // 若已经存在，则更新内容并置顶，不再重复创建
-        if (network_info_msgbox) {
-            if (network_info_msgbox_label) {
+        if (network_info_msgbox)
+        {
+            if (network_info_msgbox_label)
+            {
                 lv_label_set_text(network_info_msgbox_label, t);
             }
             lv_obj_move_foreground(network_info_msgbox);
             break;
         }
-        network_info_msgbox = lv_msgbox_create(guider_ui.wifi_setting_screen);
-        lv_obj_set_pos(network_info_msgbox, 95, 96);
+        network_info_msgbox = lv_msgbox_create(NULL);
+        lv_obj_set_style_bg_color(network_info_msgbox, lv_color_hex(0x282828), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(network_info_msgbox, 240, LV_PART_MAIN);
+        lv_obj_set_style_border_color(network_info_msgbox, lv_color_hex(0x4f4f4f), LV_PART_MAIN);
+        lv_obj_set_style_border_width(network_info_msgbox, 2, LV_PART_MAIN);
+        lv_obj_set_style_shadow_width(network_info_msgbox, 10, LV_PART_MAIN);
+        lv_obj_set_style_shadow_color(network_info_msgbox, lv_color_hex(0x000000), LV_PART_MAIN);
+        lv_obj_set_style_shadow_opa(network_info_msgbox, 150, LV_PART_MAIN);
         lv_obj_set_size(network_info_msgbox, 280, 150);
-        lv_msgbox_add_title(network_info_msgbox, "Network Info");
+        lv_obj_t *title = lv_msgbox_add_title(network_info_msgbox, "Network Info");
+        lv_obj_set_style_text_color(title, lv_color_hex(0xffffff), LV_PART_MAIN);
         network_info_msgbox_label = lv_msgbox_add_text(network_info_msgbox, t);
-        lv_obj_align_to(network_info_msgbox, guider_ui.wifi_setting_screen, LV_ALIGN_TOP_LEFT, 95, 96);
-        lv_msgbox_add_close_button(network_info_msgbox);
+        lv_obj_set_style_text_font(network_info_msgbox_label, &lv_font_siyuanheiti_16, LV_PART_MAIN);
+        lv_obj_set_style_text_color(network_info_msgbox_label, lv_color_hex(0xb2b2b2), LV_PART_MAIN);
+        lv_obj_align(network_info_msgbox, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_t *close_btn = lv_msgbox_add_close_button(network_info_msgbox);
+        lv_obj_set_style_text_color(close_btn, lv_color_hex(0xffffff), LV_PART_MAIN);
+        lv_obj_set_style_bg_color(close_btn, lv_color_hex(0x0f4187), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_shadow_width(close_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(close_btn, 25, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_add_event_cb(network_info_msgbox, network_info_msgbox_event_cb, LV_EVENT_DELETE, NULL);
+        lv_obj_t *header = lv_msgbox_get_header(network_info_msgbox);
+        lv_obj_set_style_bg_color(header, lv_color_hex(0x3c3c3c), LV_PART_MAIN);
 #endif
         break;
     }
