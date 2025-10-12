@@ -19,8 +19,6 @@
 void update_data_cb(lv_timer_t * timer);
 #endif
 extern lv_timer_t *update_data_timer;
-uint8_t wifi_status = 0;
-uint8_t powerSaveMode_status = 0;
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "backlight.h"
 
@@ -245,16 +243,6 @@ static void setting_screen_event_handler (lv_event_t *e)
         lv_slider_set_value(guider_ui.setting_screen_backlight_slider, backlight, LV_ANIM_OFF);
 #endif
 
-        // 根据wifi状态调整wifi图标样式
-        if (wifi_status == 0) {
-            lv_obj_set_style_image_recolor(guider_ui.setting_screen_wifi_icon, lv_color_hex(0xffffff), LV_PART_MAIN);
-            lv_obj_set_style_bg_color(guider_ui.setting_screen_wifi_icon_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
-            lv_obj_set_style_bg_opa(guider_ui.setting_screen_wifi_icon_container, 128, LV_PART_MAIN);
-        } else if (wifi_status == 1) {
-            lv_obj_set_style_image_recolor(guider_ui.setting_screen_wifi_icon, lv_color_hex(0x1296db), LV_PART_MAIN);
-            lv_obj_set_style_bg_color(guider_ui.setting_screen_wifi_icon_container, lv_color_hex(0xffffff), LV_PART_MAIN);
-            lv_obj_set_style_bg_opa(guider_ui.setting_screen_wifi_icon_container, 255, LV_PART_MAIN);
-        }
         break;
     }
     case LV_EVENT_GESTURE:
@@ -389,12 +377,16 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
         {
             lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
         }
-#endif
-        if (wifi_status == 0) {
-            lv_obj_clear_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
-        } else if (wifi_status == 1) {
+
+        if (wifi_pwr_status)
+        {
             lv_obj_add_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
         }
+        else
+        {
+            lv_obj_remove_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
+        }
+#endif
         break;
     }
     default:
@@ -416,7 +408,7 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         case (true):
         {
             // 将wifi开启状态置为1
-            wifi_status = 1;
+            wifi_pwr_status = 1;
 
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_start();
@@ -427,7 +419,7 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         case (false):
         {
             // 将wifi开启状态置为0
-            wifi_status = 0;
+            wifi_pwr_status = 0;
 
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_stop();
