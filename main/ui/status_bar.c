@@ -57,25 +57,26 @@ void status_bar_create()
     // 时间
     time_label = lv_label_create(status_bar);
     lv_obj_set_style_text_color(time_label, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(time_label, &lv_font_JetBrainsMono_Medium_16, 0);
+    lv_obj_set_style_text_font(time_label, &lv_font_siyuanheiti_16, 0);
     lv_label_set_text(time_label, "00:00");
     lv_obj_align(time_label, LV_ALIGN_LEFT_MID, 5, 0);
 
     // 充电状态
     charge_status_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(charge_status_icon, lv_color_hex(0x10f703), 0);
-    lv_obj_set_style_text_font(charge_status_icon, &lv_font_JetBrainsMono_Medium_16, 0);
+    lv_obj_set_style_text_font(charge_status_icon, &lv_font_siyuanheiti_16, 0);
     lv_label_set_text(charge_status_icon, " ");
     lv_obj_align(charge_status_icon, LV_ALIGN_RIGHT_MID, 5, 0);
 
     // 电池电量
     battery_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(battery_icon, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(battery_icon, &lv_font_JetBrainsMono_Medium_16, 0);
+    lv_obj_set_style_text_font(battery_icon, &lv_font_siyuanheiti_16, 0);
     lv_label_set_text(battery_icon, LV_SYMBOL_BATTERY_FULL);
     lv_obj_align_to(battery_icon, charge_status_icon, LV_ALIGN_OUT_LEFT_MID, -10, 0);
     battery_level_label = lv_label_create(status_bar);
     lv_obj_set_style_text_color(battery_level_label, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_text_font(battery_level_label, &lv_font_siyuanheiti_16, 0);
     lv_label_set_text(battery_level_label, "---%");
     lv_obj_set_align(battery_level_label, LV_TEXT_ALIGN_RIGHT);
     lv_obj_align_to(battery_level_label, battery_icon, LV_ALIGN_OUT_LEFT_MID, -5, 0);
@@ -83,7 +84,7 @@ void status_bar_create()
     // WIFI图标
     wifi_icon = lv_label_create(status_bar);
     lv_obj_set_style_text_color(wifi_icon, lv_color_hex(0xffffff), 0);
-    lv_obj_set_style_text_font(wifi_icon, &lv_font_JetBrainsMono_Medium_16, 0);
+    lv_obj_set_style_text_font(wifi_icon, &lv_font_siyuanheiti_16, 0);
     lv_label_set_text(wifi_icon, " ");
     lv_obj_align_to(wifi_icon, battery_level_label, LV_ALIGN_OUT_LEFT_MID, -20, 0);
     _lock_release(&lvgl_api_lock);
