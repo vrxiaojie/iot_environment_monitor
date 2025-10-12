@@ -14,6 +14,7 @@ wifi_ap_record_t ap_info[16];
 esp_netif_t *sta_netif = NULL;
 
 volatile uint8_t wifi_sta_status = WIFI_DISCONNECTED;
+volatile uint8_t wifi_pwr_status = 0; 
 
 void wifi_connect_task(void *args);
 

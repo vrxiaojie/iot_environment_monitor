@@ -126,24 +126,24 @@ void setup_scr_wifi_connect_screen(lv_ui *ui)
 #endif
 
     //Write style for wifi_connect_screen_password_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_text_color(ui->wifi_connect_screen_password_input, lv_color_hex(0x000000), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->wifi_connect_screen_password_input, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_color(ui->wifi_connect_screen_password_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->wifi_connect_screen_password_input, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->wifi_connect_screen_password_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(ui->wifi_connect_screen_password_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->wifi_connect_screen_password_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->wifi_connect_screen_password_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->wifi_connect_screen_password_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->wifi_connect_screen_password_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->wifi_connect_screen_password_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->wifi_connect_screen_password_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->wifi_connect_screen_password_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->wifi_connect_screen_password_input, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->wifi_connect_screen_password_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui->wifi_connect_screen_password_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui->wifi_connect_screen_password_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->wifi_connect_screen_password_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write style for wifi_connect_screen_password_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->wifi_connect_screen_password_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->wifi_connect_screen_password_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->wifi_connect_screen_password_input, 104, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->wifi_connect_screen_password_input, lv_color_hex(0xffffff), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->wifi_connect_screen_password_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->wifi_connect_screen_password_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
 

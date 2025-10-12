@@ -403,29 +403,29 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write style for mqtt_setting_screen_port_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_port_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->mqtt_setting_screen_port_input, &lv_font_JetBrainsMono_Medium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_port_input, &lv_font_siyuanheiti_14, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->mqtt_setting_screen_port_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_port_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_port_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->mqtt_setting_screen_port_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_port_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_port_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_port_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->mqtt_setting_screen_port_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_port_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_port_input, 12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_port_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui->mqtt_setting_screen_port_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui->mqtt_setting_screen_port_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_port_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write style for mqtt_setting_screen_port_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_port_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_port_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_port_input, 104, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_port_input, lv_color_hex(0xffffff), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_port_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_port_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
 
     //Write codes mqtt_setting_screen_address_input
     ui->mqtt_setting_screen_address_input = lv_textarea_create(ui->mqtt_setting_screen_cont_1);
-    lv_obj_set_pos(ui->mqtt_setting_screen_address_input, 80, 35);
+    lv_obj_set_pos(ui->mqtt_setting_screen_address_input, 81, 35);
     lv_obj_set_size(ui->mqtt_setting_screen_address_input, 212, 36);
     lv_textarea_set_text(ui->mqtt_setting_screen_address_input, "mqtt://");
     lv_textarea_set_placeholder_text(ui->mqtt_setting_screen_address_input, "Broker uri e.g mqtt://10.0.0.1");
@@ -440,23 +440,23 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write style for mqtt_setting_screen_address_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->mqtt_setting_screen_address_input, &lv_font_JetBrainsMono_Medium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_address_input, &lv_font_siyuanheiti_14, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->mqtt_setting_screen_address_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_address_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->mqtt_setting_screen_address_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_address_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_address_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_address_input, 12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_address_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui->mqtt_setting_screen_address_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui->mqtt_setting_screen_address_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_address_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write style for mqtt_setting_screen_address_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_address_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_address_input, 104, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_address_input, lv_color_hex(0xffffff), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_address_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_address_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
 
@@ -500,23 +500,23 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write style for mqtt_setting_screen_username_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_username_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->mqtt_setting_screen_username_input, &lv_font_JetBrainsMono_Medium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_username_input, &lv_font_siyuanheiti_14, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->mqtt_setting_screen_username_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_username_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_username_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->mqtt_setting_screen_username_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_username_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_username_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_username_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->mqtt_setting_screen_username_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_username_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_username_input, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_username_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui->mqtt_setting_screen_username_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui->mqtt_setting_screen_username_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_username_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write style for mqtt_setting_screen_username_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_username_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_username_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_username_input, 104, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_username_input, lv_color_hex(0xffffff), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_username_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_username_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
 
@@ -560,23 +560,23 @@ void setup_scr_mqtt_setting_screen(lv_ui *ui)
 
     //Write style for mqtt_setting_screen_passwd_input, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
     lv_obj_set_style_text_color(ui->mqtt_setting_screen_passwd_input, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->mqtt_setting_screen_passwd_input, &lv_font_JetBrainsMono_Medium_12, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->mqtt_setting_screen_passwd_input, &lv_font_siyuanheiti_14, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->mqtt_setting_screen_passwd_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_passwd_input, 2, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_letter_space(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->mqtt_setting_screen_passwd_input, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_passwd_input, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui->mqtt_setting_screen_passwd_input, lv_color_hex(0x5b5b5b), LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_passwd_input, LV_GRAD_DIR_NONE, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_border_width(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_width(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_passwd_input, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(ui->mqtt_setting_screen_passwd_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_right(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_pad_left(ui->mqtt_setting_screen_passwd_input, 4, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_passwd_input, 8, LV_PART_MAIN|LV_STATE_DEFAULT);
 
     //Write style for mqtt_setting_screen_passwd_input, Part: LV_PART_SCROLLBAR, State: LV_STATE_DEFAULT.
-    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_passwd_input, 255, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_passwd_input, lv_color_hex(0x2195f6), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(ui->mqtt_setting_screen_passwd_input, 104, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(ui->mqtt_setting_screen_passwd_input, lv_color_hex(0xffffff), LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_bg_grad_dir(ui->mqtt_setting_screen_passwd_input, LV_GRAD_DIR_NONE, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
     lv_obj_set_style_radius(ui->mqtt_setting_screen_passwd_input, 0, LV_PART_SCROLLBAR|LV_STATE_DEFAULT);
 

@@ -19,8 +19,6 @@
 void update_data_cb(lv_timer_t * timer);
 #endif
 extern lv_timer_t *update_data_timer;
-uint8_t wifi_status = 0;
-uint8_t powerSaveMode_status = 0;
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "backlight.h"
 
@@ -245,16 +243,6 @@ static void setting_screen_event_handler (lv_event_t *e)
         lv_slider_set_value(guider_ui.setting_screen_backlight_slider, backlight, LV_ANIM_OFF);
 #endif
 
-        // 根据wifi状态调整wifi图标样式
-        if (wifi_status == 0) {
-            lv_obj_set_style_image_recolor(guider_ui.setting_screen_wifi_icon, lv_color_hex(0xffffff), LV_PART_MAIN);
-            lv_obj_set_style_bg_color(guider_ui.setting_screen_wifi_icon_container, lv_color_hex(0x5b5b5b), LV_PART_MAIN);
-            lv_obj_set_style_bg_opa(guider_ui.setting_screen_wifi_icon_container, 128, LV_PART_MAIN);
-        } else if (wifi_status == 1) {
-            lv_obj_set_style_image_recolor(guider_ui.setting_screen_wifi_icon, lv_color_hex(0x1296db), LV_PART_MAIN);
-            lv_obj_set_style_bg_color(guider_ui.setting_screen_wifi_icon_container, lv_color_hex(0xffffff), LV_PART_MAIN);
-            lv_obj_set_style_bg_opa(guider_ui.setting_screen_wifi_icon_container, 255, LV_PART_MAIN);
-        }
         break;
     }
     case LV_EVENT_GESTURE:
@@ -389,12 +377,16 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
         {
             lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
         }
-#endif
-        if (wifi_status == 0) {
-            lv_obj_clear_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
-        } else if (wifi_status == 1) {
+
+        if (wifi_pwr_status)
+        {
             lv_obj_add_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
         }
+        else
+        {
+            lv_obj_remove_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
+        }
+#endif
         break;
     }
     default:
@@ -416,7 +408,7 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         case (true):
         {
             // 将wifi开启状态置为1
-            wifi_status = 1;
+            wifi_pwr_status = 1;
 
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_start();
@@ -427,7 +419,7 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         case (false):
         {
             // 将wifi开启状态置为0
-            wifi_status = 0;
+            wifi_pwr_status = 0;
 
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_stop();
@@ -466,21 +458,38 @@ static void wifi_setting_screen_network_info_btn_event_handler (lv_event_t *e)
         snprintf(t, 96, "%s\nIP: %s\nMask: %s\nGW: %s\n",
                  wifi_config.sta.ssid, wifi_ip_info.ip, wifi_ip_info.netmask, wifi_ip_info.gw);
         // 若已经存在，则更新内容并置顶，不再重复创建
-        if (network_info_msgbox) {
-            if (network_info_msgbox_label) {
+        if (network_info_msgbox)
+        {
+            if (network_info_msgbox_label)
+            {
                 lv_label_set_text(network_info_msgbox_label, t);
             }
             lv_obj_move_foreground(network_info_msgbox);
             break;
         }
-        network_info_msgbox = lv_msgbox_create(guider_ui.wifi_setting_screen);
-        lv_obj_set_pos(network_info_msgbox, 95, 96);
+        network_info_msgbox = lv_msgbox_create(NULL);
+        lv_obj_set_style_bg_color(network_info_msgbox, lv_color_hex(0x282828), LV_PART_MAIN);
+        lv_obj_set_style_bg_opa(network_info_msgbox, 240, LV_PART_MAIN);
+        lv_obj_set_style_border_color(network_info_msgbox, lv_color_hex(0x4f4f4f), LV_PART_MAIN);
+        lv_obj_set_style_border_width(network_info_msgbox, 2, LV_PART_MAIN);
+        lv_obj_set_style_shadow_width(network_info_msgbox, 10, LV_PART_MAIN);
+        lv_obj_set_style_shadow_color(network_info_msgbox, lv_color_hex(0x000000), LV_PART_MAIN);
+        lv_obj_set_style_shadow_opa(network_info_msgbox, 150, LV_PART_MAIN);
         lv_obj_set_size(network_info_msgbox, 280, 150);
-        lv_msgbox_add_title(network_info_msgbox, "Network Info");
+        lv_obj_t *title = lv_msgbox_add_title(network_info_msgbox, "Network Info");
+        lv_obj_set_style_text_color(title, lv_color_hex(0xffffff), LV_PART_MAIN);
         network_info_msgbox_label = lv_msgbox_add_text(network_info_msgbox, t);
-        lv_obj_align_to(network_info_msgbox, guider_ui.wifi_setting_screen, LV_ALIGN_TOP_LEFT, 95, 96);
-        lv_msgbox_add_close_button(network_info_msgbox);
+        lv_obj_set_style_text_font(network_info_msgbox_label, &lv_font_siyuanheiti_16, LV_PART_MAIN);
+        lv_obj_set_style_text_color(network_info_msgbox_label, lv_color_hex(0xb2b2b2), LV_PART_MAIN);
+        lv_obj_align(network_info_msgbox, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_t *close_btn = lv_msgbox_add_close_button(network_info_msgbox);
+        lv_obj_set_style_text_color(close_btn, lv_color_hex(0xffffff), LV_PART_MAIN);
+        lv_obj_set_style_bg_color(close_btn, lv_color_hex(0x0f4187), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_shadow_width(close_btn, 0, LV_PART_MAIN|LV_STATE_DEFAULT);
+        lv_obj_set_style_radius(close_btn, 25, LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_add_event_cb(network_info_msgbox, network_info_msgbox_event_cb, LV_EVENT_DELETE, NULL);
+        lv_obj_t *header = lv_msgbox_get_header(network_info_msgbox);
+        lv_obj_set_style_bg_color(header, lv_color_hex(0x3c3c3c), LV_PART_MAIN);
 #endif
         break;
     }
