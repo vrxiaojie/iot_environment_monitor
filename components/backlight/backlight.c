@@ -28,11 +28,9 @@ void lcd_backlight_init(void)
 // 设置PWM占空比
 void lcd_backlight_set_duty(uint8_t duty)
 {
-    // 限制占空比在10%~100%
+    // 限制占空比
     if (duty >= 100)
         duty = 100;
-    if (duty <= 10)
-        duty = 10;
 
     ESP_ERROR_CHECK(ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, duty * 81)); // 0 ~ 2^13=8192
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0));
