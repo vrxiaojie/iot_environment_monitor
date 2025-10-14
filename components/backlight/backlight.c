@@ -1,7 +1,11 @@
 #include "backlight.h"
 #include "esp_log.h"
+#include "driver/ledc.h"
 
 #define TAG "backlight"
+#define DEFAULT_BACKLIGHT_DUTY (20) // 默认背光亮度 20%
+
+volatile uint8_t backlight_duty = DEFAULT_BACKLIGHT_DUTY; // 当前背光亮度
 // 初始化PWM调光引脚
 void lcd_backlight_init(void)
 {
@@ -28,11 +32,9 @@ void lcd_backlight_init(void)
 // 设置PWM占空比
 void lcd_backlight_set_duty(uint8_t duty)
 {
-    // 限制占空比在10%~100%
+    // 限制占空比
     if (duty >= 100)
         duty = 100;
-    if (duty <= 10)
-        duty = 10;
 
     ESP_ERROR_CHECK(ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, duty * 81)); // 0 ~ 2^13=8192
     ESP_ERROR_CHECK(ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0));

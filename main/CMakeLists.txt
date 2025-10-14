@@ -25,4 +25,6 @@ idf_component_register( SRCS
                        "nvs_helper"
                        "mqtt_user"
                        "ota"
+                       "backlight"
+                       "lpm"
                        INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/" "./ui")
