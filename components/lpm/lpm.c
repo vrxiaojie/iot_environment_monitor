@@ -5,6 +5,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "backlight.h"
+#include "nvs_helper.h"
 
 #define TIMEOUT_SECONDS (300) // 5分钟无操作后进入低功耗模式
 
@@ -78,6 +79,10 @@ void lpm_init(void)
     io_conf.pin_bit_mask = 1ULL << 41;
     gpio_config(&io_conf);
     gpio_install_isr_service(0);
+    if (power_settings.power_save_mode)
+    {
+        lpm_enable();
+    }
 }
 
 void lpm_enable(void)

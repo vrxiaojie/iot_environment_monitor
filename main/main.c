@@ -21,6 +21,7 @@
 #include "ntp.h"
 #include "power_management.h"
 #include "nvs_helper.h"
+#include "lpm.h"
 
 #include "RTOS_tasks.h"
 #include "lvgl_setup.h"
@@ -58,9 +59,11 @@ void app_main(void)
     // 初始化NVS
     nvs_init();
     nvs_read(NVS_READ_PWR);
+    // 初始化低功耗模式
+    lpm_init();
 
-    // 初始化完毕 开启背光 设置亮度(默认20%)
-    lcd_backlight_set_duty(20);
+    // 初始化完毕 开启背光 设置亮度
+    lcd_backlight_set_duty(backlight_duty);
     // 初始化LVGL
     lvgl_init();
     // 初始化GT911触摸

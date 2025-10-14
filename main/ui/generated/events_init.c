@@ -47,6 +47,7 @@ void create_update_power_setting_screen_task();
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "RTOS_tasks.h"
+#include "lpm.h"
 #endif
 void delete_update_power_setting_screen_task();
 #ifndef LV_USE_GUIDER_SIMULATOR
@@ -675,6 +676,14 @@ static void power_setting_screen_save_btn_event_handler (lv_event_t *e)
 #ifndef LV_USE_GUIDER_SIMULATOR
         power_settings_t new_power_settings;
         new_power_settings.power_save_mode = lv_obj_has_state(guider_ui.power_setting_screen_pwr_save_mode_sw, LV_STATE_CHECKED) ? 1 : 0;
+        if (new_power_settings.power_save_mode)
+        {
+            lpm_enable();
+        }
+        else
+        {
+            lpm_disable();
+        }
         new_power_settings.charge_limit = lv_slider_get_value(guider_ui.power_setting_screen_charge_thresh_slider);
         nvs_write(NVS_WRITE_PWR, &new_power_settings);
         xTaskNotifyGive(bat_adc_task_handle);
