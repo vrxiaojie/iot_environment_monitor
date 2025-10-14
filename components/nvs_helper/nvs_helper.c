@@ -86,10 +86,7 @@ static void mqtt_read_settings()
     }
     else if (err == ESP_OK)
     {
-        char* uri = malloc(required_size);
-        memcpy(uri, mqtt_user_config.uri, required_size);
         err = nvs_get_str(handle, "uri", mqtt_user_config.uri, &required_size);
-        free((void*)uri);
     }
 
     err = nvs_get_str(handle, "password", NULL, &required_size);
@@ -100,10 +97,7 @@ static void mqtt_read_settings()
     }
     else if (err == ESP_OK)
     {
-        char* passwd = malloc(required_size);
-        memcpy(passwd, mqtt_user_config.password, required_size);
         err = nvs_get_str(handle, "password", mqtt_user_config.password, &required_size);
-        free((void*)passwd);
     }
 
     err = nvs_get_str(handle, "username", NULL, &required_size);
@@ -114,10 +108,7 @@ static void mqtt_read_settings()
     }
     else if (err == ESP_OK)
     {
-        char* username = malloc(required_size);
-        memcpy(username, mqtt_user_config.username, required_size);
         err = nvs_get_str(handle, "username", mqtt_user_config.username, &required_size);
-        free((void*)username);
     }
 
     err = nvs_get_u32(handle, "port", &mqtt_user_config.port);
@@ -175,7 +166,7 @@ static void mqtt_write_settings(mqtt_user_config_t new_mqtt_user_config)
     nvs_close(handle);
 }
 
-ota_settings_t ota_settings = {.download_url = DEFAULT_OTA_URL};
+ota_settings_t ota_settings = {.info_url= DEFAULT_OTA_URL};
 static void ota_read_settings()
 {
     nvs_handle_t handle;
@@ -186,16 +177,13 @@ static void ota_read_settings()
     err = nvs_get_str(handle, "url", NULL, &required_size);
     if (err == ESP_ERR_NVS_NOT_FOUND)
     {
+        strcpy(ota_settings.info_url, DEFAULT_OTA_URL);
         nvs_set_str(handle, "url", DEFAULT_OTA_URL);
         ESP_ERROR_CHECK(nvs_commit(handle));
-        strcpy(ota_settings.info_url, DEFAULT_OTA_URL);
     }
     else if (err == ESP_OK)
     {
-        char* info_url = malloc(required_size);
-        memcpy(info_url, ota_settings.info_url, required_size);
         err = nvs_get_str(handle, "url", ota_settings.info_url, &required_size);
-        free((void*)info_url);
     }
     nvs_close(handle);
 }
