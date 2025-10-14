@@ -287,7 +287,8 @@ static void setting_screen_backlight_slider_event_handler (lv_event_t *e)
     {
 #ifndef LV_USE_GUIDER_SIMULATOR
         lv_obj_t * slider = lv_event_get_target(e);
-        lcd_backlight_set_duty(lv_slider_get_value(slider));
+        backlight_duty = lv_slider_get_value(slider);
+        lcd_backlight_set_duty(backlight_duty);
 #endif
         break;
     }

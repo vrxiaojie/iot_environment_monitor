@@ -1,7 +1,11 @@
 #include "backlight.h"
 #include "esp_log.h"
+#include "driver/ledc.h"
 
 #define TAG "backlight"
+#define DEFAULT_BACKLIGHT_DUTY (20) // 默认背光亮度 20%
+
+volatile uint8_t backlight_duty = DEFAULT_BACKLIGHT_DUTY; // 当前背光亮度
 // 初始化PWM调光引脚
 void lcd_backlight_init(void)
 {

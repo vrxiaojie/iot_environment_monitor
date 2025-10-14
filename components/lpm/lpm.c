@@ -64,8 +64,7 @@ static void lpm_task(void *arg)
             pm_config.max_freq_mhz = 240;
             ESP_ERROR_CHECK(esp_pm_configure(&pm_config));
             // 恢复背光
-            // TODO: 亮度值设为全局变量
-            lcd_backlight_set_duty(20);
+            lcd_backlight_set_duty(backlight_duty);
         }
     }
 }
