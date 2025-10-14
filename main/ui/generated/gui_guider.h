@@ -200,8 +200,6 @@ LV_FONT_DECLARE(lv_font_montserratMedium_16)
 LV_FONT_DECLARE(lv_font_siyuanheiti_16)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_24)
 LV_FONT_DECLARE(lv_font_montserratMedium_12)
-LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_16)
-LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_12)
 LV_FONT_DECLARE(lv_font_siyuanheiti_14)
 
 
