@@ -102,7 +102,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_pos(ui->data_chart_screen_btn_back, 10, 8);
     lv_obj_set_size(ui->data_chart_screen_btn_back, 85, 24);
     ui->data_chart_screen_btn_back_label = lv_label_create(ui->data_chart_screen_btn_back);
-    lv_label_set_text(ui->data_chart_screen_btn_back_label, "<-");
+    lv_label_set_text(ui->data_chart_screen_btn_back_label, "←");
     lv_label_set_long_mode(ui->data_chart_screen_btn_back_label, LV_LABEL_LONG_WRAP);
     lv_obj_align(ui->data_chart_screen_btn_back_label, LV_ALIGN_CENTER, 0, 0);
     lv_obj_set_style_pad_all(ui->data_chart_screen_btn_back, 0, LV_STATE_DEFAULT);
@@ -121,7 +121,7 @@ void setup_scr_data_chart_screen(lv_ui *ui)
     lv_obj_set_style_shadow_offset_x(ui->data_chart_screen_btn_back, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_offset_y(ui->data_chart_screen_btn_back, 1, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_color(ui->data_chart_screen_btn_back, lv_color_hex(0xffffff), LV_PART_MAIN|LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui->data_chart_screen_btn_back, &lv_font_JetBrainsMono_Medium_16, LV_PART_MAIN|LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui->data_chart_screen_btn_back, &lv_font_siyuanheiti_16, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui->data_chart_screen_btn_back, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
     lv_obj_set_style_text_align(ui->data_chart_screen_btn_back, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN|LV_STATE_DEFAULT);
 
