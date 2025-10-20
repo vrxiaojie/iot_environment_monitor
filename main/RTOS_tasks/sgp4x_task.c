@@ -18,7 +18,17 @@ void sgp4x_task(void *arg)
     GasIndexAlgorithmParams voc_params;
     GasIndexAlgorithm_init(&voc_params, GasIndexAlgorithm_ALGORITHM_TYPE_VOC);
 
-    ESP_ERROR_CHECK(sgp4x_init(bus_handle, &sgp4x_cfg, &sgp4x_handle));
+    if (i2c_master_probe(bus_handle, sgp4x_cfg.i2c_address, 1000) == ESP_OK)
+    {
+        ESP_LOGI(TAG, "SGP40 found at address 0x%02X", sgp4x_cfg.i2c_address);
+        ESP_ERROR_CHECK(sgp4x_init(bus_handle, &sgp4x_cfg, &sgp4x_handle));
+    }
+    else
+    {
+        ESP_LOGE(TAG, "SGP40 not found!");
+        vTaskDelete(NULL);
+    }
+
     while (1)
     {
         // 读取数据

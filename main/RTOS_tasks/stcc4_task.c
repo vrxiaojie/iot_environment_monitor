@@ -12,16 +12,15 @@ TaskHandle_t stcc4_task_handle = NULL;
 STCC4_t stcc4 = {0};
 void stcc4_task(void *arg)
 {
-    if (i2c_master_probe(bus_handle, STCC4_I2C_ADDR_64, -1) == ESP_OK)
+    if (i2c_master_probe(bus_handle, STCC4_I2C_ADDR_64, 1000) == ESP_OK)
     {
         ESP_LOGI(TAG, "STCC4 found at address 0x%02X", STCC4_I2C_ADDR_64);
         ESP_ERROR_CHECK(stcc4_i2c_init(bus_handle));
-        stcc4.init = 1;
     }
     else
     {
         ESP_LOGE(TAG, "STCC4 not found!");
-        stcc4.init = 0;
+        vTaskDelete(NULL);
     }
     while (1)
     {
