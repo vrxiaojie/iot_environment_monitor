@@ -41,6 +41,33 @@ typedef struct
 	lv_obj_t *main_screen_time_hour;
 	lv_obj_t *main_screen_time_minute;
 	lv_obj_t *main_screen_time_month_day;
+	lv_obj_t *weather_screen;
+	bool weather_screen_del;
+	lv_obj_t *weather_screen_cont_1;
+	lv_obj_t *weather_screen_label_12;
+	lv_obj_t *weather_screen_weather_label;
+	lv_obj_t *weather_screen_temp_cont;
+	lv_obj_t *weather_screen_temp_value;
+	lv_obj_t *weather_screen_label_1;
+	lv_obj_t *weather_screen_humid_cont;
+	lv_obj_t *weather_screen_humid_value;
+	lv_obj_t *weather_screen_label_3;
+	lv_obj_t *weather_screen_wind_speed_cont;
+	lv_obj_t *weather_screen_wind_speed_value;
+	lv_obj_t *weather_screen_label_5;
+	lv_obj_t *weather_screen_feel_temp_cont;
+	lv_obj_t *weather_screen_feel_temp_value;
+	lv_obj_t *weather_screen_label_11;
+	lv_obj_t *weather_screen_pressure_cont;
+	lv_obj_t *weather_screen_pressure_value;
+	lv_obj_t *weather_screen_label_9;
+	lv_obj_t *weather_screen_visi_cont;
+	lv_obj_t *weather_screen_visi_value;
+	lv_obj_t *weather_screen_label_7;
+	lv_obj_t *weather_screen_refresh_btn;
+	lv_obj_t *weather_screen_refresh_btn_label;
+	lv_obj_t *weather_screen_setting_btn;
+	lv_obj_t *weather_screen_setting_btn_label;
 	lv_obj_t *setting_screen;
 	bool setting_screen_del;
 	lv_obj_t *setting_screen_wifi_icon_container;
@@ -182,6 +209,7 @@ extern lv_ui guider_ui;
 
 
 void setup_scr_main_screen(lv_ui *ui);
+void setup_scr_weather_screen(lv_ui *ui);
 void setup_scr_setting_screen(lv_ui *ui);
 void setup_scr_wifi_setting_screen(lv_ui *ui);
 void setup_scr_wifi_connect_screen(lv_ui *ui);
@@ -199,6 +227,7 @@ LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_40)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
 LV_FONT_DECLARE(lv_font_siyuanheiti_16)
 LV_FONT_DECLARE(lv_font_JetBrainsMono_Medium_24)
+LV_FONT_DECLARE(lv_font_siyuanheiti_24)
 LV_FONT_DECLARE(lv_font_montserratMedium_12)
 LV_FONT_DECLARE(lv_font_siyuanheiti_14)
 
