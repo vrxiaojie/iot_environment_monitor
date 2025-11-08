@@ -26,6 +26,8 @@ typedef struct {
     location_info_t* location_info; // 位置信息
 } weather_info_t;
 
+extern weather_info_t *weather_info;
+
 typedef struct {
     char *api_key;
     char *api_host;     // 和风天气API主机地址

@@ -31,6 +31,9 @@ static size_t weather_len = 0;
 // 用于存储 Content-Encoding 头部值
 static char content_encoding_value[32] = {0};
 
+// 全局存储的天气信息
+weather_info_t *weather_info = NULL;
+
 // URL编码函数
 static void url_encode(char *dest, const char *src, size_t max_len)
 {

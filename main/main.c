@@ -83,4 +83,5 @@ void app_main(void)
     xTaskCreateWithCaps(status_bar_init_task, "status_bar_task", 2 * 1024, NULL, 5, NULL, MALLOC_CAP_SPIRAM);
     xTaskCreateWithCaps(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, &bat_adc_task_handle, MALLOC_CAP_SPIRAM);
     xTaskCreateWithCaps(get_data_task, "get_data_task", 8 * 1024, NULL, 5, &get_data_task_handle, MALLOC_CAP_SPIRAM);
+    xTaskCreateWithCaps(weather_task, "weather_task", 8 * 1024, NULL, 5, &weather_task_handle, MALLOC_CAP_SPIRAM);
 }

@@ -44,7 +44,7 @@ typedef struct
 	lv_obj_t *weather_screen;
 	bool weather_screen_del;
 	lv_obj_t *weather_screen_cont_1;
-	lv_obj_t *weather_screen_label_12;
+	lv_obj_t *weather_screen_precip_value;
 	lv_obj_t *weather_screen_weather_label;
 	lv_obj_t *weather_screen_temp_cont;
 	lv_obj_t *weather_screen_temp_value;
