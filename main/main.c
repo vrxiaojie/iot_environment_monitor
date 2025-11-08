@@ -22,6 +22,7 @@
 #include "power_management.h"
 #include "nvs_helper.h"
 #include "lpm.h"
+#include "weather.h"
 
 #include "RTOS_tasks.h"
 #include "lvgl_setup.h"
