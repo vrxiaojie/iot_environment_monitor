@@ -6,6 +6,8 @@
 #include "time.h"
 #include "wifi.h"
 
+TaskHandle_t ntp_sync_task_handle = NULL;
+
 void ntp_init()
 {
     // 设置时区为中国标准时间
@@ -22,6 +24,7 @@ void ntp_sync_task(void *arg)
     ntp_init();
     while (1)
     {
+        ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(30 * 60 * 1000));
         if (wifi_sta_status == WIFI_CONNECTED)
         {
             if (esp_netif_sntp_sync_wait(pdMS_TO_TICKS(10000)) != ESP_OK)
@@ -31,9 +34,7 @@ void ntp_sync_task(void *arg)
             else
             {
                 ESP_LOGI("NTP", "System time updated");
-                vTaskDelay(pdMS_TO_TICKS(30 * 60 * 1000)); // 30mins同步一次
             }
         }
-        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
