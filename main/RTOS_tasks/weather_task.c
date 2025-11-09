@@ -4,8 +4,7 @@
 #include "lvgl.h"
 #include "gui_guider.h"
 #include <sys/lock.h>
-
-
+#include "nvs_helper.h"
 
 TaskHandle_t weather_task_handle = NULL;
 extern _lock_t lvgl_api_lock;
@@ -20,18 +19,17 @@ void weather_task(void *arg)
     char visi_str[8];
     char weather_str[16];
     char precip_str[8];
-    weather_config_t config = {
-        .api_key = API_KEY,
-        .api_host = HOST,
-        .city = "beijing"};
+    nvs_read(NVS_READ_WEATHER);
+    vTaskDelay(pdMS_TO_TICKS(100));
     while (1)
     {
         if (is_wifi_connected())
         {
-            weather_info = weather_get(&config);
+            nvs_read(NVS_READ_WEATHER);
+            weather_info = weather_get(&weather_config);
             if (weather_info)
             {
-                weather_print_info(weather_info);
+                // weather_print_info(weather_info);
                 snprintf(temp_str, sizeof(temp_str), "%d", (int)weather_info->temperature);
                 snprintf(humid_str, sizeof(humid_str), "%d", (int)weather_info->humidity);
                 snprintf(wind_speed_str, sizeof(wind_speed_str), "%d", (int)weather_info->wind_speed);

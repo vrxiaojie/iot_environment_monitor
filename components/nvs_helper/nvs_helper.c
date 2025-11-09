@@ -202,6 +202,72 @@ static void ota_write_settings(ota_settings_t new_ota_settings)
     nvs_close(handle);
 }
 
+weather_config_t weather_config = {};
+static void weather_read_settings()
+{
+    nvs_handle_t handle;
+    esp_err_t err;
+    nvs_open_handle("weather", NVS_READWRITE, &handle);
+    size_t required_size;
+
+    err = nvs_get_str(handle, "api_key", NULL, &required_size);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+    {
+        nvs_set_str(handle, "api_key", "");
+        ESP_ERROR_CHECK(nvs_commit(handle));
+    }
+    else if (err == ESP_OK)
+    {
+        err = nvs_get_str(handle, "api_key", weather_config.api_key, &required_size);
+    }
+
+    err = nvs_get_str(handle, "api_host", NULL, &required_size);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+    {
+        nvs_set_str(handle, "api_host", "");
+        ESP_ERROR_CHECK(nvs_commit(handle));
+    }
+    else if (err == ESP_OK)
+    {
+        err = nvs_get_str(handle, "api_host", weather_config.api_host, &required_size);
+    }
+
+    err = nvs_get_str(handle, "city", NULL, &required_size);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+    {
+        nvs_set_str(handle, "city", "beijing");
+        ESP_ERROR_CHECK(nvs_commit(handle));
+    }
+    else if (err == ESP_OK)
+    {
+        err = nvs_get_str(handle, "city", weather_config.city, &required_size);
+    }
+
+    nvs_close(handle);
+}
+
+static void weather_write_settings(weather_config_t new_weather_config)
+{
+    nvs_handle_t handle;
+    nvs_open_handle("weather", NVS_READWRITE, &handle);
+    weather_read_settings();
+
+    if (strcmp(new_weather_config.api_key, weather_config.api_key) != 0)
+    {
+        ESP_ERROR_CHECK(nvs_set_str(handle, "api_key", new_weather_config.api_key));
+    }
+    if (strcmp(new_weather_config.api_host, weather_config.api_host) != 0)
+    {
+        ESP_ERROR_CHECK(nvs_set_str(handle, "api_host", new_weather_config.api_host));
+    }
+    if (strcmp(new_weather_config.city, weather_config.city) != 0)
+    {
+        ESP_ERROR_CHECK(nvs_set_str(handle, "city", new_weather_config.city));
+    }
+    ESP_ERROR_CHECK(nvs_commit(handle));
+    nvs_close(handle);
+}
+
 static TaskHandle_t nvs_write_task_handle = NULL;
 static void nvs_write_task(void *arg)
 {
@@ -215,6 +281,9 @@ static void nvs_write_task(void *arg)
         break;
     case NVS_WRITE_OTA:
         ota_write_settings(ota_settings);
+        break;
+    case NVS_WRITE_WEATHER:
+        weather_write_settings(weather_config);
         break;
     }
     nvs_write_task_handle = NULL;
@@ -234,6 +303,9 @@ static void nvs_read_task(void *arg)
         break;
     case NVS_READ_OTA:
         ota_read_settings();
+        break;
+    case NVS_READ_WEATHER:
+        weather_read_settings();
         break;
     }
     nvs_read_task_handle = NULL;
@@ -274,6 +346,12 @@ void nvs_write(nvs_write_idx_t idx, void *arg)
         {
             // ota_settings_t *new_ota_settings = (ota_settings_t *)arg;
             ota_settings = *(ota_settings_t *)arg;
+        }
+        break;
+    case NVS_WRITE_WEATHER:
+        if (arg != NULL)
+        {
+            weather_config = *(weather_config_t *)arg;
         }
         break;
     }

@@ -20,6 +20,25 @@ void update_data_cb(lv_timer_t * timer);
 #endif
 extern lv_timer_t *update_data_timer;
 #ifndef LV_USE_GUIDER_SIMULATOR
+#include "RTOS_tasks.h"
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
+#include "nvs_helper.h"
+
+static void save_weather_settings()
+{
+    weather_config_t new_weather_config = {};
+    const char *temp;
+    temp = lv_textarea_get_text(guider_ui.weather_setting_screen_apikey_input);
+    memcpy(new_weather_config.api_key, temp, strlen(temp) + 1);
+    temp = lv_textarea_get_text(guider_ui.weather_setting_screen_host_input);
+    memcpy(new_weather_config.api_host, temp, strlen(temp) + 1);
+    temp = lv_textarea_get_text(guider_ui.weather_setting_screen_city_input);
+    memcpy(new_weather_config.city, temp, strlen(temp) + 1);
+    nvs_write(NVS_WRITE_WEATHER, &new_weather_config);
+}
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
 #include "backlight.h"
 
 uint8_t backlight;
@@ -262,9 +281,101 @@ static void weather_screen_event_handler (lv_event_t *e)
     }
 }
 
+static void weather_screen_refresh_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        xTaskNotifyGive(weather_task_handle);
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void weather_screen_setting_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.weather_setting_screen, guider_ui.weather_setting_screen_del, &guider_ui.weather_screen_del, setup_scr_weather_setting_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
 void events_init_weather_screen (lv_ui *ui)
 {
     lv_obj_add_event_cb(ui->weather_screen, weather_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->weather_screen_refresh_btn, weather_screen_refresh_btn_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->weather_screen_setting_btn, weather_screen_setting_btn_event_handler, LV_EVENT_ALL, ui);
+}
+
+static void weather_setting_screen_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_SCREEN_LOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        char t[64];
+        nvs_read(NVS_READ_WEATHER);
+        sprintf(t, "%s", weather_config.api_host);
+        lv_textarea_set_text(guider_ui.weather_setting_screen_host_input, t);
+        sprintf(t, "%s", weather_config.city);
+        lv_textarea_set_text(guider_ui.weather_setting_screen_city_input, t);
+        sprintf(t, "%s", weather_config.api_key);
+        lv_textarea_set_text(guider_ui.weather_setting_screen_apikey_input, t);
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void weather_setting_screen_save_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        save_weather_settings();
+#endif
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+static void weather_setting_screen_return_btn_event_handler (lv_event_t *e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    switch (code) {
+    case LV_EVENT_CLICKED:
+    {
+        ui_load_scr_animation(&guider_ui, &guider_ui.weather_screen, guider_ui.weather_screen_del, &guider_ui.weather_setting_screen_del, setup_scr_weather_screen, LV_SCR_LOAD_ANIM_FADE_ON, 200, 0, false, true);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void events_init_weather_setting_screen (lv_ui *ui)
+{
+    lv_obj_add_event_cb(ui->weather_setting_screen, weather_setting_screen_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->weather_setting_screen_save_btn, weather_setting_screen_save_btn_event_handler, LV_EVENT_ALL, ui);
+    lv_obj_add_event_cb(ui->weather_setting_screen_return_btn, weather_setting_screen_return_btn_event_handler, LV_EVENT_ALL, ui);
 }
 
 static void setting_screen_event_handler (lv_event_t *e)

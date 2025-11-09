@@ -8,4 +8,5 @@ idf_component_register(SRCS "weather.c"
                     esp_event
                     lwip
                     zlib
+                    PRIV_REQUIRES nvs_helper
                     INCLUDE_DIRS "include")

@@ -11,6 +11,7 @@
 #include "esp_crt_bundle.h"
 #include <ctype.h>
 #include "zlib.h"
+#include "nvs_helper.h"
 static const char *TAG = "WEATHER";
 
 // 定义安全释放宏
@@ -63,7 +64,7 @@ static esp_err_t weather_http_handler(esp_http_client_event_t *evt)
     switch (evt->event_id)
     {
     case HTTP_EVENT_ON_HEADER:
-        ESP_LOGI(TAG, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
+        // ESP_LOGI(TAG, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", evt->header_key, evt->header_value);
         // 存储Content-Encoding头
         if (strcasecmp(evt->header_key, "Content-Encoding") == 0)
         {
@@ -277,7 +278,7 @@ weather_info_t *weather_get(weather_config_t *config)
 
     location_info_t *location_info = NULL;
     // 如果配置中指定了位置，直接使用
-    if (config->city && strlen(config->city) > 0)
+    if (strlen(config->city) > 0)
     {
         location_info = calloc(1, sizeof(location_info_t));
         location_info->city = strdup(config->city);
@@ -287,7 +288,7 @@ weather_info_t *weather_get(weather_config_t *config)
     weather_info_t *weather_info = NULL;
     char *response = NULL;
 
-    if (!config->api_host || !config->api_key)
+    if (strlen(config->api_host) == 0 || strlen(config->api_key) == 0)
     {
         ESP_LOGE(TAG, "HEFENG API host or key is not configured");
         return NULL;
@@ -307,6 +308,10 @@ weather_info_t *weather_get(weather_config_t *config)
     {
         weather_info = parse_hefeng(response);
         free(response);
+    }
+    else
+    {
+        return NULL;
     }
 
     free(location_id);

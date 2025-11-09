@@ -1,6 +1,7 @@
 #pragma once
 
 #include "esp_http_client.h"
+#include "nvs_helper.h"
 
 // 位置信息字段
 typedef struct {
@@ -28,11 +29,11 @@ typedef struct {
 
 extern weather_info_t *weather_info;
 
-typedef struct {
-    char *api_key;
-    char *api_host;     // 和风天气API主机地址
-    char *city;         // 城市 支持拼音
-} weather_config_t;
+// typedef struct {
+//     char *api_key;
+//     char *api_host;     // 和风天气API主机地址
+//     char *city;         // 城市 支持拼音
+// } weather_config_t;
 
 /**
  * @brief 获取天气信息
