@@ -27,4 +27,5 @@ idf_component_register( SRCS
                        "ota"
                        "backlight"
                        "lpm"
+                       "weather"
                        INCLUDE_DIRS "./include" "./ui/custom/" "./ui/generated/" "./RTOS_tasks/" "./ui")

@@ -10,6 +10,7 @@
 
 extern TaskHandle_t update_wifi_icon_task_handle;
 extern TaskHandle_t wifi_status_change_task_handle;
+extern TaskHandle_t weather_task_handle;
 static TaskHandle_t wifi_reconnect_task_handle = NULL;
 
 void wifi_add_list_task(void *args);
@@ -111,6 +112,11 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
         }
         vTaskNotifyGiveFromISR(update_wifi_icon_task_handle, &xHigherPriorityTaskWoken);
     }
+    
+    if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
+    {
+        vTaskNotifyGiveFromISR(weather_task_handle, &xHigherPriorityTaskWoken); // 通知天气任务获取天气数据
+    }
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }
 
@@ -121,6 +127,7 @@ void wifi_event_init()
     esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &wifi_event_callback, NULL, NULL);
     // 绑定wifi扫描结束后的回调函数
     esp_event_handler_instance_register(WIFI_EVENT, WIFI_EVENT_SCAN_DONE, &wifi_event_callback, NULL, NULL);
+    esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_callback, NULL); // 注册ip事件回调
     // 创建wifi重连任务
     if (wifi_reconnect_task_handle == NULL)
     {
