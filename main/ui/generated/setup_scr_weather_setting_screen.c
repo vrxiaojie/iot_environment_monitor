@@ -74,7 +74,7 @@ void setup_scr_weather_setting_screen(lv_ui *ui)
     lv_obj_set_pos(ui->weather_setting_screen_host_input, 70, 30);
     lv_obj_set_size(ui->weather_setting_screen_host_input, 161, 36);
     lv_textarea_set_text(ui->weather_setting_screen_host_input, "");
-    lv_textarea_set_placeholder_text(ui->weather_setting_screen_host_input, "Hefeng host");
+    lv_textarea_set_placeholder_text(ui->weather_setting_screen_host_input, "xxx.qweather.com");
     lv_textarea_set_password_bullet(ui->weather_setting_screen_host_input, "*");
     lv_textarea_set_password_mode(ui->weather_setting_screen_host_input, false);
     lv_textarea_set_one_line(ui->weather_setting_screen_host_input, true);
@@ -216,8 +216,8 @@ void setup_scr_weather_setting_screen(lv_ui *ui)
     ui->weather_setting_screen_city_input = lv_textarea_create(ui->weather_setting_screen_cont_1);
     lv_obj_set_pos(ui->weather_setting_screen_city_input, 316, 30);
     lv_obj_set_size(ui->weather_setting_screen_city_input, 94, 36);
-    lv_textarea_set_text(ui->weather_setting_screen_city_input, "beijing");
-    lv_textarea_set_placeholder_text(ui->weather_setting_screen_city_input, "城市");
+    lv_textarea_set_text(ui->weather_setting_screen_city_input, "");
+    lv_textarea_set_placeholder_text(ui->weather_setting_screen_city_input, "city");
     lv_textarea_set_password_bullet(ui->weather_setting_screen_city_input, "*");
     lv_textarea_set_password_mode(ui->weather_setting_screen_city_input, false);
     lv_textarea_set_one_line(ui->weather_setting_screen_city_input, true);
