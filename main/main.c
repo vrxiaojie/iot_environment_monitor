@@ -79,6 +79,10 @@ void app_main(void)
     // WiFi相关的初始化
     wifi_init();
     wifi_event_init();
+    nvs_read(NVS_READ_WIFI);
+    if (wifi_auto_connect)
+        wifi_connect_to_saved_ap();
+
     xTaskCreateWithCaps(ntp_sync_task, "ntp_sync_task", 4 * 1024, NULL, 4, &ntp_sync_task_handle, MALLOC_CAP_SPIRAM);
     xTaskCreateWithCaps(status_bar_init_task, "status_bar_task", 2 * 1024, NULL, 5, NULL, MALLOC_CAP_SPIRAM);
     xTaskCreateWithCaps(bat_adc_task, "bat_adc_task", 4 * 1024, NULL, 3, &bat_adc_task_handle, MALLOC_CAP_SPIRAM);

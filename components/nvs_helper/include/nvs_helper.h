@@ -42,12 +42,15 @@ typedef struct {
 } weather_config_t;
 extern weather_config_t weather_config;
 
+extern uint8_t wifi_auto_connect;
+
 typedef enum
 {
     NVS_READ_PWR,
     NVS_READ_MQTT,
     NVS_READ_OTA,
-    NVS_READ_WEATHER
+    NVS_READ_WEATHER,
+    NVS_READ_WIFI
 } nvs_read_idx_t;
 
 typedef enum
@@ -55,7 +58,8 @@ typedef enum
     NVS_WRITE_PWR,
     NVS_WRITE_MQTT,
     NVS_WRITE_OTA,
-    NVS_WRITE_WEATHER
+    NVS_WRITE_WEATHER,
+    NVS_WRITE_WIFI
 } nvs_write_idx_t;
 
 extern volatile nvs_read_idx_t nvs_read_idx;

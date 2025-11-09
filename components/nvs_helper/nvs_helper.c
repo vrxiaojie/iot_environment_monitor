@@ -268,6 +268,31 @@ static void weather_write_settings(weather_config_t new_weather_config)
     nvs_close(handle);
 }
 
+uint8_t wifi_auto_connect = 0;
+static void wifi_read_settings()
+{
+    nvs_handle_t handle;
+    esp_err_t err;
+    nvs_open_handle("wifi", NVS_READWRITE, &handle);
+    err = nvs_get_u8(handle, "auto_connect", &wifi_auto_connect);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+    {
+        wifi_auto_connect = 0;
+        nvs_set_u8(handle, "auto_connect", wifi_auto_connect);
+        ESP_ERROR_CHECK(nvs_commit(handle));
+    }
+    nvs_close(handle);
+}
+
+static void wifi_write_settings(uint8_t new_auto_connect)
+{
+    nvs_handle_t handle;
+    nvs_open_handle("wifi", NVS_READWRITE, &handle);
+    ESP_ERROR_CHECK(nvs_set_u8(handle, "auto_connect", new_auto_connect));
+    ESP_ERROR_CHECK(nvs_commit(handle));
+    nvs_close(handle);
+}
+
 static TaskHandle_t nvs_write_task_handle = NULL;
 static void nvs_write_task(void *arg)
 {
@@ -284,6 +309,9 @@ static void nvs_write_task(void *arg)
         break;
     case NVS_WRITE_WEATHER:
         weather_write_settings(weather_config);
+        break;
+    case NVS_WRITE_WIFI:
+        wifi_write_settings(wifi_auto_connect);
         break;
     }
     nvs_write_task_handle = NULL;
@@ -306,6 +334,9 @@ static void nvs_read_task(void *arg)
         break;
     case NVS_READ_WEATHER:
         weather_read_settings();
+        break;
+    case NVS_READ_WIFI:
+        wifi_read_settings();
         break;
     }
     nvs_read_task_handle = NULL;
@@ -352,6 +383,12 @@ void nvs_write(nvs_write_idx_t idx, void *arg)
         if (arg != NULL)
         {
             weather_config = *(weather_config_t *)arg;
+        }
+        break;
+    case NVS_WRITE_WIFI:
+        if (arg != NULL)
+        {
+            wifi_auto_connect = *(uint8_t *)arg;
         }
         break;
     }
