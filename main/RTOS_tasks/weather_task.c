@@ -39,14 +39,17 @@ void weather_task(void *arg)
                 snprintf(weather_str, sizeof(weather_str), "%s", weather_info->weather);
                 snprintf(precip_str, sizeof(precip_str), "%.1fmm", weather_info->precip);
                 _lock_acquire(&lvgl_api_lock);
-                lv_label_set_text(guider_ui.weather_screen_temp_value, temp_str);
-                lv_label_set_text(guider_ui.weather_screen_humid_value, humid_str);
-                lv_label_set_text(guider_ui.weather_screen_wind_speed_value, wind_speed_str);
-                lv_label_set_text(guider_ui.weather_screen_feel_temp_value, feel_temp_str);
-                lv_label_set_text(guider_ui.weather_screen_pressure_value, pressure_str);
-                lv_label_set_text(guider_ui.weather_screen_visi_value, visi_str);
-                lv_label_set_text(guider_ui.weather_screen_weather_label, weather_str);
-                lv_label_set_text(guider_ui.weather_screen_precip_value, precip_str);
+                if (guider_ui.weather_screen_temp_value)
+                {
+                    lv_label_set_text(guider_ui.weather_screen_temp_value, temp_str);
+                    lv_label_set_text(guider_ui.weather_screen_humid_value, humid_str);
+                    lv_label_set_text(guider_ui.weather_screen_wind_speed_value, wind_speed_str);
+                    lv_label_set_text(guider_ui.weather_screen_feel_temp_value, feel_temp_str);
+                    lv_label_set_text(guider_ui.weather_screen_pressure_value, pressure_str);
+                    lv_label_set_text(guider_ui.weather_screen_visi_value, visi_str);
+                    lv_label_set_text(guider_ui.weather_screen_weather_label, weather_str);
+                    lv_label_set_text(guider_ui.weather_screen_precip_value, precip_str);
+                }
                 _lock_release(&lvgl_api_lock);
             }
         }

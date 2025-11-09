@@ -92,6 +92,7 @@ void wifi_connect(user_wifi_cfg *cfg)
 
 bool wifi_connect_to_saved_ap(void)
 {
+    wifi_start();
     if(is_wifi_connected())
     {
         ESP_ERROR_CHECK(esp_wifi_disconnect());

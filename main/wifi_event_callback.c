@@ -5,6 +5,7 @@
 #include "esp_err.h"
 #include "wifi.h"
 #include "rgb_lcd.h"
+#include "ntp.h"
 
 #define TAG "wifi_event_cb"
 
@@ -116,6 +117,7 @@ void wifi_event_callback(void *arg, esp_event_base_t event_base,
     if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
     {
         vTaskNotifyGiveFromISR(weather_task_handle, &xHigherPriorityTaskWoken); // 通知天气任务获取天气数据
+        vTaskNotifyGiveFromISR(ntp_sync_task_handle, &xHigherPriorityTaskWoken); // 通知NTP任务同步时间
     }
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }

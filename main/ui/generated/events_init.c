@@ -20,6 +20,9 @@ void update_data_cb(lv_timer_t * timer);
 #endif
 extern lv_timer_t *update_data_timer;
 #ifndef LV_USE_GUIDER_SIMULATOR
+#include "weather.h"
+#endif
+#ifndef LV_USE_GUIDER_SIMULATOR
 #include "RTOS_tasks.h"
 #endif
 #ifndef LV_USE_GUIDER_SIMULATOR
@@ -46,6 +49,7 @@ uint8_t backlight;
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "wifi.h"
 #include "rgb_lcd.h"
+#include "nvs_helper.h"
 #endif
 #ifndef LV_USE_GUIDER_SIMULATOR
 // 单实例网络信息消息框指针
@@ -261,6 +265,43 @@ static void weather_screen_event_handler (lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
     switch (code) {
+    case LV_EVENT_SCREEN_LOAD_START:
+    {
+#ifndef LV_USE_GUIDER_SIMULATOR
+        char temp_str[8];
+        char humid_str[8];
+        char wind_speed_str[8];
+        char feel_temp_str[8];
+        char pressure_str[8];
+        char visi_str[8];
+        char weather_str[16];
+        char precip_str[8];
+        if (weather_info == NULL)
+        {
+            return ;
+        }
+        snprintf(temp_str, sizeof(temp_str), "%d", (int)weather_info->temperature);
+        snprintf(humid_str, sizeof(humid_str), "%d", (int)weather_info->humidity);
+        snprintf(wind_speed_str, sizeof(wind_speed_str), "%d", (int)weather_info->wind_speed);
+        snprintf(feel_temp_str, sizeof(feel_temp_str), "%d", (int)weather_info->feels_like);
+        snprintf(pressure_str, sizeof(pressure_str), "%d", (int)weather_info->pressure);
+        snprintf(visi_str, sizeof(visi_str), "%d", (int)weather_info->visibility);
+        snprintf(weather_str, sizeof(weather_str), "%s", weather_info->weather);
+        snprintf(precip_str, sizeof(precip_str), "%.1fmm", weather_info->precip);
+        if (guider_ui.weather_screen_temp_value)
+        {
+            lv_label_set_text(guider_ui.weather_screen_temp_value, temp_str);
+            lv_label_set_text(guider_ui.weather_screen_humid_value, humid_str);
+            lv_label_set_text(guider_ui.weather_screen_wind_speed_value, wind_speed_str);
+            lv_label_set_text(guider_ui.weather_screen_feel_temp_value, feel_temp_str);
+            lv_label_set_text(guider_ui.weather_screen_pressure_value, pressure_str);
+            lv_label_set_text(guider_ui.weather_screen_visi_value, visi_str);
+            lv_label_set_text(guider_ui.weather_screen_weather_label, weather_str);
+            lv_label_set_text(guider_ui.weather_screen_precip_value, precip_str);
+        }
+#endif
+        break;
+    }
     case LV_EVENT_GESTURE:
     {
         lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_active());
@@ -526,7 +567,7 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
             lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
         }
 
-        if (wifi_pwr_status)
+        if (wifi_pwr_status || is_wifi_connected())
         {
             lv_obj_add_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
         }
@@ -557,6 +598,8 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         {
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_pwr_status = 1;
+            uint8_t t = wifi_pwr_status;
+            nvs_write(NVS_WRITE_WIFI, &t);
             wifi_start();
             wifi_scan();
 #endif
@@ -566,6 +609,8 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         {
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_pwr_status = 0;
+            uint8_t t = wifi_pwr_status;
+            nvs_write(NVS_WRITE_WIFI, &t);
             wifi_stop();
             // 清空wifi列表
             if (guider_ui.wifi_setting_screen_wifi_scan_list)
