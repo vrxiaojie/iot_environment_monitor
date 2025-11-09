@@ -49,6 +49,7 @@ uint8_t backlight;
 #ifndef LV_USE_GUIDER_SIMULATOR
 #include "wifi.h"
 #include "rgb_lcd.h"
+#include "nvs_helper.h"
 #endif
 #ifndef LV_USE_GUIDER_SIMULATOR
 // 单实例网络信息消息框指针
@@ -566,7 +567,7 @@ static void wifi_setting_screen_event_handler (lv_event_t *e)
             lv_obj_set_style_text_color(guider_ui.wifi_setting_screen_connect_status_label, lv_color_hex(0xE8202D), LV_PART_MAIN);
         }
 
-        if (wifi_pwr_status)
+        if (wifi_pwr_status || is_wifi_connected())
         {
             lv_obj_add_state(guider_ui.wifi_setting_screen_wifi_switch, LV_STATE_CHECKED);
         }
@@ -597,6 +598,8 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         {
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_pwr_status = 1;
+            uint8_t t = wifi_pwr_status;
+            nvs_write(NVS_WRITE_WIFI, &t);
             wifi_start();
             wifi_scan();
 #endif
@@ -606,6 +609,8 @@ static void wifi_setting_screen_wifi_switch_event_handler (lv_event_t *e)
         {
 #ifndef LV_USE_GUIDER_SIMULATOR
             wifi_pwr_status = 0;
+            uint8_t t = wifi_pwr_status;
+            nvs_write(NVS_WRITE_WIFI, &t);
             wifi_stop();
             // 清空wifi列表
             if (guider_ui.wifi_setting_screen_wifi_scan_list)
