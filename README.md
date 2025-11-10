@@ -1,5 +1,5 @@
 # IoT桌面环境监测仪 
-这里是立创开源广场项目——IoT桌面环境监测仪的软件代码仓库
+这里是立创开源广场项目——IoT桌面环境监测仪的**软件代码仓库**
 
 ## 🔗 网站链接    
 
@@ -8,6 +8,8 @@
 
 2. 以下是教学视频，后续还会继续在B站更新的，这边更新链接可能不会特别及时，请在B站**订阅合集、关注我**
 [WSL+VSCode+ESP-IDF安装 | 项目编译 程序烧录教程](https://www.bilibili.com/video/BV1wuxJzuEwY/)
+[数据上云① Docker+EMQX安装](https://www.bilibili.com/video/BV1LS4bzdENE/)
+[数据上云② InfluxDB数据库 Grafana数据大屏安装](https://www.bilibili.com/video/BV1SUWmztEAg/)
 
 3. 我的技术文档中心，你可以在这里查看文字版的教程：
 https://wiki.vrxiaojie.top/
@@ -24,6 +26,10 @@ https://wiki.vrxiaojie.top/
 ✅私有化搭建MQTT Broker和InfluxDB数据库
 
 ✅自动电源管理，支持旁路充电、锂电池与USB供电自动切换
+
+✅支持OTA固件升级
+
+✅网络获取本地实时天气数据
 
 ## 如何烧录程序？
 ### 使用flash download tool手动烧录
