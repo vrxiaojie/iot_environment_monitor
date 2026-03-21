@@ -124,19 +124,19 @@ esp_err_t stcc4_read_measurement_raw(int16_t *co2ConcentrationRaw, uint16_t *tem
         return ESP_FAIL;
     }
     *temperatureRaw = (uint16_t)((receive_buf[3] << 8) | receive_buf[4]);
-    if (crcCheck(&receive_buf[0], 2) != receive_buf[2])
+    if (crcCheck(&receive_buf[3], 2) != receive_buf[5])
     {
         ESP_LOGE(LOG_TAG, "Temperature CRC check failed");
         return ESP_FAIL;
     }
     *relativeHumidityRaw = (uint16_t)((receive_buf[6] << 8) | receive_buf[7]);
-    if (crcCheck(&receive_buf[0], 2) != receive_buf[2])
+    if (crcCheck(&receive_buf[6], 2) != receive_buf[8])
     {
         ESP_LOGE(LOG_TAG, "Humidity CRC check failed");
         return ESP_FAIL;
     }
     *sensorStatusRaw = (uint16_t)((receive_buf[9] << 8) | receive_buf[10]);
-    if (crcCheck(&receive_buf[0], 2) != receive_buf[2])
+    if (crcCheck(&receive_buf[9], 2) != receive_buf[11])
     {
         ESP_LOGE(LOG_TAG, "Sensor status CRC check failed");
         return ESP_FAIL;
